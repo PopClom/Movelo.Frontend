@@ -15,7 +15,7 @@ class UserBloc {
     _user.sink.add(user);
   }
 
-  void fetchUser() async {
+  Future<void> fetchUser() async {
     User user = await apiService.getCurrentUser();
     _user.sink.add(user);
   }

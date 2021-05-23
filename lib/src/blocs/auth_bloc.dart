@@ -1,44 +1,50 @@
 import 'package:fletes_31_app/src/models/user_model.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fletes_31_app/src/network/users_api.dart';
 import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/blocs/user_bloc.dart';
+import 'dart:convert';
 
 
 class AuthBloc {
-  String _tokenString = "";
+  String _tokenString = '';
   final apiService = UsersAPI(Dio());
 
-  final PublishSubject _isSessionValid = PublishSubject<bool>();
-  Stream<bool> get isSessionValid => _isSessionValid.stream;
+  final BehaviorSubject<bool> _isSessionValid = BehaviorSubject<bool>();
+  ValueStream<bool> get isSessionValid => _isSessionValid.stream;
 
-  Future<void> logIn(String email, String password) async {
-    apiService.getCurrentUserWithResponse("Basic $email:$password")
+  Future<void> logIn(String email, String password) {
+    String encodedCredentials = base64.encode(utf8.encode('$email:$password'));
+    return apiService.getCurrentUserWithResponse('Basic $encodedCredentials')
         .then((response) {
-          String token = response.response.headers.value("Authorization");
+          String token = response.response.headers.value('Authorization');
           User user = response.data;
           userBloc.setUser(user);
           authBloc.openSession(token);
     });
   }
 
-  Future<void> signUp(String email, String password, String firstName, String lastName, String phone) async {
+  Future<void> signUp(String email, String password, String firstName, String lastName, String phone) {
     return apiService.createUser(User(
+      email: email,
+      password: password,
       firstName: firstName,
       lastName: lastName,
-      email: email,
       phone: phone,
     )).then((user) {
       // authBloc.openSession(token);
     });
   }
 
+  Future<bool> isEmailAvailable(String email) async {
+    List<User> results = await apiService.checkEmailAvailable(email);
+    return results.length == 0;
+  }
+
   Future<void> restoreSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _tokenString = prefs.get("token");
+    _tokenString = prefs.get('token');
     if (_tokenString != null && _tokenString.length > 0) {
       _isSessionValid.sink.add(true);
     } else {
@@ -48,14 +54,14 @@ class AuthBloc {
 
   Future<void> openSession(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("token", token);
+    await prefs.setString('token', token);
     _tokenString = token;
     _isSessionValid.sink.add(true);
   }
 
   Future<void> closeSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("token");
+    prefs.remove('token');
     _isSessionValid.sink.add(false);
   }
 

@@ -17,29 +17,12 @@ class _UsersAPI implements UsersAPI {
   String baseUrl;
 
   @override
-  Future<User> getCurrentUser() async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('api/auth',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'GET',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    final value = User.fromJson(_result.data);
-    return value;
-  }
-
-  @override
   Future<HttpResponse<User>> getCurrentUserWithResponse(authHeader) async {
     ArgumentError.checkNotNull(authHeader, 'authHeader');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('api/auth',
+    final _result = await _dio.request<Map<String, dynamic>>('users/current',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -53,13 +36,30 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
+  Future<User> getCurrentUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>('users/current',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = User.fromJson(_result.data);
+    return value;
+  }
+
+  @override
   Future<String> createUser(user) async {
     ArgumentError.checkNotNull(user, 'user');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(user?.toJson() ?? <String, dynamic>{});
-    final _result = await _dio.request<String>('api/auth',
+    final _result = await _dio.request<String>('users',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'POST',
@@ -68,6 +68,26 @@ class _UsersAPI implements UsersAPI {
             baseUrl: baseUrl),
         data: _data);
     final value = _result.data;
+    return value;
+  }
+
+  @override
+  Future<List<User>> checkEmailAvailable(email) async {
+    ArgumentError.checkNotNull(email, 'email');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'email': email};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<List<dynamic>>('users',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    var value = _result.data
+        .map((dynamic i) => User.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 }

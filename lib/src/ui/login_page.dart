@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,55 +8,105 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fletes_31_app/src/ui/registration_page.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:fletes_31_app/src/network/users_api.dart';
 
 
-const users = const {
-  'dribbble@gmail.com': '12345',
-  'hunter@gmail.com': 'hunter',
-};
+class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
 
-class LoginPage extends StatelessWidget {
+  LoginPage({ Key key }) : super(key: key);
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   Duration get loginTime => Duration(milliseconds: 1500);
 
-  Future<String> _authUser(LoginData data) async {
-    print('Name: ${data.name}, Password: ${data.password}');
+  String _email;
+  String _password;
+  String _firstName;
+  String _lastName;
+
+  Future<String> _loginUser(LoginData data) async {
     try {
       await authBloc.logIn(data.name, data.password);
       return null;
-    } catch(error) {
-      return "El usuario o la contraseña son incorrectos";
+    } catch(err) {
+      if (err is DioError && err.type == DioErrorType.RESPONSE && err.response != null) {
+        if (err.response.statusCode >= 400 && err.response.statusCode < 500) {
+          return 'El usuario o la contraseña son incorrectos';
+        }
+      }
+      return 'No pudimos realizar esta operación';
+    }
+  }
+
+  Future<String> _signupUser(LoginData data) async {
+    authBloc.closeSession(); //ToDo: Borrar esta linea
+    try {
+      bool isAvailable = await authBloc.isEmailAvailable(data.name);
+      if (!isAvailable) {
+        return 'La dirección de correo no está disponible';
+      }
+      _email = data.name;
+      _password = data.password;
+      return null;
+    } catch(err) {
+      return 'No pudimos realizar esta operación';
     }
   }
 
   Future<String> _recoverPassword(String name) {
     print('Name: $name');
     return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(name)) {
-        return 'El usuario no existe';
-      }
       return null;
     });
   }
+
+  static final FormFieldValidator<String> _passwordValidator = (value) {
+    if (value.length < 8) {
+      return 'La contraseña debe tener al menos 8 caracteres';
+    } else if (value.length > 30) {
+      return 'La contraseña es muy larga';
+    } else if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
+      return 'La contraseña debe tener al menos una letra';
+    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'La contraseña debe tener al menos un número';
+    } else {
+      return null;
+    }
+  };
+
+  static final FormFieldValidator<String> _emailValidator = (value) {
+    if (value.isEmpty || !RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value)) {
+      return 'Correo inválido';
+    }
+    return null;
+  };
 
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
       logo: 'images/logo-fletes31.png',
-      onLogin: _authUser,
-      onSignup: _authUser,
+      onLogin: _loginUser,
+      onSignup: _signupUser,
+      emailValidator: _emailValidator,
+      passwordValidator: _passwordValidator,
       messages: LoginMessages(
-        usernameHint: 'Usuario',
+        usernameHint: 'Correo electrónico',
         passwordHint: 'Contraseña',
         confirmPasswordHint: 'Confirmar',
+        forgotPasswordButton: '¿Olvidaste tu contraseña?',
         loginButton: 'Iniciar sesión',
         signupButton: 'Registrarse',
-        forgotPasswordButton: '¿Olvidaste tu contraseña?',
         recoverPasswordButton: 'Recuperar',
+        recoverPasswordIntro: 'Escribí tu correo electrónico',
+        recoverPasswordDescription: 'Vas a recibir un correo para que recuperes tu contraseña',
         goBackButton: 'Volver',
         confirmPasswordError: '¡Las contraseñas no coinciden!',
-        recoverPasswordSuccess: 'Password rescued successfully',
+        recoverPasswordSuccess: 'Verificá la casilla de tu correo electrónico',
+        flushbarTitleError: 'Error',
+        flushbarTitleSuccess: 'Listo',
       ),
       loginProviders: <LoginProvider>[
         LoginProvider(
@@ -66,9 +119,18 @@ class LoginPage extends StatelessWidget {
         ),
       ],
       onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => RegistrationPage(),
-        ));
+        if (authBloc.isSessionValid.hasValue && authBloc.isSessionValid.value) {
+          Navigator.pushReplacementNamed(
+            context,
+            LoginPage.routeName,
+          );
+        } else {
+          Navigator.pushReplacementNamed(
+            context,
+            RegistrationPage.routeName,
+            arguments: SignUpArgs(_email, _password, _firstName, _lastName),
+          );
+        }
       },
       onRecoverPassword: _recoverPassword,
     );
@@ -78,18 +140,19 @@ class LoginPage extends StatelessWidget {
     try {
       GoogleSignIn _googleSignIn = GoogleSignIn(
           scopes: [
-            'profile',
             'email',
+            'profile',
           ]
       );
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final String accessToken = (await googleUser.authentication).accessToken;
-      print(_googleSignIn.currentUser.displayName);
-      print(accessToken);
+      List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
+      _firstName = firstAndLastName.first;
+      _lastName = firstAndLastName.last;
+      return null;
     } catch(error) {
-      print(error);
+      return 'No se pudo iniciar sesión con Google';
     }
-    return "No se pudo iniciar sesión con Google";
   }
 
   Future<String> signInWithFacebook() async {
@@ -102,11 +165,12 @@ class LoginPage extends StatelessWidget {
     if (result.status == LoginStatus.success) {
       final String accessToken = result.accessToken.token;
       final userData = await FacebookAuth.instance.getUserData();
-      print(userData['name']);
-      print(accessToken);
+      List<String> firstAndLastName = splitName(userData['name']);
+      _firstName = firstAndLastName.first;
+      _lastName = firstAndLastName.last;
+      return null;
     } else {
-      print('error');
+      return 'No se pudo iniciar sesión con Facebook';
     }
-    return "No se pudo iniciar sesión con Facebook";
   }
 }

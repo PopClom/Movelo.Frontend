@@ -1,29 +1,37 @@
 import 'dart:math';
+import 'package:fletes_31_app/src/ui/login_page.dart';
+import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/blocs/registration_bloc.dart';
 
 
 class RegistrationPage extends StatefulWidget {
-  RegistrationPage({Key key, this.title}) : super(key: key);
+  static const routeName = '/register';
 
-  final String title;
+  RegistrationPage({ Key key }) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  RegistrationBloc bloc = RegistrationBloc();
+  final RegistrationBloc bloc = RegistrationBloc();
 
-  Widget _entryField(String title, stream, onChanged, {bool isPassword = false, keyboardType = TextInputType.text}) {
+  String _initialFirstName = '';
+  String _initialLastName = '';
+
+  Widget _entryField(String title, stream, onChanged,
+      {bool isPassword = false, keyboardType = TextInputType.text, String initialValue = ''}) {
     return StreamBuilder<String>(
       stream: stream,
       builder: (context, snap) {
         return Container(
           margin: EdgeInsets.symmetric(vertical: 10),
-          child: TextField(
+          child: TextFormField(
             obscureText: isPassword,
+            initialValue: initialValue,
             decoration: InputDecoration(
+              isDense: true,
               labelText: title,
               fillColor: Color(0xfff3f3f4),
               filled: true,
@@ -47,7 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             onChanged: onChanged,
             keyboardType: keyboardType,
             style: new TextStyle(
-              fontFamily: "Poppins",
+              fontFamily: 'Poppins',
             ),
           ),
         );
@@ -67,6 +75,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             hint: Text(title),
             value: snap.data,
             decoration: InputDecoration(
+              isDense: true,
               fillColor: Color(0xfff3f3f4),
               filled: true,
               focusedBorder: OutlineInputBorder(
@@ -97,11 +106,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget _inputFieldsWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Nombre", bloc.firstName, bloc.changeName),
-        _entryField("Apellido", bloc.lastName, bloc.changeLastname),
-        _entryField("Celular", bloc.phone, bloc.changePhone, keyboardType: TextInputType.phone),
-        _entryField("Domicilio (opcional)", bloc.address, bloc.changeAddress),
-        _dropdownField("Género (opcional)", ['Femenino', 'Masculino', 'No binario'], bloc.gender, bloc.changeGender),
+        _entryField('Nombre', bloc.firstName, bloc.changeFirstName, initialValue: _initialFirstName),
+        _entryField('Apellido', bloc.lastName, bloc.changeLastName, initialValue: _initialLastName),
+        _entryField('Celular', bloc.phone, bloc.changePhone, keyboardType: TextInputType.phone),
+        _entryField('Domicilio (opcional)', bloc.address, bloc.changeAddress),
+        _dropdownField('Género (opcional)', ['Femenino', 'Masculino', 'No binario'], bloc.gender, bloc.changeGender),
       ],
     );
   }
@@ -175,6 +184,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
     final deviceSize = MediaQuery.of(context).size;
     final width = min(deviceSize.width * 0.75, 360.0);
 
+    try {
+      final args = ModalRoute.of(context).settings.arguments as SignUpArgs;
+      bloc.changeEmail(args.email);
+      bloc.changePassword(args.password);
+      if (args.firstName != null) {
+        bloc.changeFirstName(args.firstName);
+        _initialFirstName = args.firstName;
+      }
+      if (args.lastName != null) {
+        bloc.changeLastName(args.lastName);
+        _initialLastName = args.lastName;
+      }
+    } catch (err) {
+      Future.delayed(Duration.zero, () {
+        Navigator.pushReplacementNamed(
+          context,
+          LoginPage.routeName,
+        );
+      });
+    }
+
     return Scaffold(
         body: Container(
           alignment: Alignment.center,
@@ -193,6 +223,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           'images/logo-fletes31-inverted.png',
                           width: MediaQuery.of(context).size.width * 0.75
                       ),
+                      Text(
+                        'Completá tu registro',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(height: 15),
                       _inputFieldsWidget(),
                       SizedBox(height: 20),
                       _submitButton(),

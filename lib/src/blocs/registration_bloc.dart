@@ -11,9 +11,9 @@ class RegistrationBloc {
   final validateFirstName = StreamTransformer<String,String>.fromHandlers(
       handleData: (value,sink) {
         if (value.length < 2) {
-          sink.addError("El nombre es muy corto");
+          sink.addError('El nombre es muy corto');
         } else if (value.length > 30) {
-          sink.addError("El nombre es muy largo");
+          sink.addError('El nombre es muy largo');
         } else {
           sink.add(value);
         }
@@ -23,9 +23,9 @@ class RegistrationBloc {
   final validateLastName = StreamTransformer<String,String>.fromHandlers(
       handleData: (value,sink) {
         if (value.length < 2) {
-          sink.addError("El apellido es muy corto");
+          sink.addError('El apellido es muy corto');
         } else if (value.length > 30) {
-          sink.addError("El apellido es muy largo");
+          sink.addError('El apellido es muy largo');
         } else {
           sink.add(value);
         }
@@ -35,11 +35,11 @@ class RegistrationBloc {
   final validatePhone = StreamTransformer<String,String>.fromHandlers(
       handleData: (value,sink) {
         if (value.length < 8) {
-          sink.addError("El número de celular es muy corto");
+          sink.addError('El número de celular es muy corto');
         } else if (value.length > 11) {
-          sink.addError("El número de celular es muy largo");
-        } else if (!RegExp(r"^[0-9]+$").hasMatch(value)) {
-          sink.addError("El número de celular contiene caracteres inválidos");
+          sink.addError('El número de celular es muy largo');
+        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+          sink.addError('El número de celular contiene caracteres inválidos');
         } else {
           sink.add(value);
         }
@@ -49,22 +49,26 @@ class RegistrationBloc {
   final addressValidator = StreamTransformer<String,String>.fromHandlers(
       handleData: (value,sink) {
         if (value.length == 0) {
-          sink.addError("El domicilio no puede estar vacío");
+          sink.addError('El domicilio no puede estar vacío');
         } else {
           sink.add(value);
         }
       }
   );
 
+  final BehaviorSubject<String> _emailController = BehaviorSubject<String>();
+  final BehaviorSubject<String> _passwordController = BehaviorSubject<String>();
   final BehaviorSubject<String> _firstNameController = BehaviorSubject<String>();
   final BehaviorSubject<String> _lastNameController = BehaviorSubject<String>();
   final BehaviorSubject<String> _phoneController = BehaviorSubject<String>();
   final BehaviorSubject<String> _addressController = BehaviorSubject<String>();
   final BehaviorSubject<String> _genderController = BehaviorSubject<String>();
-  final PublishSubject<bool> _loadingData = PublishSubject<bool>();
+  final BehaviorSubject<bool> _loadingData = BehaviorSubject<bool>();
 
-  Function(String) get changeName => _firstNameController.sink.add;
-  Function(String) get changeLastname => _lastNameController.sink.add;
+  Function(String) get changeEmail => _emailController.sink.add;
+  Function(String) get changePassword => _passwordController.sink.add;
+  Function(String) get changeFirstName => _firstNameController.sink.add;
+  Function(String) get changeLastName => _lastNameController.sink.add;
   Function(String) get changePhone => _phoneController.sink.add;
   Function(String) get changeAddress => _addressController.sink.add;
   Function(String) get changeGender => _genderController.sink.add;
@@ -76,26 +80,38 @@ class RegistrationBloc {
   Stream<String> get gender => _genderController.stream;
 
   Stream<bool> get loading => _loadingData.stream;
-  Stream<bool> get submitValid => Rx.combineLatest3(firstName, lastName, phone, _validate);
+  Stream<bool> get submitValid => Rx.combineLatest4(firstName, lastName, phone, _loadingData, _validate);
 
-  bool _validate(String name, String lastname, String phone) {
-    return identical(name, _firstNameController.value) &&
-        identical(lastname, _lastNameController.value) &&
-        identical(phone, _phoneController.value)
+  RegistrationBloc() {
+    _loadingData.sink.add(false);
+  }
+
+  bool _validate(String firstName, String lastName, String phone, bool loading) {
+    return identical(firstName, _firstNameController.value) &&
+        identical(lastName, _lastNameController.value) &&
+        identical(phone, _phoneController.value) &&
+        !loading
         ? true
         : null;
   }
 
-  void submit() {
+  void submit() async {
     _loadingData.sink.add(true);
 
-     authBloc.signUp("ekeimel@hotmail.com", "12345678",
-         "Ezequiel", "Keimel", "1130121188").whenComplete(() {
-       _loadingData.sink.add(false);
-     });
+    authBloc.signUp(
+        _emailController.value,
+        _passwordController.value,
+        _firstNameController.value,
+        _lastNameController.value,
+        _phoneController.value,
+    ).catchError((obj) {
+      _loadingData.sink.add(false);
+    });
   }
 
   void dispose() {
+    _emailController.close();
+    _passwordController.close();
     _firstNameController.close();
     _lastNameController.close();
     _phoneController.close();
