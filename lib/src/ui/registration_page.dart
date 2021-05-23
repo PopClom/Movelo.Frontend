@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../blocs/registration_bloc.dart';
+import 'package:fletes_31_app/src/blocs/registration_bloc.dart';
 
 
 class RegistrationPage extends StatefulWidget {
@@ -97,8 +97,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget _inputFieldsWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Nombre", bloc.name, bloc.changeName),
-        _entryField("Apellido", bloc.lastname, bloc.changeLastname),
+        _entryField("Nombre", bloc.firstName, bloc.changeName),
+        _entryField("Apellido", bloc.lastName, bloc.changeLastname),
         _entryField("Celular", bloc.phone, bloc.changePhone, keyboardType: TextInputType.phone),
         _entryField("Domicilio (opcional)", bloc.address, bloc.changeAddress),
         _dropdownField("Género (opcional)", ['Femenino', 'Masculino', 'No binario'], bloc.gender, bloc.changeGender),

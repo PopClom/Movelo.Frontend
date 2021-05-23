@@ -3,7 +3,10 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'registration_page.dart';
+import 'package:fletes_31_app/src/ui/registration_page.dart';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/network/users_api.dart';
 
 
 const users = const {
@@ -14,17 +17,14 @@ const users = const {
 class LoginPage extends StatelessWidget {
   Duration get loginTime => Duration(milliseconds: 1500);
 
-  Future<String> _authUser(LoginData data) {
+  Future<String> _authUser(LoginData data) async {
     print('Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'El usuario no existe';
-      }
-      if (users[data.name] != data.password) {
-        return 'La contraseña es incorrecta';
-      }
+    try {
+      await authBloc.logIn(data.name, data.password);
       return null;
-    });
+    } catch(error) {
+      return "El usuario o la contraseña son incorrectos";
+    }
   }
 
   Future<String> _recoverPassword(String name) {

@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(fontFamily: 'NotoSans'),
         ),
       ),
-      home: RegistrationPage(),
+      home: LoginPage(),
     );
   }
 }
