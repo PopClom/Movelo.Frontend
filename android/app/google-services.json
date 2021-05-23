@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "181947912019",
+    "project_id": "fletulis31",
+    "storage_bucket": "fletulis31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181947912019:android:4f0b7a23a07576349c5ba6",
+        "android_client_info": {
+          "package_name": "com.fletes31.fletes_31_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181947912019-ks4ipvosufspdvmru6b9avj10md9tcd5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fletes31.fletes_31_app",
+            "certificate_hash": "89cf13378c49bcb51e9f9c01e209d3228676d7f6"
+          }
+        },
+        {
+          "client_id": "181947912019-ltbrceie357mqs11njbrdnvobiq7ngfc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFq-krKGGKvwiEUvN2zyis0sKAKlpGJpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181947912019-ltbrceie357mqs11njbrdnvobiq7ngfc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
