@@ -151,10 +151,8 @@ class _LoginPageState extends State<LoginPage> {
         List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
         _email = _googleSignIn.currentUser.email;
         _password = '1a' + generatePassword(true, true, true, true, 12);
-        print(_password);
         _firstName = firstAndLastName.first;
         _lastName = firstAndLastName.last;
-        print(_email);
         return null;
       }
     }
@@ -177,7 +175,6 @@ class _LoginPageState extends State<LoginPage> {
       } catch(err) {
         if (is4xxError(err)) {
           final userData = await FacebookAuth.instance.getUserData();
-          print(userData);
           List<String> firstAndLastName = splitName(userData['name']);
           _email = userData['email'];
           _password = '1a' + generatePassword(true, true, true, true, 12);

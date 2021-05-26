@@ -46,7 +46,7 @@ class AuthBloc {
       lastName: lastName,
       phone: phone,
     )).then((user) {
-      // authBloc.openSession(token);
+      // ToDo: authBloc.openSession(token);
     });
   }
 
