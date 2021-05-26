@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
       if (is4xxError(err)) {
         List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
         _email = _googleSignIn.currentUser.email;
-        _password = "1a" + generatePassword(true, true, true, true, 12);
+        _password = '1a' + generatePassword(true, true, true, true, 12);
         print(_password);
         _firstName = firstAndLastName.first;
         _lastName = firstAndLastName.last;
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
           print(userData);
           List<String> firstAndLastName = splitName(userData['name']);
           _email = userData['email'];
-          _password = "1a" + generatePassword(true, true, true, true, 12);
+          _password = '1a' + generatePassword(true, true, true, true, 12);
           _firstName = firstAndLastName.first;
           _lastName = firstAndLastName.last;
           return null;
