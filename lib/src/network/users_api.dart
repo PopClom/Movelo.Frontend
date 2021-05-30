@@ -25,17 +25,3 @@ abstract class UsersAPI {
   @GET('users')
   Future<List<User>> checkEmailAvailable(@Query('email') String email);
 }
-
-/*
-* .catchError((Object obj) {
-      // non-200 error goes here.
-      switch (obj.runtimeType) {
-        case DioError:
-        // Here's the sample to get the failed response error code and message
-          final res = (obj as DioError).response;
-          print('Got error : ${res.statusCode} -> ${res.data}');
-          break;
-        default:
-      }
-    }
-* */

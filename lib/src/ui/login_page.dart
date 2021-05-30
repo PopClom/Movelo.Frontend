@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +31,8 @@ class _LoginPageState extends State<LoginPage> {
       await authBloc.logIn(data.name, data.password);
       return null;
     } catch(err) {
-      if (err is DioError && err.type == DioErrorType.RESPONSE && err.response != null) {
-        if (err.response.statusCode >= 400 && err.response.statusCode < 500) {
-          return 'El usuario o la contraseña son incorrectos';
-        }
+      if (is4xxError(err)) {
+        return 'El usuario o la contraseña son incorrectos';
       }
       return 'No pudimos realizar esta operación';
     }
@@ -137,22 +134,29 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<String> signInWithGoogle() async {
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'profile',
+        ]
+    );
+
     try {
-      GoogleSignIn _googleSignIn = GoogleSignIn(
-          scopes: [
-            'email',
-            'profile',
-          ]
-      );
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final String accessToken = (await googleUser.authentication).accessToken;
-      List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
-      _firstName = firstAndLastName.first;
-      _lastName = firstAndLastName.last;
+      await authBloc.logInGoogle(accessToken);
       return null;
-    } catch(error) {
-      return 'No se pudo iniciar sesión con Google';
+    } catch(err) {
+      if (is4xxError(err)) {
+        List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
+        _email = _googleSignIn.currentUser.email;
+        _password = '1a' + generatePassword(true, true, true, true, 12);
+        _firstName = firstAndLastName.first;
+        _lastName = firstAndLastName.last;
+        return null;
+      }
     }
+    return 'No se pudo iniciar sesión con Google';
   }
 
   Future<String> signInWithFacebook() async {
@@ -162,15 +166,24 @@ class _LoginPageState extends State<LoginPage> {
           'public_profile',
         ]
     );
+
     if (result.status == LoginStatus.success) {
-      final String accessToken = result.accessToken.token;
-      final userData = await FacebookAuth.instance.getUserData();
-      List<String> firstAndLastName = splitName(userData['name']);
-      _firstName = firstAndLastName.first;
-      _lastName = firstAndLastName.last;
-      return null;
-    } else {
-      return 'No se pudo iniciar sesión con Facebook';
+      try {
+        final String accessToken = result.accessToken.token;
+        await authBloc.logInFacebook(accessToken);
+        return null;
+      } catch(err) {
+        if (is4xxError(err)) {
+          final userData = await FacebookAuth.instance.getUserData();
+          List<String> firstAndLastName = splitName(userData['name']);
+          _email = userData['email'];
+          _password = '1a' + generatePassword(true, true, true, true, 12);
+          _firstName = firstAndLastName.first;
+          _lastName = firstAndLastName.last;
+          return null;
+        }
+      }
     }
+    return 'No se pudo iniciar sesión con Facebook';
   }
 }

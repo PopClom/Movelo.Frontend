@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fletes_31_app/src/network/users_api.dart';
 import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:fletes_31_app/src/blocs/user_bloc.dart';
 import 'dart:convert';
 
@@ -17,12 +18,24 @@ class AuthBloc {
   Future<void> logIn(String email, String password) {
     String encodedCredentials = base64.encode(utf8.encode('$email:$password'));
     return apiService.getCurrentUserWithResponse('Basic $encodedCredentials')
-        .then((response) {
-          String token = response.response.headers.value('Authorization');
-          User user = response.data;
-          userBloc.setUser(user);
-          authBloc.openSession(token);
-    });
+        .then(_handleLogin);
+  }
+
+  Future<void> logInFacebook(String token) {
+    return apiService.getCurrentUserWithResponse('Facebook $token')
+        .then(_handleLogin);
+  }
+
+  Future<void> logInGoogle(String token) {
+    return apiService.getCurrentUserWithResponse('Google $token')
+        .then(_handleLogin);
+  }
+
+  void _handleLogin(HttpResponse<User> response) {
+    String token = response.response.headers.value('Authorization');
+    User user = response.data;
+    userBloc.setUser(user);
+    authBloc.openSession(token);
   }
 
   Future<void> signUp(String email, String password, String firstName, String lastName, String phone) {
@@ -33,7 +46,7 @@ class AuthBloc {
       lastName: lastName,
       phone: phone,
     )).then((user) {
-      // authBloc.openSession(token);
+      // ToDo: authBloc.openSession(token);
     });
   }
 
