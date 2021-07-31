@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/ui/login_page.dart';
 import 'package:fletes_31_app/src/ui/registration_page.dart';
+import 'package:fletes_31_app/src/ui/travels_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,17 +21,25 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           headline3: TextStyle(
             fontFamily: 'OpenSans',
-            fontSize: 45.0,
+            fontSize: 20.0,
             color: Colors.black,
           ),
           button: TextStyle(
             fontFamily: 'OpenSans',
           ),
-          subtitle1: TextStyle(fontFamily: 'NotoSans'),
-          bodyText2: TextStyle(fontFamily: 'NotoSans'),
+          subtitle1: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.black
+          ),
+          subtitle2: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.black54,
+              fontSize: 12.5
+          ),
+          bodyText2: TextStyle(fontFamily: 'Poppins'),
         ),
       ),
-      home: LoginPage(),
+      home: TravelsPage(),
     );
   }
 }
