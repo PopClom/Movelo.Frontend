@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/ui/login_page.dart';
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
       routes: {
-        LoginPage.routeName: (context) => LoginPage(),
+        LoginPage.routeName: (context) => NewTravelPage(),
         RegistrationPage.routeName: (context) => RegistrationPage(),
       },
       title: 'Login Demo',
