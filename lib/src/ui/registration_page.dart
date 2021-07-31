@@ -4,7 +4,6 @@ import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/blocs/registration_bloc.dart';
 
-
 class RegistrationPage extends StatefulWidget {
   static const routeName = '/register';
 

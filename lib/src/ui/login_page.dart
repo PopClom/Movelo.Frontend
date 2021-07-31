@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           Navigator.pushReplacementNamed(
             context,
-            RegistrationPage.routeName,
+            NewTravelPage.routeName,
             arguments: SignUpArgs(_email, _password, _firstName, _lastName),
           );
         }

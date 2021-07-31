@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/network/vehicle_type_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,13 +18,10 @@ class TransportTypeSelector extends StatefulWidget {
 class _TransportTypeSelectorState extends State<TransportTypeSelector> {
   Future<List<VehicleType>> futureVehicleTypes;
   VehicleType selectedVehicleType;
+  VehicleTypeAPI apiService = VehicleTypeAPI(Dio());
 
   Future<List<VehicleType>> fetchVehicleTypes() async {
-    Response response = await Dio().get("https://localhost:44312/api/VehicleTypes");
-    // if there is a key before array, use this : return (response.data['data'] as List).map((child)=> Children.fromJson(child)).toList();
-    return (response.data as List)
-        .map((x) => VehicleType.fromJson(x))
-        .toList();
+    return apiService.getVehicleTypes();
   }
 
   @override

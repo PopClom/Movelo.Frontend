@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,15 +10,16 @@ import 'components/location_autocomplete_selector.dart';
 import 'components/transport_type_selector.dart';
 
 class NewTravelPage extends StatefulWidget {
+  static const routeName = '/cotizar';
+
+  NewTravelPage({ Key key }) : super(key: key);
+
   @override
   _NewTravelPageState createState() => _NewTravelPageState();
 }
 
 class _NewTravelPageState extends State<NewTravelPage> {
-  GooglePlacesDetails originPlace;
-  GooglePlacesDetails destinationPlace;
-  VehicleType selectedVehicleType;
-  bool requiresLoading = false;
+  final NewTravelBloc bloc = NewTravelBloc();
 
   Map<String, Marker> mapMarkers = new Map();
   GoogleMapController mapController;
@@ -66,13 +68,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
     }
   }
 
-  bool formCompleted() {
-    return
-      originPlace != null &&
-          destinationPlace != null &&
-          selectedVehicleType != null;
-  }
-
   @override
   void dispose() {
     mapController.dispose();
@@ -81,95 +76,92 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      child: Wrap(
-        runSpacing: 15,
-        children: [
-          TransportTypeSelector(
-            onSelectionChanged: (vehicleType) {
-              setState(() {
-                selectedVehicleType = vehicleType;
-              });
-            },
-          ),
-          LocationAutocompleteSelector(
-            label: "¿Desde dónde?",
-            prefixIcon: Icon(Icons.my_location, color: Colors.blue,),
-            onLocationSelected: (place) {
-              setState(() {
-                originPlace = place;
+    bloc.originAndDestinationFilled.listen((result) {
+      if(result)
+        updateCameraLocation(mapMarkers["Origen"].position, mapMarkers["Destino"].position, mapController);
+      else
+        updateCameraLocation(mapMarkers.values.first.position, mapMarkers.values.first.position, mapController);
+    });
 
-                mapMarkers["Origen"] = new Marker(
-                  markerId: MarkerId("Origen_${DateTime.now().millisecondsSinceEpoch}"),
-                  position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-                  infoWindow: InfoWindow(
-                    title: "Origen",
-                    snippet: place.name,
-                  ),
-                );
+    bloc.originPlacesDetails.listen((place) {
+      mapMarkers["Origen"] = new Marker(
+        markerId: MarkerId("Origen_${DateTime.now().millisecondsSinceEpoch}"),
+        position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
+        infoWindow: InfoWindow(
+          title: "Origen",
+          snippet: place.name,
+        ),
+      );
+    });
 
-                if(originPlace != null && destinationPlace != null)
-                  updateCameraLocation(mapMarkers["Origen"].position, mapMarkers["Destino"].position, mapController);
-                else
-                  updateCameraLocation(mapMarkers.values.first.position, mapMarkers.values.first.position, mapController);
-              });
-            },
-          ),
-          LocationAutocompleteSelector(
-            label: "¿Hasta dónde?",
-            prefixIcon: Icon(Icons.location_pin, color: Colors.red,),
-            onLocationSelected: (place) {
-              setState(() {
-                destinationPlace = place;
+    bloc.destinationPlacesDetails.listen((place) {
+      mapMarkers["Destino"] = new Marker(
+        markerId: MarkerId("Destino${DateTime.now().millisecondsSinceEpoch}"),
+        position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
+        infoWindow: InfoWindow(
+          title: "Destino",
+          snippet: place.name,
+        ),
+      );
+    });
 
-                mapMarkers["Destino"] = new Marker(
-                  markerId: MarkerId("Destino${DateTime.now().millisecondsSinceEpoch}"),
-                  position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-                  infoWindow: InfoWindow(
-                    title: "Destino",
-                    snippet: place.name,
-                  ),
-                );
-
-                if(originPlace != null && destinationPlace != null)
-                  updateCameraLocation(mapMarkers["Origen"].position, mapMarkers["Destino"].position, mapController);
-                else
-                  updateCameraLocation(mapMarkers.values.first.position, mapMarkers.values.first.position, mapController);
-              });
-            },
-          ),
-          CheckboxListTile(
-              title: Text("Requiero que el fletero realice la carga y descarga de los articulos transportados"),
-              value: requiresLoading,
-              onChanged: (val) {
-                setState(() {
-                  requiresLoading = val;
-                });
-              }
-          ),
-          SizedBox(
-              width: double.infinity,
-              // height: double.infinity,
-              child: ElevatedButton(
-                  onPressed: !formCompleted() ? null : () {},
-                  child: Text("Cotizar")
-              )
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: 200,
-            child: GoogleMap(
-              markers: mapMarkers.values.toSet(),
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: const LatLng(-34.60360641689277, -58.381548944057414),
-                zoom: 13,
+    return Scaffold(
+        body:  Container(
+          margin: const EdgeInsets.all(10),
+          child: Wrap(
+            runSpacing: 15,
+            children: [
+              TransportTypeSelector(
+                onSelectionChanged: bloc.changeSelectedVehicleType,
               ),
-            ),
+              LocationAutocompleteSelector(
+                label: "¿Desde dónde?",
+                prefixIcon: Icon(Icons.my_location, color: Colors.blue,),
+                onLocationSelected: bloc.changeOriginPlacesDetails,
+              ),
+              LocationAutocompleteSelector(
+                label: "¿Hasta dónde?",
+                prefixIcon: Icon(Icons.location_pin, color: Colors.red,),
+                onLocationSelected: bloc.changeDestinationPlacesDetails,
+              ),
+              StreamBuilder<bool>(
+                  stream: bloc.requiresLoading,
+                  builder: (context, snap) {
+                    return CheckboxListTile(
+                        title: Text("Requiero que el fletero realice la carga y descarga de los articulos transportados"),
+                        value: snap.hasData && snap.data,
+                        onChanged: bloc.changeRequiresLoading
+                    );
+                  }
+              ),
+              SizedBox(
+                  width: double.infinity,
+                  // height: double.infinity,
+                  child: StreamBuilder<bool>(
+                      stream: bloc.formCompleted,
+                      builder: (context, snap) {
+                        return ElevatedButton(
+                            onPressed: !(snap.hasData && snap.data) ? null : () {},
+                            child: Text("Cotizar"),
+                        );
+                      }
+                  )
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 200,
+                child: GoogleMap(
+                  markers: mapMarkers.values.toSet(),
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: const LatLng(-34.60360641689277, -58.381548944057414),
+                    zoom: 13,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
     );
   }
 }

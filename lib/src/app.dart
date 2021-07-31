@@ -11,8 +11,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
       routes: {
-        LoginPage.routeName: (context) => NewTravelPage(),
+        LoginPage.routeName: (context) => LoginPage(),
         RegistrationPage.routeName: (context) => RegistrationPage(),
+        NewTravelPage.routeName: (context) => NewTravelPage(),
       },
       title: 'Login Demo',
       theme: ThemeData(
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(fontFamily: 'Poppins'),
         ),
       ),
-      home: TravelsPage(),
+      home: NewTravelPage(),
     );
   }
 }
