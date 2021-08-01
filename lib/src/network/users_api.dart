@@ -5,7 +5,7 @@ import 'package:fletes_31_app/src/models/user_model.dart';
 
 part 'users_api.g.dart';
 
-@RestApi(baseUrl: 'https://localhost:44312/')
+@RestApi(baseUrl: 'https://localhost:44312/api/')
 abstract class UsersAPI {
   factory UsersAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());
