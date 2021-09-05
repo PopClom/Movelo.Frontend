@@ -204,8 +204,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       });
     }
 
-    return Scaffold(
-        body: Container(
+    return Container(
           alignment: Alignment.center,
           height: height,
           child: Stack(
@@ -237,8 +236,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             ],
           ),
-        )
-    );
+        );
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/models/check_email_model.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,8 +52,8 @@ class AuthBloc {
   }
 
   Future<bool> isEmailAvailable(String email) async {
-    List<User> results = await apiService.checkEmailAvailable(email);
-    return results.length == 0;
+    CheckEmail result = await apiService.checkEmailAvailable(email);
+    return result.available;
   }
 
   Future<void> restoreSession() async {

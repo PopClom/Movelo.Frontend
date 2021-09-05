@@ -27,9 +27,7 @@ class _TravelsPageState extends State<TravelsPage> {
 
     bloc.fetchTravels();
 
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: Container(
+    return Container(
         alignment: Alignment.center,
         child: Container(
             width: width,
@@ -151,8 +149,7 @@ class _TravelsPageState extends State<TravelsPage> {
               // slideCurve: Curves.linearToEaseOut,
             ),
         )//FadedSlideAnimation(
-      )
-    );
+      );
   }
 
   GestureDetector buildCompleteCard(BuildContext context, Travel travel) {

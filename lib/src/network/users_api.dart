@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/models/check_email_model.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -21,6 +22,6 @@ abstract class UsersAPI {
   @POST('users')
   Future<String> createUser(@Body() User user);
 
-  @GET('users')
-  Future<List<User>> checkEmailAvailable(@Query('email') String email);
+  @GET('users/verify-email')
+  Future<CheckEmail> checkEmailAvailable(@Query('email') String email);
 }

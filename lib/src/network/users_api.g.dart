@@ -9,7 +9,7 @@ part of 'users_api.dart';
 class _UsersAPI implements UsersAPI {
   _UsersAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/';
+    baseUrl ??= 'https://localhost:44312/api/';
   }
 
   final Dio _dio;
@@ -72,12 +72,13 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
-  Future<List<User>> checkEmailAvailable(email) async {
+  Future<CheckEmail> checkEmailAvailable(email) async {
     ArgumentError.checkNotNull(email, 'email');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'email': email};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<List<dynamic>>('users',
+    final _result = await _dio.request<Map<String, dynamic>>(
+        'users/verify-email',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -85,9 +86,7 @@ class _UsersAPI implements UsersAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    var value = _result.data
-        .map((dynamic i) => User.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = CheckEmail.fromJson(_result.data);
     return value;
   }
 }
