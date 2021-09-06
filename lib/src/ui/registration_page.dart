@@ -218,7 +218,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Image.asset(
-                          'images/logo-fletes31-inverted.png',
+                          'assets/images/logo-movelo.png',
                           width: MediaQuery.of(context).size.width * 0.75
                       ),
                       Text(

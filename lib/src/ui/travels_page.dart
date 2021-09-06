@@ -84,7 +84,7 @@ class _TravelsPageState extends State<TravelsPage> {
                                   ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.asset(
-                                        'images/map_icon.png',
+                                        'assets/images/map_icon.png',
                                         height: 70,
                                         width: 70,
                                         fit: BoxFit.fill,
@@ -207,7 +207,7 @@ class _TravelsPageState extends State<TravelsPage> {
               ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
-                    'images/map_icon.png',
+                    'assets/images/map_icon.png',
                     height: 70,
                     width: 70,
                     fit: BoxFit.fill,
@@ -311,7 +311,7 @@ CircleAvatar buildStatusIcon(IconData icon, {bool disabled = false}) =>
               color: Colors.white,
               child: Column(
                 children: [
-                  buildItem(context, 'images/seller1.png', 'Ni idea',
+                  buildItem(context, 'assets/images/seller1.png', 'Ni idea',
                       '2 items'),
                   buildOrderInfoRow(context, '\$30.50', 'En efectivo',
                       'En camino',

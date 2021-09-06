@@ -105,63 +105,61 @@ class _NewTravelPageState extends State<NewTravelPage> {
       );
     });
 
-    return Scaffold(
-        body:  Container(
-          margin: const EdgeInsets.all(10),
-          child: Wrap(
-            runSpacing: 15,
-            children: [
-              TransportTypeSelector(
-                onSelectionChanged: bloc.changeSelectedVehicleType,
-              ),
-              LocationAutocompleteSelector(
-                label: "¿Desde dónde?",
-                prefixIcon: Icon(Icons.my_location, color: Colors.blue,),
-                onLocationSelected: bloc.changeOriginPlacesDetails,
-              ),
-              LocationAutocompleteSelector(
-                label: "¿Hasta dónde?",
-                prefixIcon: Icon(Icons.location_pin, color: Colors.red,),
-                onLocationSelected: bloc.changeDestinationPlacesDetails,
-              ),
-              StreamBuilder<bool>(
-                  stream: bloc.requiresLoading,
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: Wrap(
+        runSpacing: 15,
+        children: [
+          TransportTypeSelector(
+            onSelectionChanged: bloc.changeSelectedVehicleType,
+          ),
+          LocationAutocompleteSelector(
+            label: "¿Desde dónde?",
+            prefixIcon: Icon(Icons.my_location, color: Colors.blue,),
+            onLocationSelected: bloc.changeOriginPlacesDetails,
+          ),
+          LocationAutocompleteSelector(
+            label: "¿Hasta dónde?",
+            prefixIcon: Icon(Icons.location_pin, color: Colors.red,),
+            onLocationSelected: bloc.changeDestinationPlacesDetails,
+          ),
+          StreamBuilder<bool>(
+              stream: bloc.requiresLoading,
+              builder: (context, snap) {
+                return CheckboxListTile(
+                    title: Text("Requiero que el fletero realice la carga y descarga de los articulos transportados"),
+                    value: snap.hasData && snap.data,
+                    onChanged: bloc.changeRequiresLoading
+                );
+              }
+          ),
+          SizedBox(
+              width: double.infinity,
+              // height: double.infinity,
+              child: StreamBuilder<bool>(
+                  stream: bloc.formCompleted,
                   builder: (context, snap) {
-                    return CheckboxListTile(
-                        title: Text("Requiero que el fletero realice la carga y descarga de los articulos transportados"),
-                        value: snap.hasData && snap.data,
-                        onChanged: bloc.changeRequiresLoading
+                    return ElevatedButton(
+                      onPressed: !(snap.hasData && snap.data) ? null : () {},
+                      child: Text("Cotizar"),
                     );
                   }
-              ),
-              SizedBox(
-                  width: double.infinity,
-                  // height: double.infinity,
-                  child: StreamBuilder<bool>(
-                      stream: bloc.formCompleted,
-                      builder: (context, snap) {
-                        return ElevatedButton(
-                            onPressed: !(snap.hasData && snap.data) ? null : () {},
-                            child: Text("Cotizar"),
-                        );
-                      }
-                  )
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 200,
-                child: GoogleMap(
-                  markers: mapMarkers.values.toSet(),
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: const LatLng(-34.60360641689277, -58.381548944057414),
-                    zoom: 13,
-                  ),
-                ),
-              ),
-            ],
+              )
           ),
-        ),
+          SizedBox(
+            width: double.infinity,
+            height: 200,
+            child: GoogleMap(
+              markers: mapMarkers.values.toSet(),
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: const LatLng(-34.60360641689277, -58.381548944057414),
+                zoom: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
