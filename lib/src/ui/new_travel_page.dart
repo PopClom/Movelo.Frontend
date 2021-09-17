@@ -107,21 +107,44 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
     return Container(
       margin: const EdgeInsets.all(10),
+      color: Color.fromRGBO(96, 46, 209, 1),
       child: Wrap(
         runSpacing: 15,
         children: [
+          Row(
+            children: [
+              Expanded(child: Column(
+                children: [
+                  Text(
+                    "¿Desde donde vas?",
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  LocationAutocompleteSelector(
+                    label: "¿Desde donde vas?",
+                    prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
+                    onLocationSelected: bloc.changeOriginPlacesDetails,
+                  ),
+                ],
+              )),
+              Expanded(child: Column(
+                children: [
+                  Text(
+                    "¿Hasta donde vas?",
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  LocationAutocompleteSelector(
+                    label: "¿Hasta donde vas?",
+                    prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
+                    onLocationSelected: bloc.changeDestinationPlacesDetails,
+                  ),
+                ],
+              ))
+            ],
+          ),
           TransportTypeSelector(
             onSelectionChanged: bloc.changeSelectedVehicleType,
-          ),
-          LocationAutocompleteSelector(
-            label: "¿Desde dónde?",
-            prefixIcon: Icon(Icons.my_location, color: Colors.blue,),
-            onLocationSelected: bloc.changeOriginPlacesDetails,
-          ),
-          LocationAutocompleteSelector(
-            label: "¿Hasta dónde?",
-            prefixIcon: Icon(Icons.location_pin, color: Colors.red,),
-            onLocationSelected: bloc.changeDestinationPlacesDetails,
           ),
           StreamBuilder<bool>(
               stream: bloc.requiresLoading,

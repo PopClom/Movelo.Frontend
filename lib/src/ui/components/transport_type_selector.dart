@@ -68,14 +68,13 @@ class _TransportTypeSelectorState extends State<TransportTypeSelector> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "¿Qué vehículo necesitás?",
+                "¿Qué vehículo necesitás para transportar tu carga?",
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold ,
-                    fontSize: 20
+                  color: Colors.white,
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 10),
               Wrap(
                 alignment: WrapAlignment.spaceEvenly,
                 direction: Axis.horizontal,
@@ -94,12 +93,14 @@ class _TransportTypeSelectorState extends State<TransportTypeSelector> {
                     )
                 ).toList(),
               ),
-              drawSelectedVehicleTypeDetails()
+              //drawSelectedVehicleTypeDetails()
             ],
           );
         }
 
-        return CircularProgressIndicator();
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -114,36 +115,48 @@ class VehicleTypeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onClick(vehicleType),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected ? Colors.grey[400] : Colors.grey[300],
-              border: Border.all(
-                  color: Colors.grey[400], // Set border color
-                  width: 1.0
+    return Container(
+        decoration: BoxDecoration(
+            color: isSelected ? Color.fromRGBO(160, 242, 132, 1) : Colors.white,
+            border: Border.all(
+              color: isSelected ? Colors.black : Colors.transparent,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: [
+              BoxShadow(
+                  color: isSelected ? Colors.black.withOpacity(0.5) : Colors.transparent,
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                  offset: Offset(0.0, 0.75)
               ),
-            ),
-            padding: EdgeInsets.all(10),
-            child: SvgPicture.network(
-                "https://localhost:44312" + vehicleType.imageUrl,
-                height: 40,
-                width: 40,
-                color: isSelected ? Colors.orange: Colors.grey[600]
-            ),
+            ],
+        ),
+        width: 150,
+        height: 120,
+        alignment: Alignment.center,
+        child: GestureDetector(
+          onTap: () => onClick(vehicleType),
+          child: Column(
+            children: [
+              SvgPicture.network(
+                  "https://localhost:44312" + vehicleType.imageUrl,
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                  color: isSelected ? Colors.black : Color.fromRGBO(112, 112, 112, 1)
+              ),
+              Text(
+                vehicleType.name,
+                style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: isSelected ? Colors.black : Color.fromRGBO(112, 112, 112, 1)
+                ),
+              ),
+            ],
           ),
-          Text(
-            vehicleType.name,
-            style: TextStyle(
-                fontWeight: isSelected ? FontWeight.bold : null,
-                fontSize: 12
-            ),
-          ),
-        ],
-      ),
+        )
     );
   }
 }

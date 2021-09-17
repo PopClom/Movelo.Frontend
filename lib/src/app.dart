@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
@@ -48,7 +49,7 @@ List<Widget> navBarItems = [
     onTap: () {
       Navigator.pushReplacementNamed(
         Navigation.navigationKey.currentContext,
-        NewTravelPage.routeName,
+        LandingPage.routeName,
       );
     },
   ),
@@ -97,7 +98,7 @@ class MyApp extends StatelessWidget {
         return null;
       },
       title: 'Movelo',
-      initialRoute: '/login',
+      initialRoute: '/',
       home: Scaffold(
           backgroundColor: Colors.white,
           body: Column(
@@ -109,12 +110,11 @@ class MyApp extends StatelessWidget {
                     routes: {
                       LoginPage.routeName: (context) => LoginPage(),
                       RegistrationPage.routeName: (context) => RegistrationPage(),
-                      NewTravelPage.routeName: (context) => NewTravelPage(),
                       TravelsPage.routeName: (context) => TravelsPage(),
                     },
                     title: 'Movelo',
                     theme: theme,
-                    home: LoginPage(),
+                    home: LandingPage(),
                   )
               ),
             ],

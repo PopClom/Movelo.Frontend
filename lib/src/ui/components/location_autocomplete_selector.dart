@@ -26,25 +26,29 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
 
   Widget build(BuildContext context) {
     return DropdownSearch<GooglePlacesAutocompletePrediction>(
-      label: this.widget.label,
+      hint: "Ingrese una dirección: calle y número",
       itemAsString: (GooglePlacesAutocompletePrediction u) => u.description,
       showSearchBox: true,
-      mode: Mode.DIALOG,
+      mode: Mode.MENU,
       searchBoxDecoration: InputDecoration(
         prefixIcon: this.widget.prefixIcon ?? null,
         labelText: this.widget.label,
-        hintText: "Ingrese una dirección",
+        hintText: "Ingrese una dirección: calle y número",
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
       dropdownSearchDecoration: InputDecoration(
         prefixIcon: this.widget.prefixIcon ?? null,
         isCollapsed: true,
+        fillColor: Colors.white,
         contentPadding: EdgeInsets.only(top: 5),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(5),
         ),
+        labelStyle: TextStyle(
+          color: Color.fromRGBO(112, 112, 112, 1)
+        )
       ),
       isFilteredOnline: true,
       autoFocusSearchBox: true,
