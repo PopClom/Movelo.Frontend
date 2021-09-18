@@ -19,8 +19,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
-      child: Wrap(
-        runSpacing: 15,
+      child: Column(
         children: [
           Row(
             children: [
@@ -30,7 +29,9 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
                     "¿Desde donde vas?",
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      color: Colors.white,
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Poppins'
                     ),
                   ),
                   SizedBox(height: 7),
@@ -48,7 +49,9 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
                     "¿Hasta donde vas?",
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      color: Colors.white,
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Poppins'
                     ),
                   ),
                   SizedBox(height: 7),
@@ -61,19 +64,50 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
               ))
             ],
           ),
-          TransportTypeSelector(
-            onSelectionChanged: bloc.changeSelectedVehicleType,
+          const Divider(
+            height: 60,
+            thickness: 2,
+            color: Color.fromARGB(255,172,149,231)
           ),
           Center(
-            child: ElevatedButton(
+            child: Column(
+              children: [
+                Text(
+                  "¿Qué vehículo necesitás para transportar tu carga?",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'Poppins'
+                  ),
+                ),
+                SizedBox(height: 15),
+                TransportTypeSelector(
+                  onSelectionChanged: bloc.changeSelectedVehicleType,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 30),
+          Center(
+            child: OutlinedButton(
               onPressed: /*!(snap.hasData && snap.data) ? null :*/ () {},
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 35),
                 child: Text("COTIZÁ AHORA"),
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.transparent,
-                onPrimary: Colors.transparent,
+              style: OutlinedButton.styleFrom(
+                primary: Colors.white,
+                padding: EdgeInsets.all(20),
+                textStyle: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'Poppins'
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                ),
+                side: BorderSide(width: 5.0, color: Color.fromARGB(255,160,242,132)),
+                /*primary: Colors.transparent,
+                onPrimary: Colors.transparent,*/
               ),
             ),
           ),

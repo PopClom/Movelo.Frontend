@@ -11,6 +11,7 @@ async function getLocationPredictions(filter, sessionToken) {
         location: new google.maps.LatLng(-34.581834427449245, -58.37982525831364),
         radius: 1000000,
         strictBounds: true,
+        //TODO types: ["address","establishment"],
         componentRestrictions: {country: 'ar'},
     };
 

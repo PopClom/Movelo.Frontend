@@ -25,6 +25,7 @@ class GoogleMapsHelpers {
         "location": "-34.581834427449245,-58.37982525831364",
         "radius": 1000000,
         "strictbounds": null,
+        //TODO "types": "establishment,address",
         "input": filter,
       },
     );

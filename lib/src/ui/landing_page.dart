@@ -16,10 +16,14 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Card(
-          color: Color.fromRGBO(96, 46, 209, 1),
-          child: NewTravelFragment()
-      ),
+      child: Column(
+        children: [
+          Card(
+              color: Color.fromRGBO(96, 46, 209, 1),
+              child: NewTravelFragment()
+          ),
+        ],
+      )
     );
   }
 }

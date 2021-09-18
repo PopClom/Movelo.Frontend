@@ -64,37 +64,24 @@ class _TransportTypeSelectorState extends State<TransportTypeSelector> {
       future: futureVehicleTypes,
       builder: (context, snapshot) {
         if(snapshot.hasData) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "¿Qué vehículo necesitás para transportar tu carga?",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 10),
-              Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                direction: Axis.horizontal,
-                runSpacing: 10,
-                children: snapshot.data.map((e) =>
-                    VehicleTypeBox(
-                      vehicleType: e,
-                      isSelected: selectedVehicleType != null && e.id == selectedVehicleType.id,
-                      onClick: (e) {
-                        setState(() {
-                          selectedVehicleType = e;
-                        });
+          return Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            spacing: 40,
+            runSpacing: 40,
+            children: snapshot.data.map((e) =>
+                VehicleTypeBox(
+                  vehicleType: e,
+                  isSelected: selectedVehicleType != null && e.id == selectedVehicleType.id,
+                  onClick: (e) {
+                    setState(() {
+                      selectedVehicleType = e;
+                    });
 
-                        this.widget.onSelectionChanged(e);
-                      },
-                    )
-                ).toList(),
-              ),
-              //drawSelectedVehicleTypeDetails()
-            ],
+                    this.widget.onSelectionChanged(e);
+                  },
+                )
+            ).toList(),
           );
         }
 
@@ -115,8 +102,10 @@ class VehicleTypeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: () => onClick(vehicleType),
+      child: Container(
+          decoration: BoxDecoration(
             color: isSelected ? Color.fromRGBO(160, 242, 132, 1) : Colors.white,
             border: Border.all(
               color: isSelected ? Colors.black : Colors.transparent,
@@ -130,21 +119,22 @@ class VehicleTypeBox extends StatelessWidget {
                   offset: Offset(0.0, 0.75)
               ),
             ],
-        ),
-        width: 150,
-        height: 120,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () => onClick(vehicleType),
+          ),
+          width: 150,
+          height: 120,
+          alignment: Alignment.center,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SvgPicture.network(
                   "https://localhost:44312" + vehicleType.imageUrl,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.contain,
                   color: isSelected ? Colors.black : Color.fromRGBO(112, 112, 112, 1)
               ),
+              SizedBox(height: 10),
               Text(
                 vehicleType.name,
                 style: TextStyle(
@@ -156,7 +146,7 @@ class VehicleTypeBox extends StatelessWidget {
               ),
             ],
           ),
-        )
+      ),
     );
   }
 }
