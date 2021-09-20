@@ -38,7 +38,7 @@ List<Widget> navBarItems = [
   NavBarItem(
     text: 'QUIENES SOMOS',
     onTap: () {
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         NewTravelPage.routeName,
       );
@@ -47,7 +47,7 @@ List<Widget> navBarItems = [
   NavBarItem(
     text: 'COTIZÁ',
     onTap: () {
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         LandingPage.routeName,
       );
@@ -56,7 +56,7 @@ List<Widget> navBarItems = [
   NavBarItem(
     text: 'CONTACTANOS',
     onTap: () {
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         TravelsPage.routeName,
       );
@@ -76,7 +76,7 @@ List<Widget> navBarItems = [
   NavBarItem(
     text: 'INGRESÁ',
     onTap: () {
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         LoginPage.routeName,
       );
@@ -97,30 +97,31 @@ class MyApp extends StatelessWidget {
         );
         return null;
       },
+      theme: theme,
       title: 'Movelo',
-      initialRoute: '/',
-      home: Scaffold(
-          backgroundColor: Colors.white,
-          body: Column(
-            children: [
-              TopNavBar(navBarItems: navBarItems),
-              Expanded(
-                  child: MaterialApp(
-                    navigatorKey: Navigation.navigationKey,
-                    routes: {
-                      LoginPage.routeName: (context) => LoginPage(),
-                      RegistrationPage.routeName: (context) => RegistrationPage(),
-                      TravelsPage.routeName: (context) => TravelsPage(),
-                      NewTravelPage.routeName: (context) => NewTravelPage(),
-                    },
-                    title: 'Movelo',
-                    theme: theme,
-                      home: NewTravelPage(),
+      initialRoute: LandingPage.routeName,
+      home: Column(
+        verticalDirection: VerticalDirection.up,
+        children: [
+          Expanded(
+              child: MaterialApp(
+                  navigatorKey: Navigation.navigationKey,
+                  routes: {
+                    LoginPage.routeName: (context) => LoginPage(),
+                    RegistrationPage.routeName: (context) => RegistrationPage(),
+                    TravelsPage.routeName: (context) => TravelsPage(),
+                  },
+                  title: 'Movelo',
+                  theme: theme,
+                  home: Scaffold(
+                    backgroundColor: Colors.white,
+                    body: LandingPage(),
                   )
-              ),
-            ],
-          )
-      ),
+              )
+          ),
+          TopNavBar(navBarItems: navBarItems),
+        ],
+      )
     );
   }
 }
