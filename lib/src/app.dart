@@ -101,8 +101,8 @@ class MyApp extends StatelessWidget {
       title: 'Movelo',
       initialRoute: LandingPage.routeName,
       home: Column(
+        verticalDirection: VerticalDirection.up,
         children: [
-          TopNavBar(navBarItems: navBarItems),
           Expanded(
               child: MaterialApp(
                   navigatorKey: Navigation.navigationKey,
@@ -119,6 +119,7 @@ class MyApp extends StatelessWidget {
                   )
               )
           ),
+          TopNavBar(navBarItems: navBarItems),
         ],
       )
     );

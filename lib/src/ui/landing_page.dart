@@ -36,7 +36,13 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   Column(
                     children: [
-                      SizedBox(height: 80),
+                      SizedBox(height: 30),
+                      Image.asset(
+                        'assets/images/header.png',
+                        fit: BoxFit.fitWidth,
+                        width: width * 0.6,
+                      ),
+                      SizedBox(height: 30),
                       Container(
                         width: width,
                         padding: EdgeInsets.symmetric(horizontal: 5),
@@ -52,11 +58,20 @@ class _LandingPageState extends State<LandingPage> {
               Stack(
                 alignment: AlignmentDirectional.topCenter,
                 children: [
+                  deviceSize.width > 860 ?
                   Image.asset(
                     'assets/images/pasos-desktop.png',
                     fit: BoxFit.fitHeight,
-                    height: 600,
-                  ),
+                    height: 500,
+                  ) : (deviceSize.width > 620 ? Image.asset(
+                    'assets/images/pasos-tablet.png',
+                    fit: BoxFit.fitHeight,
+                    height: 900,
+                  ) : Image.asset(
+                    'assets/images/pasos-mobile.png',
+                    fit: BoxFit.fitHeight,
+                    height: 1000,
+                  )),
                   Column(
                     children: [
                       SizedBox(height: 40),
@@ -110,7 +125,7 @@ class _LandingPageState extends State<LandingPage> {
                         text: 'Nuestra flota cuenta con póliza de seguro y seguro de carga',
                         picture: Image.asset(
                           'assets/images/seguros-logo.png',
-                          height: 100,
+                          height: 120,
                         ),
                       ),
                       InfoCard(
@@ -118,31 +133,58 @@ class _LandingPageState extends State<LandingPage> {
                         text: 'Efectivo, transferencia bancaria, Mercado Pago y pago electrónico',
                         picture: Image.asset(
                           'assets/images/mp-logo.png',
-                          height: 100,
+                          height: 120,
                         ),
                       ),
                     ],
                   )
                 ),
               ),
-              /*CarouselSlider(
-                options: CarouselOptions(height: 320.0, viewportFraction: 0.30),
-                items: [1,2,3].map((i) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return InfoCard(
-                        title: 'Tenemos VTV',
-                        text: 'Nuestra flota cuenta con verificación técnica vehicular obligatoria',
-                        picture: Image.asset(
-                          'assets/images/vtv-logo.png',
-                          height: 100,
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),*/
-              SizedBox(height: 80),
+              SizedBox(height: 50),
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  'Empresas que confían en nosotros',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                    height: 240.0,
+                    viewportFraction: deviceSize.width > 860 ? 0.25 :
+                    (deviceSize.width > 480 ? 0.4 : 0.5)
+                ),
+                items: [
+                  Image.asset(
+                    'assets/images/farmacity-logo.png',
+                    width: 180,
+                  ),
+                  Image.asset(
+                    'assets/images/lomanegra-logo.png',
+                    width: 140,
+                  ),
+                  Image.asset(
+                    'assets/images/redbull-logo.png',
+                    width: 180,
+                  ),
+                  Image.asset(
+                    'assets/images/welivery-logo.png',
+                    width: 180,
+                  ),
+                ]
+              ),
+              SizedBox(height: 40),
+              Image.asset(
+                'assets/images/footer.png',
+                fit: BoxFit.fitHeight,
+                height: 184,
+              ),
             ]
         ),
     );
