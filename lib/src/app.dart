@@ -111,10 +111,11 @@ class MyApp extends StatelessWidget {
                       LoginPage.routeName: (context) => LoginPage(),
                       RegistrationPage.routeName: (context) => RegistrationPage(),
                       TravelsPage.routeName: (context) => TravelsPage(),
+                      NewTravelPage.routeName: (context) => NewTravelPage(),
                     },
                     title: 'Movelo',
                     theme: theme,
-                    home: LandingPage(),
+                      home: NewTravelPage(),
                   )
               ),
             ],

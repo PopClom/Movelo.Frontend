@@ -1,4 +1,5 @@
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
+import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'components/location_autocomplete_selector.dart';
+import 'components/transport_type_info.dart';
 import 'components/transport_type_selector.dart';
 
 class NewTravelPage extends StatefulWidget {
@@ -106,6 +108,50 @@ class _NewTravelPageState extends State<NewTravelPage> {
     });
 
     return Container(
+      child: Column(
+        children: [
+          Text("Cotizá tu viaje con nosotros"),
+          Row(
+            children: [
+              Expanded(child: Column(
+                children: [
+                  Text(
+                      "¿Qué vas a cargar?",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Poppins'
+                    )
+                  ),
+                  TextField(),
+                  SizedBox(height: 10),
+                  Text("¿Desde donde vas?"),
+                  LocationAutocompleteSelector(label: "¿Desde donde vas?"),
+                  SizedBox(height: 10),
+                  Text("¿Hasta donde vas?"),
+                  LocationAutocompleteSelector(label: "¿Hasta donde vas?"),
+                  SizedBox(height: 10),
+                  Text("¿Qué vehículo necesitás para transportar tu carga?"),
+                  TransportTypeInformation()
+                ],
+              )),
+              Expanded(
+                  child: GoogleMap(
+                    markers: mapMarkers.values.toSet(),
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: const LatLng(-34.60360641689277, -58.381548944057414),
+                      zoom: 13,
+                    ),
+                  ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+
+    /*return Container(
       margin: const EdgeInsets.all(10),
       color: Color.fromRGBO(96, 46, 209, 1),
       child: Wrap(
@@ -183,6 +229,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
           ),
         ],
       ),
-    );
+    );*/
   }
 }

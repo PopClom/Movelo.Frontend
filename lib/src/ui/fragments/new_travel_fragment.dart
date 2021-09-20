@@ -1,4 +1,4 @@
-import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
+import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/ui/components/location_autocomplete_selector.dart';
 import 'package:fletes_31_app/src/ui/components/transport_type_selector.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +13,7 @@ class NewTravelFragment extends StatefulWidget {
 }
 
 class _NewTravelFragmentState extends State<NewTravelFragment> {
-  final NewTravelBloc bloc = NewTravelBloc();
+  final NewTravelFragmentBloc bloc = NewTravelFragmentBloc();
 
   @override
   Widget build(BuildContext context) {

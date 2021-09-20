@@ -98,12 +98,12 @@ class VehicleTypeBox extends StatelessWidget {
   final bool isSelected;
   final Function(VehicleType) onClick;
 
-  const VehicleTypeBox({Key key, @required this.vehicleType, @required this.isSelected, @required this.onClick}) : super(key: key);
+  const VehicleTypeBox({Key key, @required this.vehicleType, @required this.isSelected, this.onClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onClick(vehicleType),
+      onTap: () => onClick != null ? onClick(vehicleType) : null,
       child: Container(
           decoration: BoxDecoration(
             color: isSelected ? Color.fromRGBO(160, 242, 132, 1) : Colors.white,
