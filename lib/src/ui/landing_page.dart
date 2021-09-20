@@ -49,25 +49,34 @@ class _LandingPageState extends State<LandingPage> {
                   )
                 ],
               ),
-              SizedBox(height: 50),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  '¿Cómo hacer tu viaje?',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w700,
+              Stack(
+                alignment: AlignmentDirectional.topCenter,
+                children: [
+                  Image.asset(
+                    'assets/images/pasos-desktop.png',
+                    fit: BoxFit.fitHeight,
+                    height: 600,
                   ),
-                ),
+                  Column(
+                    children: [
+                      SizedBox(height: 40),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          '¿Cómo hacer tu viaje?',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-              SizedBox(height: 30),
-              Image.asset(
-                'assets/images/pasos-desktop.png',
-                height: 350,
-              ),
-              SizedBox(height: 70),
+              SizedBox(height: 20),
               Container(
                 alignment: Alignment.center,
                 child: Text(
@@ -83,7 +92,7 @@ class _LandingPageState extends State<LandingPage> {
               SizedBox(height: 30),
               Container(
                 alignment: Alignment.center,
-                height: 320,
+                height: 340,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -97,18 +106,18 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                       ),
                       InfoCard(
-                        title: 'Tenemos VTV',
-                        text: 'Nuestra flota cuenta con verificación técnica vehicular obligatoria',
+                        title: 'Somos Seguros',
+                        text: 'Nuestra flota cuenta con póliza de seguro y seguro de carga',
                         picture: Image.asset(
-                          'assets/images/vtv-logo.png',
+                          'assets/images/seguros-logo.png',
                           height: 100,
                         ),
                       ),
                       InfoCard(
-                        title: 'Tenemos VTV',
-                        text: 'Nuestra flota cuenta con verificación técnica vehicular obligatoria',
+                        title: '¿Cómo pagar?',
+                        text: 'Efectivo, transferencia bancaria, Mercado Pago y pago electrónico',
                         picture: Image.asset(
-                          'assets/images/vtv-logo.png',
+                          'assets/images/mp-logo.png',
                           height: 100,
                         ),
                       ),

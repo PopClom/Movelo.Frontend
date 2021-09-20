@@ -20,7 +20,7 @@ class _InfoCardState extends State<InfoCard> {
   @override
   Widget build(BuildContext context) {
     return Container (
-      width: 300,
+      width: 320,
       height: 350,
       decoration: new BoxDecoration(
         boxShadow: [
@@ -62,6 +62,7 @@ class _InfoCardState extends State<InfoCard> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              SizedBox(height: 20),
               widget.picture,
             ],
           ),
