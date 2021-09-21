@@ -114,7 +114,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 150),
-      child: Column(
+      child: ListView(
         children: [
           Text(
             "Cotizá tu viaje con nosotros",
