@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
       },
       theme: theme,
       title: 'Movelo',
-      initialRoute: LandingPage.routeName,
+      initialRoute: NewTravelPage.routeName,
       home: Column(
         verticalDirection: VerticalDirection.up,
         children: [
@@ -115,7 +115,7 @@ class MyApp extends StatelessWidget {
                   theme: theme,
                   home: Scaffold(
                     backgroundColor: Colors.white,
-                    body: LandingPage(),
+                    body: NewTravelPage(),
                   )
               )
           ),

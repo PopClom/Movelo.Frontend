@@ -136,7 +136,7 @@ class VehicleTypeBox extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                vehicleType.name,
+                vehicleType.name.toUpperCase(),
                 style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600,

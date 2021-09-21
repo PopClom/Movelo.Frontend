@@ -8,8 +8,10 @@ class NewTravelBloc {
   final BehaviorSubject<VehicleType> _selectedVehicleType = BehaviorSubject<VehicleType>();
   final BehaviorSubject<String> _transportedObjectsDetails = BehaviorSubject<String>();
   final BehaviorSubject<int> _numberOfHelpers = BehaviorSubject<int>();
-  final BehaviorSubject<bool> _fitsInElevator = BehaviorSubject<bool>();
+  final BehaviorSubject<bool> _fitsInElevator = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _numberOfFloors = BehaviorSubject<int>();
+  final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
+  final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   
   Function(GooglePlacesDetails) get changeOriginPlacesDetails => _originPlacesDetails.sink.add;
   Function(GooglePlacesDetails) get changeDestinationPlacesDetails => _destinationPlacesDetails.sink.add;
@@ -18,6 +20,8 @@ class NewTravelBloc {
   Function(int) get changeNumberOfHelpers => _numberOfHelpers.sink.add;
   Function(bool) get changeFitsInElevator => _fitsInElevator.sink.add;
   Function(int) get changeNumberOfFloors => _numberOfFloors.sink.add;
+  Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
+  Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   //Function(bool) get changeRequiresLoading => _requiresLoading.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
@@ -27,6 +31,8 @@ class NewTravelBloc {
   Stream<int> get numberOfHelpers => _numberOfHelpers.stream;
   Stream<bool> get fitsInElevator => _fitsInElevator.stream;
   Stream<int> get numberOfFloors => _numberOfFloors.stream;
+  Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
+  Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   //Stream<bool> get requiresLoading => _requiresLoading.stream;
 
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
@@ -37,12 +43,15 @@ class NewTravelBloc {
           (a, b, c, d, e) => a && b != null && c != null && d != null && d >= 0 && e != null);
 
   void dispose() {
+    _transportedObjectsDetails.close();
     _originPlacesDetails.close();
     _destinationPlacesDetails.close();
     _selectedVehicleType.close();
+    _numberOfHelpers.close();
     _numberOfFloors.close();
     _fitsInElevator.close();
-    _transportedObjectsDetails.close();
+    _driverHandlesLoading.close();
+    _driverHandlesUnloading.close();
     //_requiresLoading.close();
   }
 }
