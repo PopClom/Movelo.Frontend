@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/ui/about_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
@@ -40,7 +41,7 @@ List<Widget> navBarItems = [
     onTap: () {
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
-        NewTravelPage.routeName,
+        AboutUsPage.routeName,
       );
     },
   ),
@@ -63,7 +64,7 @@ List<Widget> navBarItems = [
     },
   ),
   NavBarItem(
-    text: '@movelo',
+    text: '@movelo.ar',
     onTap: () {
       const url = 'https://www.instagram.com/movelo.ar/';
       canLaunch(url).then((result) => {
@@ -73,7 +74,7 @@ List<Widget> navBarItems = [
       });
     },
   ),
-  NavBarItem(
+  /*NavBarItem(
     text: 'INGRESÁ',
     onTap: () {
       Navigator.pushNamed(
@@ -81,7 +82,7 @@ List<Widget> navBarItems = [
         LoginPage.routeName,
       );
     },
-  ),
+  ),*/
 ];
 
 class MyApp extends StatelessWidget {
@@ -107,21 +108,26 @@ class MyApp extends StatelessWidget {
               child: MaterialApp(
                   navigatorKey: Navigation.navigationKey,
                   routes: {
-                    LoginPage.routeName: (context) => LoginPage(),
-                    RegistrationPage.routeName: (context) => RegistrationPage(),
-                    TravelsPage.routeName: (context) => TravelsPage(),
+                    LoginPage.routeName: (context) => _withScaffold(LoginPage()),
+                    RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+                    TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+                    AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
                   },
                   title: 'Movelo',
                   theme: theme,
-                  home: Scaffold(
-                    backgroundColor: Colors.white,
-                    body: NewTravelPage(),
-                  )
+                  home: _withScaffold(LandingPage())
               )
           ),
           TopNavBar(navBarItems: navBarItems),
         ],
       )
+    );
+  }
+
+  _withScaffold(Widget page) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: page,
     );
   }
 }
