@@ -101,7 +101,6 @@ class MyApp extends StatelessWidget {
       },
       theme: theme,
       title: 'Movelo',
-      initialRoute: NewTravelPage.routeName,
       home: Column(
         verticalDirection: VerticalDirection.up,
         children: [
@@ -114,10 +113,11 @@ class MyApp extends StatelessWidget {
                     TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
                     AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
                     ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
+                    NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
                   },
                   title: 'Movelo',
                   theme: theme,
-                  home: _withScaffold(NewTravelPage())
+                  home: _withScaffold(LandingPage())
               )
           ),
           TopNavBar(navBarItems: navBarItems),

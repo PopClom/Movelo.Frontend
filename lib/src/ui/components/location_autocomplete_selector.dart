@@ -11,10 +11,11 @@ class LocationAutocompleteSelector extends StatefulWidget {
   final String label;
   final Function(GooglePlacesDetails) onLocationSelected;
   final Icon prefixIcon;
+  final String initialValue;
 
   LocationAutocompleteSelector({
     @required this.label,
-    this.onLocationSelected, this.prefixIcon
+    this.onLocationSelected, this.prefixIcon, this.initialValue,
   });
 
   @override
@@ -27,21 +28,23 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
   final TextEditingController _typeAheadController = TextEditingController();
 
   Widget build(BuildContext context) {
+    _typeAheadController.text = widget.initialValue;
+
     return TypeAheadField(
       textFieldConfiguration: TextFieldConfiguration(
         controller: this._typeAheadController,
-          autofocus: true,
-          style: DefaultTextStyle.of(context).style.copyWith(
-              //fontStyle: FontStyle.italic,
-          ),
-          decoration: InputDecoration(
-              hintText: "Escribí una dirección: calle y número",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              prefixIcon: this.widget.prefixIcon,
-              fillColor: Colors.white,
-              filled: true
+        autofocus: true,
+        style: DefaultTextStyle.of(context).style.copyWith(
+          //fontStyle: FontStyle.italic,
+        ),
+        decoration: InputDecoration(
+            hintText: "Escribí una dirección: calle y número",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            prefixIcon: this.widget.prefixIcon,
+            fillColor: Colors.white,
+            filled: true
           ),
       ),
       suggestionsBoxDecoration: SuggestionsBoxDecoration(

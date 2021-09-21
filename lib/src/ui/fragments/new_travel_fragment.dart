@@ -1,6 +1,8 @@
 import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/ui/components/location_autocomplete_selector.dart';
 import 'package:fletes_31_app/src/ui/components/transport_type_selector.dart';
+import 'package:fletes_31_app/src/ui/new_travel_page.dart';
+import 'package:fletes_31_app/src/utils/new_travel_args.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -101,27 +103,38 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
           ),
           SizedBox(height: 30),
           Center(
-            child: OutlinedButton(
-              onPressed: /*!(snap.hasData && snap.data) ? null :*/ () {},
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 35),
-                child: Text("COTIZÁ AHORA"),
-              ),
-              style: OutlinedButton.styleFrom(
-                primary: Colors.white,
-                padding: EdgeInsets.all(20),
-                textStyle: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'Poppins'
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                side: BorderSide(width: 5.0, color: Color.fromARGB(255,160,242,132)),
-                /*primary: Colors.transparent,
+            child: StreamBuilder<NewTravelArgs>(
+                stream: bloc.newTravelArgs,
+                builder: (context, snap) {
+                  return OutlinedButton(
+                    onPressed: (!snap.hasData || snap.data == null) ? null : () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        NewTravelPage.routeName,
+                        arguments: snap.data,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 35),
+                      child: Text("COTIZÁ AHORA"),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.white,
+                      padding: EdgeInsets.all(20),
+                      textStyle: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Poppins'
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      side: BorderSide(width: 3.0, color: Color.fromARGB(255,160,242,132)),
+                      onSurface: Color.fromARGB(255,160,242,132),
+                      /*primary: Colors.transparent,
                 onPrimary: Colors.transparent,*/
-              ),
-            ),
+                    ),
+                  );
+                }),
           ),
         ],
       ),

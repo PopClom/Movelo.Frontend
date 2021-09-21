@@ -3,6 +3,7 @@ import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
+import 'package:fletes_31_app/src/utils/new_travel_args.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -111,6 +112,21 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
     //bloc.changeSelectedVehicleType(selectedVehicleType);
 
+    String _initialOriginString = '';
+    String _initialDestinationString = '';
+    try {
+      final args = ModalRoute.of(context).settings.arguments as NewTravelArgs;
+      if (args != null) {
+        bloc.changeOriginPlacesDetails(args.originPlacesDetails);
+        _initialOriginString = args.originPlacesDetails.name;
+        bloc.changeDestinationPlacesDetails(args.destinationPlacesDetails);
+        _initialDestinationString = args.destinationPlacesDetails.name;
+        bloc.changeSelectedVehicleType(args.selectedVehicleType);
+      }
+    } catch (err) {
+      // Do nothing
+    }
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 150),
       child: ListView(
@@ -159,25 +175,27 @@ class _NewTravelPageState extends State<NewTravelPage> {
                           ),
                           SizedBox(height: 9),
                           Text(
-                              "¿Desde donde vas?",
+                              "Origen de carga",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600
                               )
                           ),
                           LocationAutocompleteSelector(
-                            label: "¿Desde donde vas?",
+                            label: "Origen de carga",
                             onLocationSelected: bloc.changeOriginPlacesDetails,
+                            initialValue: _initialOriginString,
                           ),
                           SizedBox(height: 10),
                           Text(
-                              "¿Hasta donde vas?",
+                              "Destino de carga",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600
                               )
                           ),
                           LocationAutocompleteSelector(
-                              label: "¿Hasta donde vas?",
-                              onLocationSelected: bloc.changeDestinationPlacesDetails
+                            label: "Destino de carga",
+                            onLocationSelected: bloc.changeDestinationPlacesDetails,
+                            initialValue: _initialDestinationString,
                           ),
                           SizedBox(height: 10),
                           Text(
