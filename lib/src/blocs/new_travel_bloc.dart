@@ -12,6 +12,7 @@ class NewTravelBloc {
   final BehaviorSubject<int> _numberOfFloors = BehaviorSubject<int>();
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
+  final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
   
   Function(GooglePlacesDetails) get changeOriginPlacesDetails => _originPlacesDetails.sink.add;
   Function(GooglePlacesDetails) get changeDestinationPlacesDetails => _destinationPlacesDetails.sink.add;
@@ -22,6 +23,7 @@ class NewTravelBloc {
   Function(int) get changeNumberOfFloors => _numberOfFloors.sink.add;
   Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
+  Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
   //Function(bool) get changeRequiresLoading => _requiresLoading.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
@@ -33,14 +35,20 @@ class NewTravelBloc {
   Stream<int> get numberOfFloors => _numberOfFloors.stream;
   Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
+  Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
   //Stream<bool> get requiresLoading => _requiresLoading.stream;
 
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
           (a, b) => a != null && b != null);
   Stream<bool> get elevatorAndNumberOfFloorsFilled => Rx.combineLatest2(fitsInElevator, numberOfFloors,
-  (a, b) => a == false || (b != null && b >= 0));
+    (fitsInElevator, numberOfFloors) => fitsInElevator == true || (numberOfFloors != null && numberOfFloors >= 0));
   Stream<bool> get formCompleted => Rx.combineLatest5(originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers, transportedObjectsDetails,
-          (a, b, c, d, e) => a && b != null && c != null && d != null && d >= 0 && e != null);
+          (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers, transportedObjectsDetails) =>
+              originAndDestinationFilled
+              && elevatorAndNumberOfFloorsFilled
+              && selectedVehicleType != null
+              && numberOfHelpers >= 0
+              && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
 
   void dispose() {
     _transportedObjectsDetails.close();
@@ -52,6 +60,7 @@ class NewTravelBloc {
     _fitsInElevator.close();
     _driverHandlesLoading.close();
     _driverHandlesUnloading.close();
+    _driverLoadingAndUnloadingIntStatus.close();
     //_requiresLoading.close();
   }
 }

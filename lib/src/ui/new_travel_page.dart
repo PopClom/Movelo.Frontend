@@ -108,20 +108,20 @@ class _NewTravelPageState extends State<NewTravelPage> {
       );
     });
 
-    VehicleType selectedVehicleType = VehicleType(id: 1, name: "jajas", depthInMeters: 1, heightInMeters: 1, imageUrl: "/resources/vehicle-images/auto.svg", maxWeightInKilograms: 1, widthInMeters: 1);
-
-    bloc.changeSelectedVehicleType(selectedVehicleType);
+    //bloc.changeSelectedVehicleType(selectedVehicleType);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 150),
       child: ListView(
         children: [
-          Text(
-            "Cotizá tu viaje con nosotros",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 30
-            )
+          Center(
+            child: Text(
+              "Cotizá tu viaje con nosotros",
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 30
+              )
+            ),
           ),
           SizedBox(height: 20),
           IntrinsicHeight(
@@ -130,175 +130,202 @@ class _NewTravelPageState extends State<NewTravelPage> {
                 Expanded(child: SingleChildScrollView(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(),
-                    child: Column(
-                      children: [
-                        Text(
-                            "¿Qué vas a cargar?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600
-                            )
-                        ),
-                        TextField(
-                          style: TextStyle(
-                            fontSize: 14,
+                    child: Padding(
+                      padding: EdgeInsets.all(2),
+                      child: Column(
+                        children: [
+                          Text(
+                              "¿Qué vas a cargar?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600
+                              )
                           ),
-                          onChanged: bloc.changeTransportedObjectsDetails,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                              hintText: "Cinco macetas grandes",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              //prefixIcon: this.widget.prefixIcon,
-                              fillColor: Colors.white,
-                              filled: true
+                          TextField(
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                            onChanged: bloc.changeTransportedObjectsDetails,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                                hintText: "Cinco macetas grandes",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                //prefixIcon: this.widget.prefixIcon,
+                                fillColor: Colors.white,
+                                filled: true
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 9),
-                        Text(
-                            "¿Desde donde vas?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600
-                            )
-                        ),
-                        LocationAutocompleteSelector(
-                          label: "¿Desde donde vas?",
-                          onLocationSelected: bloc.changeOriginPlacesDetails,
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                            "¿Hasta donde vas?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600
-                            )
-                        ),
-                        LocationAutocompleteSelector(
-                            label: "¿Hasta donde vas?",
-                            onLocationSelected: bloc.changeDestinationPlacesDetails
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                            "¿Qué vehículo necesitás para transportar tu carga?",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600
-                            )
-                        ),
-                        TransportTypeInformation(
-                            vehicleType: selectedVehicleType),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("El Fletero..."),
-                                DropdownButton(
-                                  onChanged: (value) {
-                                    if(value == 1) {
-                                      bloc.changeDriverHandlesLoading(true);
-                                      bloc.changeDriverHandlesUnloading(false);
-                                    } else if(value == 2) {
-                                      bloc.changeDriverHandlesLoading(false);
-                                      bloc.changeDriverHandlesUnloading(true);
-                                    } else if(value == 3) {
-                                      bloc.changeDriverHandlesLoading(true);
-                                      bloc.changeDriverHandlesUnloading(true);
-                                    } else if(value == 4) {
-                                      bloc.changeDriverHandlesLoading(false);
-                                      bloc.changeDriverHandlesUnloading(false);
-                                    }
-                                  },
-                                  value: 4,
-                                  items: [
-                                    DropdownMenuItem(child: Text("Carga"), value: 1),
-                                    DropdownMenuItem(child: Text("Descarga"), value: 2),
-                                    DropdownMenuItem(child: Text("Carga y descarga"), value: 3),
-                                    DropdownMenuItem(child: Text("NO carga NI descarga"), value: 4),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Text("Entra en el ascensor"),
-                                DropdownButton(
-                                  onChanged: (value) => bloc.changeFitsInElevator(value == 2),
-                                  value: 1,
-                                  items: [
-                                    DropdownMenuItem(child: Text("No"), value: 1),
-                                    DropdownMenuItem(child: Text("Sí"), value: 2),
-                                  ],
-                                ),
-                              ],
-                            ),),
-                            SizedBox(width: 10,),
-                            Expanded(child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Cantidad de ayudantes"),
-                                TextField(
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    decoration: InputDecoration(
-                                        isDense: true
-                                    ),
-                                    onChanged: (val) => bloc.changeNumberOfHelpers(int.parse(val)),
-                                    keyboardType: TextInputType.number
-                                ),
-                                SizedBox(height: 10),
-                                Text("Cantidad de pisos"),
-                                TextField(
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    decoration: InputDecoration(
-                                        isDense: true
-                                    ),
-                                    onChanged: (val) => bloc.changeNumberOfFloors(int.parse(val)),
-                                    keyboardType: TextInputType.number
-                                )
-                              ],
-                            ),)
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Center(
-                          child: Row(
-                            children: [
-                              ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.white,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                    child: Text("CANCELAR PEDIDO", style: TextStyle(color: Colors.black)),
-                                  )
-                              ),
-                              SizedBox(width: 10),
-                              StreamBuilder(
-                                stream: bloc.formCompleted,
-                                builder: (context, snapshot) {
-                                  return Container(
-                                    child: Expanded(child: ElevatedButton(
-                                      onPressed: snapshot.hasData && !snapshot.hasError
-                                          ? () {
-                                        print("Submit button pressed");
-                                      }
-                                          : null,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                        child: Text("REALIZAR PEDIDO"),
-                                      ),
-                                    )),
+                          SizedBox(height: 9),
+                          Text(
+                              "¿Desde donde vas?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600
+                              )
+                          ),
+                          LocationAutocompleteSelector(
+                            label: "¿Desde donde vas?",
+                            onLocationSelected: bloc.changeOriginPlacesDetails,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                              "¿Hasta donde vas?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600
+                              )
+                          ),
+                          LocationAutocompleteSelector(
+                              label: "¿Hasta donde vas?",
+                              onLocationSelected: bloc.changeDestinationPlacesDetails
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                              "¿Qué vehículo necesitás para transportar tu carga?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600
+                              )
+                          ),
+                          StreamBuilder(
+                              stream: bloc.selectedVehicleType,
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData && !snapshot.hasError) {
+                                  return TransportTypeInformation(
+                                      vehicleType: snapshot.data,
+                                      onChangeClicked: () => bloc.changeSelectedVehicleType(null)
                                   );
-                                },
-                              ),
+                                } else {
+                                  return TransportTypeSelector(
+                                      onSelectionChanged: (vehicleType) => bloc.changeSelectedVehicleType(vehicleType)
+                                  );
+                                }
+                              }
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("El Fletero..."),
+                                  StreamBuilder(
+                                    stream: bloc.driverLoadingAndUnloadingIntStatus,
+                                    builder: (context, snapshot) {
+                                      return DropdownButton(
+                                        onChanged: (value) {
+                                          bloc.changeDriverLoadingAndUnloadingIntStatus(value);
+                                          if(value == 1) {
+                                            bloc.changeDriverHandlesLoading(true);
+                                            bloc.changeDriverHandlesUnloading(false);
+                                          } else if(value == 2) {
+                                            bloc.changeDriverHandlesLoading(false);
+                                            bloc.changeDriverHandlesUnloading(true);
+                                          } else if(value == 3) {
+                                            bloc.changeDriverHandlesLoading(true);
+                                            bloc.changeDriverHandlesUnloading(true);
+                                          } else if(value == 4) {
+                                            bloc.changeDriverHandlesLoading(false);
+                                            bloc.changeDriverHandlesUnloading(false);
+                                          }
+                                        },
+                                        value: snapshot.data,
+                                        items: [
+                                          DropdownMenuItem(child: Text("Carga"), value: 1),
+                                          DropdownMenuItem(child: Text("Descarga"), value: 2),
+                                          DropdownMenuItem(child: Text("Carga y descarga"), value: 3),
+                                          DropdownMenuItem(child: Text("NO carga NI descarga"), value: 4),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("Entra en el ascensor"),
+                                  StreamBuilder(
+                                    stream: bloc.fitsInElevator,
+                                    builder: (context, snapshot) {
+                                      return DropdownButton(
+                                        onChanged: (value) => bloc.changeFitsInElevator(value == 2),
+                                        value: snapshot.data ? 2 : 1,
+                                        items: [
+                                          DropdownMenuItem(child: Text("No"), value: 1),
+                                          DropdownMenuItem(child: Text("Sí"), value: 2),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),),
+                              SizedBox(width: 10,),
+                              Expanded(child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Cantidad de ayudantes"),
+                                  TextField(
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                      decoration: InputDecoration(
+                                          isDense: true
+                                      ),
+                                      onChanged: (val) => bloc.changeNumberOfHelpers(int.tryParse(val)),
+                                      keyboardType: TextInputType.number
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text("Cantidad de pisos"),
+                                  TextField(
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                      decoration: InputDecoration(
+                                          isDense: true
+                                      ),
+                                      onChanged: (val) => bloc.changeNumberOfFloors(int.tryParse(val)),
+                                      keyboardType: TextInputType.number
+                                  )
+                                ],
+                              ),)
                             ],
                           ),
-                        ),
-                        SizedBox(height: 10),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
+                          SizedBox(height: 10),
+                          Center(
+                            child: Row(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.white,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                      child: Text("CANCELAR PEDIDO", style: TextStyle(color: Colors.black)),
+                                    )
+                                ),
+                                SizedBox(width: 10),
+                                StreamBuilder(
+                                  stream: bloc.formCompleted,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      child: Expanded(child: ElevatedButton(
+                                        onPressed: snapshot.hasData && !snapshot.hasError && snapshot.data == true
+                                            ? () {
+                                          print("Submit button pressed");
+                                        }
+                                            : null,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                          child: Text("REALIZAR PEDIDO"),
+                                        ),
+                                      )),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                    )
                   ),
                 )),
                 SizedBox(width: 50),
@@ -347,61 +374,96 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                       color: Colors.white
                                   ),
                                   child: IntrinsicWidth(
-                                    child: Column(
-                                      children: [
-                                        Container(
+                                    child: StreamBuilder(
+                                      stream: bloc.formCompleted,
+                                      builder: (context, snapshot) {
+                                        if(snapshot.hasData && !snapshot.hasError && snapshot.data == true) {
+                                          return Column(
+                                            children: [
+                                              Container(
+                                                  color: Color.fromARGB(255, 96,46,209),
+                                                  child: Padding(
+                                                      padding: EdgeInsets.all(10),
+                                                      child: StreamBuilder(
+                                                          stream: bloc.selectedVehicleType,
+                                                          builder: (context, snapshot) {
+                                                            if(snapshot.hasData && !snapshot.hasError) {
+                                                              VehicleType selectedVehicleType = snapshot.data;
+
+                                                              return Row(
+                                                                children: [
+                                                                  SvgPicture.network(
+                                                                      "https://localhost:44312" + selectedVehicleType.imageUrl,
+                                                                      height: 25,
+                                                                      fit: BoxFit.contain,
+                                                                      color: Colors.white
+                                                                  ),
+                                                                  Expanded(child: Text(
+                                                                    selectedVehicleType.name.toUpperCase(),
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontWeight: FontWeight.w600
+                                                                    ),
+                                                                  ))
+                                                                ],
+                                                              );
+                                                            } else {
+                                                              return Container();
+                                                            }
+                                                          }
+                                                      ),
+                                                  )
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.timer,
+                                                      color: Color.fromARGB(255, 96,46,209),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Text("Tiempo estimado: 20 minutos")
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.square_foot,
+                                                      color: Color.fromARGB(255, 96,46,209),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Text("Distancia a recorrer: 29.3km")
+                                                  ],
+                                                ),
+                                              ),
+
+
+                                            ],
+                                          );
+                                        } else {
+                                          return Container(
                                             color: Color.fromARGB(255, 96,46,209),
                                             child: Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                children: [
-                                                  SvgPicture.network(
-                                                      "https://localhost:44312" + selectedVehicleType.imageUrl,
-                                                      height: 25,
-                                                      fit: BoxFit.contain,
-                                                      color: Colors.white
+                                              padding: EdgeInsets.all(5),
+                                              child: Center(
+                                                child: Text(
+                                                  "Por favor, complete el formulario con datos válidos para obtener una cotización de su viaje.",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w600
                                                   ),
-                                                  Expanded(child: Text(
-                                                    selectedVehicleType.name.toUpperCase(),
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight: FontWeight.w600
-                                                    ),
-                                                  ))
-                                                ],
+                                                ),
                                               ),
                                             )
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.timer,
-                                                color: Color.fromARGB(255, 96,46,209),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text("Tiempo estimado: 20 minutos")
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.square_foot,
-                                                color: Color.fromARGB(255, 96,46,209),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text("Distancia a recorrer: 29.3km")
-                                            ],
-                                          ),
-                                        ),
-
-
-                                      ],
+                                          );
+                                        }
+                                      },
                                     ),
                                   )
                                 ),

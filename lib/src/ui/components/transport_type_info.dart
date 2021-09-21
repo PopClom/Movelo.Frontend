@@ -6,8 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TransportTypeInformation extends StatelessWidget {
-  const TransportTypeInformation({Key key, this.vehicleType}) : super(key: key);
+  const TransportTypeInformation({Key key, this.vehicleType, this.onChangeClicked}) : super(key: key);
   final VehicleType vehicleType;
+  final Function onChangeClicked;
 
   @override
   Widget build(BuildContext context) {
@@ -30,35 +31,38 @@ class TransportTypeInformation extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            decoration: BoxDecoration(
+          GestureDetector(
+            onTap: this.onChangeClicked,
+            child: Container(
+              decoration: BoxDecoration(
                 color: Color.fromRGBO(160, 242, 132, 1),
-            ),
-            width: 150,
-            height: 120,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.network(
-                    "https://localhost:44312" + vehicleType.imageUrl,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.contain,
-                    color: Colors.black
-                ),
-                SizedBox(height: 10),
-                Text(
-                  vehicleType.name.toUpperCase(),
-                  style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color:Colors.black
+              ),
+              width: 150,
+              height: 120,
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.network(
+                      "https://localhost:44312" + vehicleType.imageUrl,
+                      height: 50,
+                      width: 50,
+                      fit: BoxFit.contain,
+                      color: Colors.black
                   ),
-                ),
-              ],
+                  SizedBox(height: 10),
+                  Text(
+                    vehicleType.name.toUpperCase(),
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color:Colors.black
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(child: Column(
