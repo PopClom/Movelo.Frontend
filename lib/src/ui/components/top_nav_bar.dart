@@ -7,7 +7,7 @@ Color selected = Colors.deepPurple;
 Color notSelected = Colors.black;
 
 class TopNavBar extends StatefulWidget {
-  final List<Widget> navBarItems;
+  final List<NavBarItem> navBarItems;
 
   TopNavBar({
     this.navBarItems,
@@ -23,6 +23,17 @@ class _TopNavBarState extends State<TopNavBar> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
+    List<NavBarItem> items = widget.navBarItems.map((i) =>
+        NavBarItem(
+          text: i.text,
+          onTap: () {
+            setState(() {
+              collapsableHeight = 0.0;
+            });
+            i.onTap();
+          },
+        )
+    ).toList();
 
     return Stack(
       children: [
@@ -38,7 +49,7 @@ class _TopNavBarState extends State<TopNavBar> {
           color: Colors.white,
           child: SingleChildScrollView(
             child: Column(
-              children: widget.navBarItems,
+              children: items,
             ),
           ),
         ),
@@ -93,7 +104,7 @@ class _TopNavBarState extends State<TopNavBar> {
                   );
                 } else {
                   return Row(
-                    children: widget.navBarItems,
+                    children: items,
                   );
                 }
               })

@@ -35,7 +35,7 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
               //fontStyle: FontStyle.italic,
           ),
           decoration: InputDecoration(
-              hintText: "Ingrese una dirección: calle y número",
+              hintText: "Escribí una dirección: calle y número",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),

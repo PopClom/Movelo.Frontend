@@ -17,51 +17,63 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+
+    final Widget origin = Column(
+      children: [
+        Text(
+          "Origen de carga",
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: 'Poppins'
+          ),
+        ),
+        SizedBox(height: 7),
+        LocationAutocompleteSelector(
+          label: "Origen de carga",
+          prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
+          onLocationSelected: bloc.changeOriginPlacesDetails,
+        ),
+      ],
+    );
+
+    final Widget destiny = Column(
+      children: [
+        Text(
+          "Destino de carga",
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: 'Poppins'
+          ),
+        ),
+        SizedBox(height: 7),
+        LocationAutocompleteSelector(
+          label: "Destino de carga",
+          prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
+          onLocationSelected: bloc.changeDestinationPlacesDetails,
+        ),
+      ],
+    );
+
     return Container(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Row(
+          deviceSize.width > 900 ? Row(
             children: [
-              Expanded(child: Column(
-                children: [
-                  Text(
-                    "¿Desde donde vas?",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Poppins'
-                    ),
-                  ),
-                  SizedBox(height: 7),
-                  LocationAutocompleteSelector(
-                    label: "¿Desde donde vas?",
-                    prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
-                    onLocationSelected: bloc.changeOriginPlacesDetails,
-                  ),
-                ],
-              )),
+              Expanded(child: origin),
               SizedBox(width: 10),
-              Expanded(child: Column(
-                children: [
-                  Text(
-                    "¿Hasta donde vas?",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Poppins'
-                    ),
-                  ),
-                  SizedBox(height: 7),
-                  LocationAutocompleteSelector(
-                    label: "¿Hasta donde vas?",
-                    prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
-                    onLocationSelected: bloc.changeDestinationPlacesDetails,
-                  ),
-                ],
-              ))
+              Expanded(child: destiny),
+            ],
+          ) : Column(
+            children: [
+              origin,
+              SizedBox(height: 10),
+              destiny,
             ],
           ),
           const Divider(

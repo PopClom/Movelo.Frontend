@@ -38,7 +38,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Widget _newTravelSection(double deviceWidth) {
-    final width = min(deviceWidth * 0.95, 1000.0);
+    final width = min(deviceWidth, 1000.0);
 
     return Stack(
       alignment: AlignmentDirectional.topCenter,

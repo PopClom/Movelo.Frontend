@@ -11,9 +11,9 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     requestingUserId: json['requestingUserId'] as int,
     requestedVehicleTypeId: json['requestedVehicleTypeId'] as int,
-    status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
+    //status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
     driverId: json['driverId'] as int,
-    price: (json['price'] as num)?.toDouble(),
+    estimatedPrice: (json['estimatedPrice'] as num)?.toDouble(),
   );
 }
 
@@ -21,9 +21,9 @@ Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'id': instance.id,
       'requestingUserId': instance.requestingUserId,
       'requestedVehicleTypeId': instance.requestedVehicleTypeId,
-      'status': _$TravelStatusEnumMap[instance.status],
+      //'status': _$TravelStatusEnumMap[instance.status],
       'driverId': instance.driverId,
-      'price': instance.price,
+      'estimatedPrice': instance.estimatedPrice,
     };
 
 T _$enumDecode<T>(
@@ -58,10 +58,10 @@ T _$enumDecodeNullable<T>(
   return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$TravelStatusEnumMap = {
+/*const _$TravelStatusEnumMap = {
   TravelStatus.PendingUserConfirmation: 'PendingUserConfirmation',
   TravelStatus.PendingDriver: 'PendingDriver',
   TravelStatus.ConfirmedAndPendingStart: 'ConfirmedAndPendingStart',
   TravelStatus.InProcess: 'InProcess',
   TravelStatus.Completed: 'Completed',
-};
+};*/

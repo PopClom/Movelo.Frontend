@@ -6,22 +6,22 @@ import 'package:fletes_31_app/src/models/user_model.dart';
 
 part 'users_api.g.dart';
 
-@RestApi(baseUrl: 'https://localhost:44312/api/')
+@RestApi(baseUrl: 'https://localhost:44312/api/users/')
 abstract class UsersAPI {
   factory UsersAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());
     return _UsersAPI(dio, baseUrl: baseUrl);
   }
 
-  @GET('users/current')
+  @GET('current')
   Future<HttpResponse<User>> getCurrentUserWithResponse(@Header('Authorization') String authHeader);
 
-  @GET('users/current')
+  @GET('current')
   Future<User> getCurrentUser();
 
-  @POST('users')
+  @POST('')
   Future<String> createUser(@Body() User user);
 
-  @GET('users/verify-email')
+  @GET('verify-email')
   Future<CheckEmail> checkEmailAvailable(@Query('email') String email);
 }

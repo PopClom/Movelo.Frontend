@@ -1,8 +1,14 @@
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
+import 'package:fletes_31_app/src/models/travel_model.dart';
+import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
+import 'package:fletes_31_app/src/network/travel_api.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:dio/dio.dart';
 
 class NewTravelBloc {
+  final apiService = TravelAPI(Dio());
+
   final BehaviorSubject<GooglePlacesDetails> _originPlacesDetails = BehaviorSubject<GooglePlacesDetails>();
   final BehaviorSubject<GooglePlacesDetails> _destinationPlacesDetails = BehaviorSubject<GooglePlacesDetails>();
   final BehaviorSubject<VehicleType> _selectedVehicleType = BehaviorSubject<VehicleType>();
@@ -49,6 +55,22 @@ class NewTravelBloc {
               && selectedVehicleType != null
               && numberOfHelpers >= 0
               && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
+
+  Future<Travel> submit() {
+    return apiService.createTravelRequest(
+      TravelPricingRequest(
+        vehicleTypeId: _selectedVehicleType.value.id,
+        origin: _originPlacesDetails.value.geometry.location,
+        destination: _destinationPlacesDetails.value.geometry.location,
+        departureTime: DateTime.now(),
+        driverHandlesLoading: _driverHandlesLoading.value,
+        driverHandlesUnloading: _driverHandlesUnloading.value,
+        fitsInElevator: _fitsInElevator.value,
+        numberOfFloors: _numberOfFloors.value,
+        requiredAssistants: _driverLoadingAndUnloadingIntStatus.value,
+      )
+    );
+  }
 
   void dispose() {
     _transportedObjectsDetails.close();

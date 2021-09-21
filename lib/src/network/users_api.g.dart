@@ -9,7 +9,7 @@ part of 'users_api.dart';
 class _UsersAPI implements UsersAPI {
   _UsersAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/';
+    baseUrl ??= 'https://localhost:44312/api/users/';
   }
 
   final Dio _dio;
@@ -22,7 +22,7 @@ class _UsersAPI implements UsersAPI {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('users/current',
+    final _result = await _dio.request<Map<String, dynamic>>('current',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -40,7 +40,7 @@ class _UsersAPI implements UsersAPI {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('users/current',
+    final _result = await _dio.request<Map<String, dynamic>>('current',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -59,7 +59,7 @@ class _UsersAPI implements UsersAPI {
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(user?.toJson() ?? <String, dynamic>{});
-    final _result = await _dio.request<String>('users',
+    final _result = await _dio.request<String>('',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'POST',
@@ -77,8 +77,7 @@ class _UsersAPI implements UsersAPI {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'email': email};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>(
-        'users/verify-email',
+    final _result = await _dio.request<Map<String, dynamic>>('verify-email',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',

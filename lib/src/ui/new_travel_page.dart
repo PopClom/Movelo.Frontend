@@ -1,6 +1,7 @@
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
+import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -306,8 +307,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                     return Container(
                                       child: Expanded(child: ElevatedButton(
                                         onPressed: snapshot.hasData && !snapshot.hasError && snapshot.data == true
-                                            ? () {
-                                          print("Submit button pressed");
+                                            ? () async {
+                                          Travel travel = await bloc.submit();
+                                          print(travel.estimatedPrice);
                                         }
                                             : null,
                                         child: Padding(

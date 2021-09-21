@@ -54,11 +54,13 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<void> createTravelRequest() async {
+  Future<Travel> createTravelRequest(travelPricingRequest) async {
+    ArgumentError.checkNotNull(travelPricingRequest, 'travelPricingRequest');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('',
+    _data.addAll(travelPricingRequest?.toJson() ?? <String, dynamic>{});
+    final _result = await _dio.request<Map<String, dynamic>>('',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'POST',
@@ -66,7 +68,8 @@ class _TravelAPI implements TravelAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    return null;
+    final value = Travel.fromJson(_result.data);
+    return value;
   }
 
   @override

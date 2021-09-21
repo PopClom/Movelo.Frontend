@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -20,7 +21,7 @@ abstract class TravelAPI {
   Future<Travel> getTravelById(@Path("id") String id);
 
   @POST('')
-  Future<void> createTravelRequest(/* TODO: TravelPricingRequest */);
+  Future<Travel> createTravelRequest(@Body() TravelPricingRequest travelPricingRequest);
 
   @PUT('{id}/confirm')
   Future<void> confirmTravelRequest();

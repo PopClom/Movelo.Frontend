@@ -12,7 +12,7 @@ class TravelsBloc {
 
   Future<void> fetchTravels() async {
     //List<Travel> travels = await apiService.getTravels();
-    List<Travel> travels = [new Travel(id: 5, status: TravelStatus.PendingDriver, price: 4500)];
+    List<Travel> travels = [new Travel(id: 5, /*status: TravelStatus.PendingDriver,*/ estimatedPrice: 4500)];
     _travels.sink.add(travels);
   }
 

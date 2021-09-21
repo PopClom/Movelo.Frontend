@@ -2,15 +2,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'travel_model.g.dart';
 
-enum TravelStatus {
+/*enum TravelStatus {
   PendingUserConfirmation,
   PendingDriver,
   ConfirmedAndPendingStart,
   InProcess,
   Completed
-}
+}*/
 
-extension TravelStatusExt on TravelStatus {
+/*extension TravelStatusExt on TravelStatus {
   static const Map<TravelStatus, String> labels = {
     TravelStatus.Completed: 'Completado',
     TravelStatus.ConfirmedAndPendingStart: 'Confirmado',
@@ -20,7 +20,7 @@ extension TravelStatusExt on TravelStatus {
   };
 
   String get label => labels[this];
-}
+}*/
 
 
 @JsonSerializable()
@@ -28,12 +28,12 @@ class Travel {
   int id;
   int requestingUserId;
   int requestedVehicleTypeId;
-  TravelStatus status;
+  //TravelStatus status;
   int driverId;
 
-  double price;
+  double estimatedPrice;
 
-  Travel({this.id, this.requestingUserId, this.requestedVehicleTypeId, this.status, this.driverId, this.price});
+  Travel({this.id, this.requestingUserId, this.requestedVehicleTypeId, this.driverId, this.estimatedPrice});
 
   factory Travel.fromJson(Map<String, dynamic> json) => _$TravelFromJson(json);
   Map<String, dynamic> toJson() => _$TravelToJson(this);

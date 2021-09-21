@@ -36,7 +36,7 @@ ThemeData theme = ThemeData(
   ),
 );
 
-List<Widget> navBarItems = [
+List<NavBarItem> navBarItems = [
   NavBarItem(
     text: 'QUIENES SOMOS',
     onTap: () {

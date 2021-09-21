@@ -185,11 +185,11 @@ class _TravelsPageState extends State<TravelsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 11.0, vertical: 12),
       child: Row(
         children: [
-          buildGreyColumn(context, 'Pago', '\$${travel.price.toStringAsFixed(2)}'),
+          buildGreyColumn(context, 'Pago', '\$${travel.estimatedPrice.toStringAsFixed(2)}'),
           Spacer(),
           buildGreyColumn(context, 'Medio de pago', 'En efectivo'),
           Spacer(),
-          buildGreyColumn(context, 'Estado del pedido', travel.status.label,
+          buildGreyColumn(context, 'Estado del pedido', /*travel.status.label*/"asd",
               text2Color: Theme.of(context).primaryColor),
         ],
       ),
