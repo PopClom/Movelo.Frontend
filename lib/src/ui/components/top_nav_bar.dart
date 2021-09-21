@@ -1,4 +1,6 @@
+import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 
 double collapsableHeight = 0.0;
 Color selected = Colors.deepPurple;
@@ -28,7 +30,7 @@ class _TopNavBarState extends State<TopNavBar> {
           color: Colors.white,
         ),
         AnimatedContainer(
-          margin: EdgeInsets.only(top: 79.0),
+          margin: EdgeInsets.only(top: 69.0),
           duration: Duration(milliseconds: 375),
           curve: Curves.ease,
           height: (width < 800.0) ? collapsableHeight : 0.0,
@@ -41,7 +43,7 @@ class _TopNavBarState extends State<TopNavBar> {
           ),
         ),
         Container(
-          height: 80.0,
+          height: 70.0,
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -57,19 +59,32 @@ class _TopNavBarState extends State<TopNavBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                'assets/images/logo-movelo-small.png',
-                height: 45,
-              ),
-              LayoutBuilder(builder: (context, constraints) {
+              Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    onTap:() {
+                      Navigator.pushNamed(
+                        Navigation.navigationKey.currentContext,
+                        LandingPage.routeName,
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/images/logo-movelo-small.png',
+                      height: 45,
+                    ),
+                  ),
+              ), LayoutBuilder(builder: (context, constraints) {
                 if (width < 800.0) {
                   return NavBarButton(
                     onPressed: () {
                       if (collapsableHeight == 0.0) {
                         setState(() {
-                          collapsableHeight = 240.0;
+                          collapsableHeight = 200.0;
                         });
-                      } else if (collapsableHeight == 240.0) {
+                      } else if (collapsableHeight == 200.0) {
                         setState(() {
                           collapsableHeight = 0.0;
                         });
@@ -125,7 +140,7 @@ class _NavBarItemState extends State<NavBarItem> {
           splashColor: Colors.white60,
           onTap: widget.onTap,
           child: Container(
-            height: 60.0,
+            height: 50.0,
             alignment: Alignment.centerLeft,
             margin: EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
