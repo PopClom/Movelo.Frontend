@@ -72,7 +72,7 @@ class _TopNavBarState extends State<TopNavBar> {
                       );
                     },
                     child: Image.asset(
-                      'assets/images/logo-movelo-small.png',
+                      'assets/images/logos/logo-movelo-small.png',
                       height: 45,
                     ),
                   ),

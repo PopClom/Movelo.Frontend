@@ -22,7 +22,7 @@ class Footer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Image.asset(
-                      'assets/images/logo-movelo-small.png',
+                      'assets/images/logos/logo-movelo-small.png',
                       height: 45,
                     ),
                     Column(

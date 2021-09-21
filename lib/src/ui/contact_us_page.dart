@@ -39,7 +39,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       child: Row(
                         children: [
                           Image.asset(
-                            'assets/images/whatsapp-logo.png',
+                            'assets/images/contactus/whatsapp-logo.png',
                             height: 40.0,
                           ),
                           SizedBox(width: 15),
@@ -60,7 +60,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       child: Row(
                         children: [
                           Image.asset(
-                            'assets/images/email-logo.png',
+                            'assets/images/contactus/email-logo.png',
                             height: 40,
                           ),
                           SizedBox(width: 15),
@@ -81,7 +81,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       child: Row(
                         children: [
                           Image.asset(
-                            'assets/images/instagram-logo.png',
+                            'assets/images/contactus/instagram-logo.png',
                             height: 40,
                           ),
                           SizedBox(width: 15),

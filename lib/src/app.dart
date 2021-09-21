@@ -117,7 +117,7 @@ class MyApp extends StatelessWidget {
                   },
                   title: 'Movelo',
                   theme: theme,
-                  home: _withScaffold(LandingPage())
+                  home: _withScaffold(NewTravelPage())
               )
           ),
           TopNavBar(navBarItems: navBarItems),

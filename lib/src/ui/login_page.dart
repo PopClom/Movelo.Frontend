@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      logo: 'assets/images/logo-movelo-white.png',
+      logo: 'assets/images/logos/logo-movelo-white.png',
       onLogin: _loginUser,
       onSignup: _signupUser,
       emailValidator: _emailValidator,

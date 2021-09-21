@@ -44,7 +44,7 @@ class _LandingPageState extends State<LandingPage> {
       alignment: AlignmentDirectional.topCenter,
       children: [
         Image.asset(
-          'assets/images/landing-background.png',
+          'assets/images/landing/landing-background.png',
           fit: BoxFit.cover,
           height: 650,
           width: deviceWidth,
@@ -53,7 +53,7 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             SizedBox(height: 30),
             Image.asset(
-              'assets/images/header.png',
+              'assets/images/landing/header.png',
               fit: BoxFit.fitWidth,
               width: width * 0.6,
             ),
@@ -78,15 +78,15 @@ class _LandingPageState extends State<LandingPage> {
       children: [
         deviceWidth > 860 ?
         Image.asset(
-          'assets/images/pasos-desktop.png',
+          'assets/images/landing/pasos-desktop.png',
           fit: BoxFit.fitHeight,
           height: 500,
         ) : (deviceWidth > 620 ? Image.asset(
-          'assets/images/pasos-tablet.png',
+          'assets/images/landing/pasos-tablet.png',
           fit: BoxFit.fitHeight,
           height: 915,
         ) : Image.asset(
-          'assets/images/pasos-mobile.png',
+          'assets/images/landing/pasos-mobile.png',
           fit: BoxFit.fitHeight,
           height: 840,
         )),
@@ -132,7 +132,7 @@ class _LandingPageState extends State<LandingPage> {
                     title: 'Tenemos VTV',
                     text: 'Nuestra flota cuenta con verificación técnica vehicular obligatoria',
                     picture: Image.asset(
-                      'assets/images/vtv-logo.png',
+                      'assets/images/landing/vtv-logo.png',
                       height: 100,
                     ),
                   ),
@@ -140,7 +140,7 @@ class _LandingPageState extends State<LandingPage> {
                     title: 'Somos Seguros',
                     text: 'Nuestra flota cuenta con póliza de seguro y seguro de carga',
                     picture: Image.asset(
-                      'assets/images/seguros-logo.png',
+                      'assets/images/landing/seguros-logo.png',
                       height: 120,
                     ),
                   ),
@@ -148,7 +148,7 @@ class _LandingPageState extends State<LandingPage> {
                     title: '¿Cómo pagar?',
                     text: 'Efectivo, transferencia bancaria, Mercado Pago y pago electrónico',
                     picture: Image.asset(
-                      'assets/images/mp-logo.png',
+                      'assets/images/landing/mp-logo.png',
                       height: 120,
                     ),
                   ),
@@ -180,19 +180,19 @@ class _LandingPageState extends State<LandingPage> {
             ),
             items: [
               Image.asset(
-                'assets/images/farmacity-logo.png',
+                'assets/images/landing/farmacity-logo.png',
                 width: 180,
               ),
               Image.asset(
-                'assets/images/lomanegra-logo.png',
+                'assets/images/landing/lomanegra-logo.png',
                 width: 140,
               ),
               Image.asset(
-                'assets/images/redbull-logo.png',
+                'assets/images/landing/redbull-logo.png',
                 width: 180,
               ),
               Image.asset(
-                'assets/images/welivery-logo.png',
+                'assets/images/landing/welivery-logo.png',
                 width: 180,
               ),
             ]
