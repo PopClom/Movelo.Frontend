@@ -88,26 +88,14 @@ class _NewTravelPageState extends State<NewTravelPage> {
         updateCameraLocation(mapMarkers.values.first.position, mapMarkers.values.first.position, mapController);
     });
 
-    bloc.originPlacesDetails.listen((place) {
-      mapMarkers["Origen"] = new Marker(
-        markerId: MarkerId("Origen_${DateTime.now().millisecondsSinceEpoch}"),
-        position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-        infoWindow: InfoWindow(
-          title: "Origen",
-          snippet: place.name,
-        ),
-      );
-    });
+    bloc.formCompleted.listen((completed) async {
+      if(completed == true) {
+        Travel travelEstimation = await bloc.submit();
 
-    bloc.destinationPlacesDetails.listen((place) {
-      mapMarkers["Destino"] = new Marker(
-        markerId: MarkerId("Destino${DateTime.now().millisecondsSinceEpoch}"),
-        position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-        infoWindow: InfoWindow(
-          title: "Destino",
-          snippet: place.name,
-        ),
-      );
+        print(travelEstimation.estimatedPrice);
+
+        bloc.changeCurrentTravelEstimation(travelEstimation);
+      }
     });
 
     //bloc.changeSelectedVehicleType(selectedVehicleType);
@@ -368,13 +356,18 @@ class _NewTravelPageState extends State<NewTravelPage> {
                               ),
                               borderRadius: BorderRadius.all(Radius.circular(20))
                           ),
-                          child: GoogleMap(
-                            markers: mapMarkers.values.toSet(),
-                            onMapCreated: _onMapCreated,
-                            initialCameraPosition: CameraPosition(
-                              target: const LatLng(-34.60360641689277, -58.381548944057414),
-                              zoom: 13,
-                            ),
+                          child: StreamBuilder(
+                            stream: bloc.originAndDestinationMarkers,
+                            builder: (context, snapshot) {
+                              return GoogleMap(
+                                markers: snapshot.data,
+                                onMapCreated: _onMapCreated,
+                                initialCameraPosition: CameraPosition(
+                                  target: const LatLng(-34.60360641689277, -58.381548944057414),
+                                  zoom: 13,
+                                ),
+                              );
+                            },
                           ),
                         ),
                         Container(
@@ -395,9 +388,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                   ),
                                   child: IntrinsicWidth(
                                     child: StreamBuilder(
-                                      stream: bloc.formCompleted,
+                                      stream: bloc.currentTravelEstimation,
                                       builder: (context, snapshot) {
-                                        if(snapshot.hasData && !snapshot.hasError && snapshot.data == true) {
+                                        if(snapshot.hasData && !snapshot.hasError && snapshot.data != null) {
                                           return Column(
                                             children: [
                                               Container(

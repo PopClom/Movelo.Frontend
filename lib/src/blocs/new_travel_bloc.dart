@@ -3,6 +3,7 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dio/dio.dart';
 
@@ -19,6 +20,7 @@ class NewTravelBloc {
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
+  final BehaviorSubject<Travel> _currentTravelEstimation = BehaviorSubject<Travel>();
   
   Function(GooglePlacesDetails) get changeOriginPlacesDetails => _originPlacesDetails.sink.add;
   Function(GooglePlacesDetails) get changeDestinationPlacesDetails => _destinationPlacesDetails.sink.add;
@@ -30,7 +32,7 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
-  //Function(bool) get changeRequiresLoading => _requiresLoading.sink.add;
+  Function(Travel) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
   Stream<GooglePlacesDetails> get destinationPlacesDetails => _destinationPlacesDetails.stream;
@@ -42,7 +44,36 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
-  //Stream<bool> get requiresLoading => _requiresLoading.stream;
+  Stream<Travel> get currentTravelEstimation => _currentTravelEstimation.stream;
+
+  Stream<Set<Marker>> get originAndDestinationMarkers => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
+          (GooglePlacesDetails origin, GooglePlacesDetails destination)
+          {
+            Marker placeToMarker(dynamic place, String name) {
+              return new Marker(
+                markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+                position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
+                infoWindow: InfoWindow(
+                  title: name,
+                  snippet: place.name,
+                ),
+              );
+            }
+
+            if(origin == null || destination == null) {
+              if(origin != null)
+                return {placeToMarker(origin, "Origen")};
+              else if(destination != null)
+                return {placeToMarker(destination, "Destino")};
+              else
+                return {};
+            }
+
+            return {
+              placeToMarker(origin, "Origen"),
+              placeToMarker(destination, "Destino"),
+            };
+          });
 
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
           (a, b) => a != null && b != null);
@@ -83,6 +114,6 @@ class NewTravelBloc {
     _driverHandlesLoading.close();
     _driverHandlesUnloading.close();
     _driverLoadingAndUnloadingIntStatus.close();
-    //_requiresLoading.close();
+    _currentTravelEstimation.close();
   }
 }
