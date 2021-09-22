@@ -11,57 +11,18 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     requestingUserId: json['requestingUserId'] as int,
     requestedVehicleTypeId: json['requestedVehicleTypeId'] as int,
-    //status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
     driverId: json['driverId'] as int,
     estimatedPrice: (json['estimatedPrice'] as num)?.toDouble(),
-  );
+  )..estimatedRoute = json['estimatedRoute'] == null
+      ? null
+      : Route.fromJson(json['estimatedRoute'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'id': instance.id,
       'requestingUserId': instance.requestingUserId,
       'requestedVehicleTypeId': instance.requestedVehicleTypeId,
-      //'status': _$TravelStatusEnumMap[instance.status],
       'driverId': instance.driverId,
       'estimatedPrice': instance.estimatedPrice,
+      'estimatedRoute': instance.estimatedRoute,
     };
-
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
-}
-
-/*const _$TravelStatusEnumMap = {
-  TravelStatus.PendingUserConfirmation: 'PendingUserConfirmation',
-  TravelStatus.PendingDriver: 'PendingDriver',
-  TravelStatus.ConfirmedAndPendingStart: 'ConfirmedAndPendingStart',
-  TravelStatus.InProcess: 'InProcess',
-  TravelStatus.Completed: 'Completed',
-};*/

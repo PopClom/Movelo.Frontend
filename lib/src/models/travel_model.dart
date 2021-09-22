@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/models/route_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'travel_model.g.dart';
@@ -32,6 +33,7 @@ class Travel {
   int driverId;
 
   double estimatedPrice;
+  Route estimatedRoute;
 
   Travel({this.id, this.requestingUserId, this.requestedVehicleTypeId, this.driverId, this.estimatedPrice});
 

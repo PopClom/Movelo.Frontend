@@ -3,7 +3,8 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dio/dio.dart';
 
@@ -20,6 +21,9 @@ class NewTravelBloc {
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
+  final BehaviorSubject<Travel> _currentTravelEstimation = BehaviorSubject<Travel>();
+  //TODO evitar esta monstruosidad de dejar esto abierto
+  final BehaviorSubject<bool> _mapLoaded = BehaviorSubject<bool>();
   
   Function(GooglePlacesDetails) get changeOriginPlacesDetails => _originPlacesDetails.sink.add;
   Function(GooglePlacesDetails) get changeDestinationPlacesDetails => _destinationPlacesDetails.sink.add;
@@ -31,7 +35,8 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
-  //Function(bool) get changeRequiresLoading => _requiresLoading.sink.add;
+  Function(Travel) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
+  Function(bool) get informMapLoaded => _mapLoaded.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
   Stream<GooglePlacesDetails> get destinationPlacesDetails => _destinationPlacesDetails.stream;
@@ -43,7 +48,37 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
-  //Stream<bool> get requiresLoading => _requiresLoading.stream;
+  Stream<Travel> get currentTravelEstimation => _currentTravelEstimation.stream;
+  Stream<bool> get mapLoaded => _mapLoaded.stream;
+
+  Stream<List<Marker>> get originAndDestinationMarkers => Rx.combineLatest3(originPlacesDetails, destinationPlacesDetails, mapLoaded,
+          (GooglePlacesDetails origin, GooglePlacesDetails destination, bool mapLoaded)
+          {
+            Marker placeToMarker(dynamic place, String name) {
+              return new Marker(
+                markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+                position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
+                infoWindow: InfoWindow(
+                  title: name,
+                  snippet: place.name,
+                ),
+              );
+            }
+
+            if(origin == null || destination == null) {
+              if(origin != null)
+                return [placeToMarker(origin, "Origen")];
+              else if(destination != null)
+                return [placeToMarker(destination, "Destino")];
+              else
+                return [];
+            }
+
+            return [
+              placeToMarker(origin, "Origen"),
+              placeToMarker(destination, "Destino"),
+            ];
+          });
 
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
           (a, b) => a != null && b != null);
@@ -57,7 +92,7 @@ class NewTravelBloc {
               && numberOfHelpers != null && numberOfHelpers >= 0
               && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
 
-  Future<Travel> submit() {
+  Future<Travel> submit() async {
     return apiService.createTravelRequest(
       TravelPricingRequest(
         vehicleTypeId: _selectedVehicleType.value.id,
@@ -73,6 +108,42 @@ class NewTravelBloc {
     );
   }
 
+  Future<bool> confirmTravelRequest() async {
+    String message = "¡Hola! Quisiera pedir un *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
+        .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
+        .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
+        .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
+        .replaceFirst("DESTINATION_ADDRESS", _destinationPlacesDetails.value.formattedAddress);
+
+    if(_driverHandlesLoading.value || _driverHandlesUnloading.value) {
+      if(!_driverHandlesLoading.value) {
+        message += "\nRequiero que se encarguen de descargar los artículos transportados en destino.";
+      } else if (!_driverHandlesUnloading.value) {
+        message += "\nRequiero que se encarguen de cargar los artículos transportados en el origen.";
+      } else {
+        message += "\nRequiero que se encarguen tanto de la carga como de la descarga de los artículos transportados.";
+      }
+    } else {
+      message += "\nNo requiero que se hagan cargo ni de la carga ni de la descarga de los artículos transportados.";
+    }
+
+    if(_numberOfFloors.value == 1) {
+      message += "\nLa carga debe trasladarse *1 piso por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
+    } else if(_numberOfFloors.value > 1) {
+      message += "\nLa carga debe trasladarse *${_numberOfFloors.value} pisos por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
+    }
+
+    if(_numberOfHelpers.value == 1) {
+      message += "\nPara esto solito también la presencia de *1 ayudante* adicional.";
+    } else if(_numberOfHelpers.value > 1) {
+      message += "\nPara esto solicito también la presencia de *${_numberOfHelpers.value} ayudantes* adicionales.";
+    }
+
+    message += "\n¡Muchas gracias!";
+
+    return await sendWhatsAppMessage("+5491158424244", message);
+  }
+
   void dispose() {
     _transportedObjectsDetails.close();
     _originPlacesDetails.close();
@@ -84,6 +155,7 @@ class NewTravelBloc {
     _driverHandlesLoading.close();
     _driverHandlesUnloading.close();
     _driverLoadingAndUnloadingIntStatus.close();
-    //_requiresLoading.close();
+    _currentTravelEstimation.close();
+    _mapLoaded.close();
   }
 }
