@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
@@ -31,6 +33,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+
+    bloc.informMapLoaded(true);
   }
 
   Future<void> updateCameraLocation(
@@ -81,24 +85,21 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
   @override
   Widget build(BuildContext context) {
-    bloc.originAndDestinationFilled.listen((result) {
-      if(result)
-        updateCameraLocation(mapMarkers["Origen"].position, mapMarkers["Destino"].position, mapController);
-      else
-        updateCameraLocation(mapMarkers.values.first.position, mapMarkers.values.first.position, mapController);
+    bloc.originAndDestinationMarkers.listen((List<Marker> markerList) {
+      if(markerList.isNotEmpty) {
+        updateCameraLocation(markerList[0].position, markerList.length == 2 ? markerList[1].position : markerList[0].position, mapController);
+      }
     });
 
     bloc.formCompleted.listen((completed) async {
       if(completed == true) {
         Travel travelEstimation = await bloc.submit();
 
-        print(travelEstimation.estimatedPrice);
-
         bloc.changeCurrentTravelEstimation(travelEstimation);
+      } else {
+        bloc.changeCurrentTravelEstimation(null);
       }
     });
-
-    //bloc.changeSelectedVehicleType(selectedVehicleType);
 
     String _initialOriginString = '';
     String _initialDestinationString = '';
@@ -308,11 +309,11 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                 ),
                                 SizedBox(width: 10),
                                 StreamBuilder(
-                                  stream: bloc.formCompleted,
+                                  stream: bloc.currentTravelEstimation,
                                   builder: (context, snapshot) {
                                     return Container(
                                       child: Expanded(child: ElevatedButton(
-                                        onPressed: snapshot.hasData && !snapshot.hasError && snapshot.data == true
+                                        onPressed: snapshot.hasData && !snapshot.hasError && snapshot.data != null
                                             ? () async {
                                           Travel travel = await bloc.submit();
                                           print(travel.estimatedPrice);
@@ -359,8 +360,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
                           child: StreamBuilder(
                             stream: bloc.originAndDestinationMarkers,
                             builder: (context, snapshot) {
+                              List<Marker> markerList = snapshot.data;
                               return GoogleMap(
-                                markers: snapshot.data,
+                                markers: markerList != null ? markerList.toSet() : {},
                                 onMapCreated: _onMapCreated,
                                 initialCameraPosition: CameraPosition(
                                   target: const LatLng(-34.60360641689277, -58.381548944057414),
@@ -390,6 +392,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                     child: StreamBuilder(
                                       stream: bloc.currentTravelEstimation,
                                       builder: (context, snapshot) {
+                                        Travel travelEstimation = snapshot.data;
+
                                         if(snapshot.hasData && !snapshot.hasError && snapshot.data != null) {
                                           return Column(
                                             children: [
@@ -412,7 +416,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                                       color: Colors.white
                                                                   ),
                                                                   Expanded(child: Text(
-                                                                    selectedVehicleType.name.toUpperCase(),
+                                                                    '\$${travelEstimation.estimatedPrice.toStringAsFixed(2)}',
                                                                     textAlign: TextAlign.center,
                                                                     style: TextStyle(
                                                                         color: Colors.white,
@@ -437,7 +441,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                       color: Color.fromARGB(255, 96,46,209),
                                                     ),
                                                     SizedBox(width: 10),
-                                                    Text("Tiempo estimado: 20 minutos")
+                                                    Text("Tiempo estimado: ${(travelEstimation.estimatedRoute.travelTimeInSeconds / 60.0).toStringAsFixed(0)} minutos")
                                                   ],
                                                 ),
                                               ),
@@ -450,12 +454,10 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                       color: Color.fromARGB(255, 96,46,209),
                                                     ),
                                                     SizedBox(width: 10),
-                                                    Text("Distancia a recorrer: 29.3km")
+                                                    Text("Distancia a recorrer: ${(travelEstimation.estimatedRoute.distanceInMeters / 1000.0).toStringAsFixed(1)}km")
                                                   ],
                                                 ),
                                               ),
-
-
                                             ],
                                           );
                                         } else {

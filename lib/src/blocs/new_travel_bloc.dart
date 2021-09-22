@@ -21,6 +21,8 @@ class NewTravelBloc {
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
   final BehaviorSubject<Travel> _currentTravelEstimation = BehaviorSubject<Travel>();
+  //TODO evitar esta monstruosidad de dejar esto abierto
+  final BehaviorSubject<bool> _mapLoaded = BehaviorSubject<bool>();
   
   Function(GooglePlacesDetails) get changeOriginPlacesDetails => _originPlacesDetails.sink.add;
   Function(GooglePlacesDetails) get changeDestinationPlacesDetails => _destinationPlacesDetails.sink.add;
@@ -33,6 +35,7 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
   Function(Travel) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
+  Function(bool) get informMapLoaded => _mapLoaded.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
   Stream<GooglePlacesDetails> get destinationPlacesDetails => _destinationPlacesDetails.stream;
@@ -45,9 +48,10 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
   Stream<Travel> get currentTravelEstimation => _currentTravelEstimation.stream;
+  Stream<bool> get mapLoaded => _mapLoaded.stream;
 
-  Stream<Set<Marker>> get originAndDestinationMarkers => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
-          (GooglePlacesDetails origin, GooglePlacesDetails destination)
+  Stream<List<Marker>> get originAndDestinationMarkers => Rx.combineLatest3(originPlacesDetails, destinationPlacesDetails, mapLoaded,
+          (GooglePlacesDetails origin, GooglePlacesDetails destination, bool mapLoaded)
           {
             Marker placeToMarker(dynamic place, String name) {
               return new Marker(
@@ -62,17 +66,17 @@ class NewTravelBloc {
 
             if(origin == null || destination == null) {
               if(origin != null)
-                return {placeToMarker(origin, "Origen")};
+                return [placeToMarker(origin, "Origen")];
               else if(destination != null)
-                return {placeToMarker(destination, "Destino")};
+                return [placeToMarker(destination, "Destino")];
               else
-                return {};
+                return [];
             }
 
-            return {
+            return [
               placeToMarker(origin, "Origen"),
               placeToMarker(destination, "Destino"),
-            };
+            ];
           });
 
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
@@ -115,5 +119,6 @@ class NewTravelBloc {
     _driverHandlesUnloading.close();
     _driverLoadingAndUnloadingIntStatus.close();
     _currentTravelEstimation.close();
+    _mapLoaded.close();
   }
 }
