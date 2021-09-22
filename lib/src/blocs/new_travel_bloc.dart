@@ -3,6 +3,7 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dio/dio.dart';
 
@@ -53,7 +54,7 @@ class NewTravelBloc {
               originAndDestinationFilled
               && elevatorAndNumberOfFloorsFilled
               && selectedVehicleType != null
-              && numberOfHelpers >= 0
+              && numberOfHelpers != null && numberOfHelpers >= 0
               && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
 
   Future<Travel> submit() {
@@ -67,7 +68,7 @@ class NewTravelBloc {
         driverHandlesUnloading: _driverHandlesUnloading.value,
         fitsInElevator: _fitsInElevator.value,
         numberOfFloors: _numberOfFloors.value,
-        requiredAssistants: _driverLoadingAndUnloadingIntStatus.value,
+        requiredAssistants: _numberOfHelpers.value,
       )
     );
   }

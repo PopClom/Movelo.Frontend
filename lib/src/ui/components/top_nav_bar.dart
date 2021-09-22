@@ -19,11 +19,11 @@ class TopNavBar extends StatefulWidget {
 
 class _TopNavBarState extends State<TopNavBar> {
   double width;
+  List<NavBarItem> items;
 
   @override
-  Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width;
-    List<NavBarItem> items = widget.navBarItems.map((i) =>
+  void initState() {
+    items = widget.navBarItems.map((i) =>
         NavBarItem(
           text: i.text,
           onTap: () {
@@ -34,6 +34,12 @@ class _TopNavBarState extends State<TopNavBar> {
           },
         )
     ).toList();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
 
     return Stack(
       children: [

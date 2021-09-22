@@ -3,6 +3,7 @@ import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
+import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/utils/new_travel_args.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,9 +119,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
       final args = ModalRoute.of(context).settings.arguments as NewTravelArgs;
       if (args != null) {
         bloc.changeOriginPlacesDetails(args.originPlacesDetails);
-        _initialOriginString = args.originPlacesDetails.name;
+        _initialOriginString = args.originPlacesDetails.formattedAddress;
         bloc.changeDestinationPlacesDetails(args.destinationPlacesDetails);
-        _initialDestinationString = args.destinationPlacesDetails.name;
+        _initialDestinationString = args.destinationPlacesDetails.formattedAddress;
         bloc.changeSelectedVehicleType(args.selectedVehicleType);
       }
     } catch (err) {
@@ -309,7 +310,12 @@ class _NewTravelPageState extends State<NewTravelPage> {
                             child: Row(
                               children: [
                                 ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        LandingPage.routeName,
+                                      );
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.white,
                                     ),

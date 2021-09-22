@@ -14,7 +14,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
+      color: Color.fromARGB(10, 0, 0, 0),
       child: Column(
           children: [
             SizedBox(height: 60),
@@ -44,7 +44,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                           ),
                           SizedBox(width: 15),
                           SelectableText(
-                            '11 3030-2020',
+                            '11 5842-4244',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 22,

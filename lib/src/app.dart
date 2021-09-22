@@ -108,8 +108,8 @@ class MyApp extends StatelessWidget {
               child: MaterialApp(
                   navigatorKey: Navigation.navigationKey,
                   routes: {
-                    LoginPage.routeName: (context) => _withScaffold(LoginPage()),
-                    RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+                    // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
+                    // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
                     TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
                     AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
                     ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
