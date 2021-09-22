@@ -3,6 +3,7 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dio/dio.dart';
@@ -91,7 +92,7 @@ class NewTravelBloc {
               && numberOfHelpers >= 0
               && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
 
-  Future<Travel> submit() {
+  Future<Travel> submit() async {
     return apiService.createTravelRequest(
       TravelPricingRequest(
         vehicleTypeId: _selectedVehicleType.value.id,
@@ -105,6 +106,42 @@ class NewTravelBloc {
         requiredAssistants: _driverLoadingAndUnloadingIntStatus.value,
       )
     );
+  }
+
+  Future<bool> confirmTravelRequest() async {
+    String message = "¡Hola! Quisiera pedir un *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
+        .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
+        .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
+        .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
+        .replaceFirst("DESTINATION_ADDRESS", _destinationPlacesDetails.value.formattedAddress);
+
+    if(_driverHandlesLoading.value || _driverHandlesUnloading.value) {
+      if(!_driverHandlesLoading.value) {
+        message += "\nRequiero que se encarguen de descargar los artículos transportados en destino.";
+      } else if (!_driverHandlesUnloading.value) {
+        message += "\nRequiero que se encarguen de cargar los artículos transportados en el origen.";
+      } else {
+        message += "\nRequiero que se encarguen tanto de la carga como de la descarga de los artículos transportados.";
+      }
+    } else {
+      message += "\nNo requiero que se hagan cargo ni de la carga ni de la descarga de los artículos transportados.";
+    }
+
+    if(_numberOfFloors.value == 1) {
+      message += "\nLa carga debe trasladarse *1 piso por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
+    } else if(_numberOfFloors.value > 1) {
+      message += "\nLa carga debe trasladarse *${_numberOfFloors.value} pisos por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
+    }
+
+    if(_driverLoadingAndUnloadingIntStatus.value == 1) {
+      message += "\nPara esto solito también la presencia de *1 ayudante* adicional.";
+    } else if(_driverLoadingAndUnloadingIntStatus.value > 1) {
+      message += "\nPara esto solicito también la presencia de *${_driverLoadingAndUnloadingIntStatus.value} ayudantes* adicionales.";
+    }
+
+    message += "\n¡Muchas gracias!";
+
+    return await sendWhatsAppMessage("+5491158424244", message);
   }
 
   void dispose() {
