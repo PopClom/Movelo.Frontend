@@ -140,25 +140,34 @@ class _NewTravelPageState extends State<NewTravelPage> {
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: deviceSize.width * 0.03),
       child: SingleChildScrollView(
         child: Column(
-            children: deviceSize.width > 1000 ? [
-              _buildTitle(),
-              Row(
-                children: [
-                  _buildForm(deviceSize.width),
-                  SizedBox(width: 30),
-                  _buildMap(mapSize),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: deviceSize.width > 1000 ? [
+                  _buildTitle(),
+                  Row(
+                    children: [
+                      _buildForm(deviceSize.width),
+                      SizedBox(width: 30),
+                      _buildMap(mapSize),
+                    ],
+                  ),
+                ] : [
+                  _buildTitle(),
+                  Row(
+                    children: [
+                      _buildForm(deviceSize.width),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  _buildMap(mapSize = min(600.0, deviceSize.width * 0.88))
                 ],
               ),
-            ] : [
-              _buildTitle(),
-              Row(
-                children: [
-                  _buildForm(deviceSize.width),
-                ],
-              ),
-              SizedBox(height: 10),
-              _buildMap(mapSize = min(600.0, deviceSize.width * 0.88))
-            ],
+            ),
+          ],
         ),
       ),
     );
