@@ -245,8 +245,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
                 }
               }
           ),
-          SizedBox(height: 10),
-          ...(deviceWidth > 500 ? [Row(
+          SizedBox(height: 14),
+          deviceWidth > 500 ? Row(
             children: [
               Expanded(
                 child: Column(
@@ -270,15 +270,18 @@ class _NewTravelPageState extends State<NewTravelPage> {
                 ),
               ),
             ],
-          )] : [
-            _buildDriverHandlesLoading(),
-            SizedBox(height: 12),
-            _buildNumberOfHelpers(),
-            SizedBox(height: 12),
-            _buildFitsInElevator(),
-            SizedBox(height: 12),
-            _buildNumberOfFloors(),
-          ]),
+          ) : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDriverHandlesLoading(),
+                SizedBox(height: 14),
+                _buildNumberOfHelpers(),
+                SizedBox(height: 14),
+                _buildFitsInElevator(),
+                SizedBox(height: 14),
+                _buildNumberOfFloors(),
+              ],
+          ),
           SizedBox(height: 15),
           Center(
             child: Row(
