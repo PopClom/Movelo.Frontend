@@ -1,9 +1,7 @@
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
-import 'package:fletes_31_app/src/ui/components/transport_type_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 
 class TransportTypeInformation extends StatelessWidget {
   const TransportTypeInformation({Key key, this.vehicleType, this.onChangeClicked}) : super(key: key);
@@ -44,10 +42,10 @@ class TransportTypeInformation extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.network(
+                  Image.network(
                       "http://movelo-001-site1.htempurl.com" + vehicleType.imageUrl,
-                      height: 50,
-                      width: 50,
+                      height: 75,
+                      width: 75,
                       fit: BoxFit.contain,
                       color: Colors.black
                   ),

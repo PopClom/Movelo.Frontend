@@ -39,6 +39,11 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
         ),
         decoration: InputDecoration(
             hintText: "Escribí una dirección: calle y número",
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(
+                vertical: 15.0,
+                horizontal: 10.0
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),

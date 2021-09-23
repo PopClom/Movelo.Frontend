@@ -15,13 +15,14 @@ class NewTravelBloc {
   final BehaviorSubject<GooglePlacesDetails> _destinationPlacesDetails = BehaviorSubject<GooglePlacesDetails>();
   final BehaviorSubject<VehicleType> _selectedVehicleType = BehaviorSubject<VehicleType>();
   final BehaviorSubject<String> _transportedObjectsDetails = BehaviorSubject<String>();
-  final BehaviorSubject<int> _numberOfHelpers = BehaviorSubject<int>();
+  final BehaviorSubject<int> _numberOfHelpers = BehaviorSubject<int>.seeded(0);
   final BehaviorSubject<bool> _fitsInElevator = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _numberOfFloors = BehaviorSubject<int>();
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
   final BehaviorSubject<Travel> _currentTravelEstimation = BehaviorSubject<Travel>();
+  final BehaviorSubject<bool> _isSubmitting = BehaviorSubject<bool>.seeded(false);
   //TODO evitar esta monstruosidad de dejar esto abierto
   final BehaviorSubject<bool> _mapLoaded = BehaviorSubject<bool>();
   
@@ -36,6 +37,7 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
   Function(Travel) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
+  Function(bool) get changeIsSubmitting => _isSubmitting.sink.add;
   Function(bool) get informMapLoaded => _mapLoaded.sink.add;
 
   Stream<GooglePlacesDetails> get originPlacesDetails => _originPlacesDetails.stream;
@@ -49,6 +51,7 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
   Stream<Travel> get currentTravelEstimation => _currentTravelEstimation.stream;
+  Stream<bool> get isSubmitting => _isSubmitting.stream;
   Stream<bool> get mapLoaded => _mapLoaded.stream;
 
   Stream<List<Marker>> get originAndDestinationMarkers => Rx.combineLatest3(originPlacesDetails, destinationPlacesDetails, mapLoaded,
@@ -109,7 +112,7 @@ class NewTravelBloc {
   }
 
   Future<bool> confirmTravelRequest() async {
-    String message = "¡Hola! Quisiera pedir un *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
+    String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
         .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
         .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
         .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
@@ -134,14 +137,14 @@ class NewTravelBloc {
     }
 
     if(_numberOfHelpers.value == 1) {
-      message += "\nPara esto solito también la presencia de *1 ayudante* adicional.";
+      message += "\nPara esto solicito también la presencia de *1 ayudante* adicional.";
     } else if(_numberOfHelpers.value > 1) {
       message += "\nPara esto solicito también la presencia de *${_numberOfHelpers.value} ayudantes* adicionales.";
     }
 
     message += "\n¡Muchas gracias!";
 
-    return await sendWhatsAppMessage("+5491158424244", message);
+    return await sendWhatsAppMessage("5491158424244", message);
   }
 
   void dispose() {
@@ -156,6 +159,7 @@ class NewTravelBloc {
     _driverHandlesUnloading.close();
     _driverLoadingAndUnloadingIntStatus.close();
     _currentTravelEstimation.close();
+    _isSubmitting.close();
     _mapLoaded.close();
   }
 }

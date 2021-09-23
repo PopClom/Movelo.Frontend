@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/network/vehicle_type_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 
@@ -127,10 +126,10 @@ class VehicleTypeBox extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.network(
+              Image.network(
                   "http://movelo-001-site1.htempurl.com" + vehicleType.imageUrl,
-                  height: 50,
-                  width: 50,
+                  height: 75,
+                  width: 75,
                   fit: BoxFit.contain,
                   color: isSelected ? Colors.black : Color.fromRGBO(112, 112, 112, 1)
               ),
