@@ -29,8 +29,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
   GoogleMapController mapController;
   CancelableOperation travelEstimation;
 
-  String _initialOriginString = '';
-  String _initialDestinationString = '';
+  String _initialOriginString;
+  String _initialDestinationString;
+  bool _initialArgsLoaded;
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
@@ -120,21 +121,21 @@ class _NewTravelPageState extends State<NewTravelPage> {
     final deviceSize = MediaQuery.of(context).size;
     double mapSize = deviceSize.width * 0.35;
 
-    try {
-      final args = ModalRoute.of(context).settings.arguments as NewTravelArgs;
-      if (args != null) {
-        bloc.changeOriginPlacesDetails(args.originPlacesDetails);
-        _initialOriginString = args.originPlacesDetails.formattedAddress;
-        bloc.changeDestinationPlacesDetails(args.destinationPlacesDetails);
-        _initialDestinationString = args.destinationPlacesDetails.formattedAddress;
-        bloc.changeSelectedVehicleType(args.selectedVehicleType);
-      }
-    } catch (err) {
-      // Do nothing
+    final args = ModalRoute.of(context).settings.arguments as NewTravelArgs;
+    if (args != null && !_initialArgsLoaded) {
+      _initialOriginString = args.originPlacesDetails.formattedAddress;
+      _initialDestinationString = args.destinationPlacesDetails.formattedAddress;
+      bloc.changeOriginPlacesDetails(args.originPlacesDetails);
+      bloc.changeDestinationPlacesDetails(args.destinationPlacesDetails);
+      bloc.changeSelectedVehicleType(args.selectedVehicleType);
+    } else {
+      _initialOriginString = null;
+      _initialDestinationString = null;
     }
+    _initialArgsLoaded = true;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 75),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: deviceSize.width * 0.04),
       child: ListView(
         children: [
           Center(
@@ -301,7 +302,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                 labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.2),
                                 isDense: true,
                               ),
-                              onChanged: (value) => bloc.changeFitsInElevator(value),
+                              onChanged: (value) => bloc.changeNumberOfHelpers(value),
                               items: [
                                 DropdownMenuItem(child: Text("0"), value: 0),
                                 DropdownMenuItem(child: Text("1"), value: 1),
@@ -380,7 +381,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
-              SizedBox(width: 50),
+              SizedBox(width: 30),
               Container(
                 height: mapSize,
                 width: mapSize,
@@ -514,7 +515,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                             padding: EdgeInsets.all(5),
                                             child: Center(
                                               child: Text(
-                                                "Por favor, complete el formulario con datos válidos para obtener una cotización de su viaje.",
+                                                "Por favor, complete el formulario.",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     color: Colors.white,
