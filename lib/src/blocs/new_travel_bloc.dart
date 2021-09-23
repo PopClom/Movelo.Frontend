@@ -87,13 +87,17 @@ class NewTravelBloc {
           (a, b) => a != null && b != null);
   Stream<bool> get elevatorAndNumberOfFloorsFilled => Rx.combineLatest2(fitsInElevator, numberOfFloors,
     (fitsInElevator, numberOfFloors) => fitsInElevator == true || (numberOfFloors != null && numberOfFloors >= 0));
-  Stream<bool> get formCompleted => Rx.combineLatest5(originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers, transportedObjectsDetails,
-          (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers, transportedObjectsDetails) =>
+  Stream<bool> get formCompleted => Rx.combineLatest6(
+      originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
+      numberOfHelpers, transportedObjectsDetails, driverLoadingAndUnloadingIntStatus,
+          (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
+          numberOfHelpers, transportedObjectsDetails, driverLoadingAndUnloadingFilled) =>
               originAndDestinationFilled
               && elevatorAndNumberOfFloorsFilled
               && selectedVehicleType != null
               && numberOfHelpers != null && numberOfHelpers >= 0
-              && transportedObjectsDetails != null && transportedObjectsDetails.trim() != '');
+              && transportedObjectsDetails != null && transportedObjectsDetails.trim() != ''
+              && driverLoadingAndUnloadingFilled != null);
 
   Future<Travel> submit() async {
     return apiService.createTravelRequest(
