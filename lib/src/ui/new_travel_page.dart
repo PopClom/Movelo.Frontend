@@ -4,10 +4,7 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/utils/new_travel_args.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:async/async.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -138,36 +135,48 @@ class _NewTravelPageState extends State<NewTravelPage> {
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: deviceSize.width * 0.03),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: deviceSize.width > 1000 ? [
-                  _buildTitle(),
-                  Row(
-                    children: [
-                      _buildForm(deviceSize.width),
-                      SizedBox(width: 30),
-                      _buildMap(mapSize),
-                    ],
-                  ),
-                ] : [
-                  _buildTitle(),
-                  Row(
-                    children: [
-                      _buildForm(deviceSize.width),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  _buildMap(mapSize = min(600.0, deviceSize.width * 0.88))
-                ],
+      child: NotificationListener(
+        onNotification: (t) {
+          if (t is UserScrollNotification) {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          }
+          return false;
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: deviceSize.width > 1000 ? [
+                    _buildTitle(),
+                    Row(
+                      children: [
+                        _buildForm(deviceSize.width),
+                        SizedBox(width: 30),
+                        _buildMap(mapSize),
+                      ],
+                    ),
+                  ] : [
+                    _buildTitle(),
+                    Row(
+                      children: [
+                        _buildForm(deviceSize.width),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    _buildMap(mapSize = min(600.0, deviceSize.width * 0.88)),
+                    SizedBox(height: 15),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -377,8 +386,12 @@ class _NewTravelPageState extends State<NewTravelPage> {
               builder: (context, snapshot) {
                 List<Marker> markerList = snapshot.data;
                 return GestureDetector(
-                  onVerticalDragUpdate: (_) {},
-                  onForcePressUpdate: (_) {},
+                  onVerticalDragUpdate: (_) {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                  },
                   child: GoogleMap(
                     markers: markerList != null ? markerList.toSet() : {},
                     onMapCreated: _onMapCreated,
