@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
 import 'package:fletes_31_app/src/ui/components/location_autocomplete_selector.dart';
 import 'package:fletes_31_app/src/ui/components/transport_type_selector.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/new_travel_args.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 
 class NewTravelFragment extends StatefulWidget {
   const NewTravelFragment({Key key}) : super(key: key);
@@ -108,8 +108,8 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
                 builder: (context, snap) {
                   return OutlinedButton(
                     onPressed: (!snap.hasData || snap.data == null) ? null : () {
-                      Navigator.pushReplacementNamed(
-                        context,
+                      Navigator.pushNamed(
+                        Navigation.navigationKey.currentContext,
                         NewTravelPage.routeName,
                         arguments: snap.data,
                       );

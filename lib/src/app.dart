@@ -90,46 +90,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: (settings) {
-        WidgetsBinding.instance.addPostFrameCallback((_) =>
-            Navigator.pushReplacementNamed(
-              Navigation.navigationKey.currentContext,
-              settings.name,
-            )
-        );
-        return null;
-      },
+      navigatorKey: Navigation.navigationKey,
+        routes: {
+          // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
+          // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+          TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+          AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
+          ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
+          NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
+        },
       theme: theme,
       title: 'Movelo',
-      home: Column(
-        verticalDirection: VerticalDirection.up,
-        children: [
-          Expanded(
-              child: MaterialApp(
-                  navigatorKey: Navigation.navigationKey,
-                  routes: {
-                    // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
-                    // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
-                    TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
-                    AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
-                    ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
-                    NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
-                  },
-                  title: 'Movelo',
-                  theme: theme,
-                  home: _withScaffold(LandingPage())
-              )
-          ),
-          TopNavBar(navBarItems: navBarItems),
-        ],
-      )
+      home: _withScaffold(LandingPage()),
     );
   }
 
   _withScaffold(Widget page) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: page,
+    return Column(
+      verticalDirection: VerticalDirection.up,
+      children: [
+        Expanded(
+          child: Scaffold(
+          backgroundColor: Colors.white,
+          body: page,
+        )),
+        TopNavBar(navBarItems: navBarItems),
+      ],
     );
   }
 }

@@ -82,19 +82,23 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
         sessionToken = LocationAutocompleteSelector.uuid.v4();
       },
       errorBuilder: (BuildContext context, Object error) =>
-        Text(
-            '$error',
-            style: TextStyle(
-                color: Theme.of(context).errorColor
-            )
-        ),
+          ListTile(
+            title: Text(
+                '$error',
+                style: TextStyle(
+                    color: Theme.of(context).errorColor
+                )
+            ),
+          ),
       noItemsFoundBuilder: (BuildContext context) =>
-        Text(
-            'No se encontraron resultados para esa búsqueda',
-            style: TextStyle(
-                color: Theme.of(context).errorColor
-            )
-        )
+          ListTile(
+            title: Text(
+                'No se encontraron resultados para esa búsqueda',
+                style: TextStyle(
+                  color: Theme.of(context).errorColor,
+                )
+            ),
+          ),
     );
   }
 }

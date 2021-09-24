@@ -99,7 +99,7 @@ class _LandingPageState extends State<LandingPage> {
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 25,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],

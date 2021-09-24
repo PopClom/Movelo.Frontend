@@ -1,5 +1,5 @@
-import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 
 double collapsableHeight = 0.0;
@@ -84,7 +84,7 @@ class _TopNavBarState extends State<TopNavBar> {
                     hoverColor: Colors.transparent,
                     onTap:() {
                       Navigator.pushNamed(
-                        Navigation.navigationKey.currentContext,
+                        context,
                         LandingPage.routeName,
                       );
                     },
