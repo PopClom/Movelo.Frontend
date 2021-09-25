@@ -83,9 +83,9 @@ class _TopNavBarState extends State<TopNavBar> {
                     highlightColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     onTap:() {
-                      Navigator.pushNamed(
-                        context,
-                        LandingPage.routeName,
+                      Navigator.pushNamedAndRemoveUntil(
+                        Navigation.navigationKey.currentContext,
+                        '/', (Route<dynamic> route) => false
                       );
                     },
                     child: Image.asset(

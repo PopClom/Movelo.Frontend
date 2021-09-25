@@ -43,7 +43,7 @@ class TransportTypeInformation extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.network(
-                      "http://movelo-001-site1.htempurl.com" + vehicleType.imageUrl,
+                      "https://movelo.com.ar" + vehicleType.imageUrl,
                       height: 75,
                       width: 75,
                       fit: BoxFit.contain,

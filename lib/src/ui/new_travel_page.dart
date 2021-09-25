@@ -134,17 +134,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
     }
     _initialArgsLoaded = true;
 
-    return NotificationListener(
-      onNotification: (t) {
-        if (t is UserScrollNotification) {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        }
-        return false;
-      },
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.04),
           child: Column(
@@ -183,7 +173,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -449,7 +438,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                   return Row(
                                                     children: [
                                                       Image.network(
-                                                          "http://movelo-001-site1.htempurl.com" + selectedVehicleType.imageUrl,
+                                                          "https://movelo.com.ar" + selectedVehicleType.imageUrl,
                                                           height: 35,
                                                           fit: BoxFit.contain,
                                                           color: Colors.white
@@ -543,6 +532,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
             ),
             onChanged: (value) => bloc.changeNumberOfHelpers(value),
             value: snap.hasData ? snap.data : null,
+            onTap: () => FocusManager.instance.primaryFocus.unfocus(),
             items: [
               DropdownMenuItem(child: Text("0"), value: 0),
               DropdownMenuItem(child: Text("1"), value: 1),
@@ -592,6 +582,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
             isDense: true,
           ),
           onChanged: (value) => bloc.changeFitsInElevator(value == 2),
+          onTap: () => FocusManager.instance.primaryFocus.unfocus(),
           value: snap.hasData && snap.data ? 2 : 1,
           items: [
             DropdownMenuItem(child: Text("No"), value: 1),
@@ -628,6 +619,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
               bloc.changeDriverHandlesUnloading(false);
             }
           },
+          onTap: () => FocusManager.instance.primaryFocus.unfocus(),
           value: snap.data,
           items: [
             DropdownMenuItem(child: Text("Carga"), value: 1),

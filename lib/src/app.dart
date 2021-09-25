@@ -91,14 +91,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
-        routes: {
-          // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
-          // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
-          TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
-          AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
-          ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
-          NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
-        },
+      routes: {
+        // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
+        // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+        TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+        AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
+        ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
+        NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
+      },
       theme: theme,
       title: 'Movelo',
       home: _withScaffold(LandingPage()),
@@ -111,9 +111,10 @@ class MyApp extends StatelessWidget {
       children: [
         Expanded(
           child: Scaffold(
-          backgroundColor: Colors.white,
-          body: page,
-        )),
+            backgroundColor: Colors.white,
+            body: page,
+          )
+        ),
         TopNavBar(navBarItems: navBarItems),
       ],
     );
