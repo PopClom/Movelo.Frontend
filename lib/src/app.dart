@@ -51,7 +51,7 @@ List<NavBarItem> navBarItems = [
     onTap: () {
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
-        LandingPage.routeName,
+        NewTravelPage.routeName,
       );
     },
   ),
@@ -92,9 +92,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
       routes: {
-        // LoginPage.routeName: (context) => _withScaffold(LoginPage()),
-        // RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
-        TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+        LoginPage.routeName: (context) => _withScaffold(LoginPage()),
+        //RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+        //TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
         ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),

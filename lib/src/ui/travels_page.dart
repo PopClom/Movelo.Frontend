@@ -109,7 +109,6 @@ class _TravelsPageState extends State<TravelsPage> {
                                         'Flete mediano',
                                         style: Theme.of(context).textTheme.subtitle2,
                                       ),
-                                      SizedBox(height: 16),
                                       Text('Duración estimada: 43 minutos (4.8km)',
                                           style: Theme.of(context).textTheme.subtitle2
                                       ),

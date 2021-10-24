@@ -17,7 +17,7 @@ class NewTravelBloc {
   final BehaviorSubject<String> _transportedObjectsDetails = BehaviorSubject<String>();
   final BehaviorSubject<int> _numberOfHelpers = BehaviorSubject<int>.seeded(0);
   final BehaviorSubject<bool> _fitsInElevator = BehaviorSubject<bool>.seeded(false);
-  final BehaviorSubject<int> _numberOfFloors = BehaviorSubject<int>();
+  final BehaviorSubject<int> _numberOfFloors = BehaviorSubject<int>.seeded(0);
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
@@ -83,20 +83,25 @@ class NewTravelBloc {
             ];
           });
 
+  Stream<bool> get transportedObjectsDetailsFilled => transportedObjectsDetails.map(
+          (details) => details != null && details.trim() != '');
+
   Stream<bool> get originAndDestinationFilled => Rx.combineLatest2(originPlacesDetails, destinationPlacesDetails,
           (a, b) => a != null && b != null);
+
   Stream<bool> get elevatorAndNumberOfFloorsFilled => Rx.combineLatest2(fitsInElevator, numberOfFloors,
     (fitsInElevator, numberOfFloors) => fitsInElevator == true || (numberOfFloors != null && numberOfFloors >= 0));
+
   Stream<bool> get formCompleted => Rx.combineLatest6(
       originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
-      numberOfHelpers, transportedObjectsDetails, driverLoadingAndUnloadingIntStatus,
+      numberOfHelpers, transportedObjectsDetailsFilled.distinct(), driverLoadingAndUnloadingIntStatus,
           (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
-          numberOfHelpers, transportedObjectsDetails, driverLoadingAndUnloadingFilled) =>
+          numberOfHelpers, transportedObjectsDetailsFilled, driverLoadingAndUnloadingFilled) =>
               originAndDestinationFilled
               && elevatorAndNumberOfFloorsFilled
               && selectedVehicleType != null
               && numberOfHelpers != null && numberOfHelpers >= 0
-              && transportedObjectsDetails != null && transportedObjectsDetails.trim() != ''
+              && transportedObjectsDetailsFilled
               && driverLoadingAndUnloadingFilled != null);
 
   Future<Travel> submit() async {
@@ -116,7 +121,7 @@ class NewTravelBloc {
   }
 
   Future<bool> confirmTravelRequest() async {
-    String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
+    /*String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
         .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
         .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
         .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
@@ -148,7 +153,9 @@ class NewTravelBloc {
 
     message += "\n¡Muchas gracias!";
 
-    return await sendWhatsAppMessage("5491158424244", message);
+    return await sendWhatsAppMessage("5491158424244", message);*/
+    apiService.confirmTravelRequest(_currentTravelEstimation.value.id);
+    return true;
   }
 
   void dispose() {

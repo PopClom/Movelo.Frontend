@@ -1,5 +1,6 @@
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 
@@ -11,6 +12,8 @@ class TravelsBloc {
   BehaviorSubject<List<Travel>> get travels => _travels;
 
   Future<void> fetchTravels() async {
+    List<Travel> travels2 = await apiService.getTravels();
+    print(travels2.length);
     //List<Travel> travels = await apiService.getTravels();
     List<Travel> travels = [new Travel(id: 5, /*status: TravelStatus.PendingDriver,*/ estimatedPrice: 4500)];
     _travels.sink.add(travels);

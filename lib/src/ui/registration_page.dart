@@ -217,13 +217,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
-                          'assets/images/logos/logo-movelo.png',
-                          width: MediaQuery.of(context).size.width * 0.75
-                      ),
                       Text(
                         'Completá tu registro',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       SizedBox(height: 15),
                       _inputFieldsWidget(),

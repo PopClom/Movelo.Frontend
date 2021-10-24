@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
@@ -120,12 +121,12 @@ class _LoginPageState extends State<LoginPage> {
         if (authBloc.isSessionValid.hasValue && authBloc.isSessionValid.value) {
           Navigator.pushReplacementNamed(
             context,
-            LoginPage.routeName,
+            LandingPage.routeName,
           );
         } else {
           Navigator.pushReplacementNamed(
             context,
-            NewTravelPage.routeName,
+            RegistrationPage.routeName,
             arguments: SignUpArgs(_email, _password, _firstName, _lastName),
           );
         }

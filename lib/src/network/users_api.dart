@@ -3,10 +3,11 @@ import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
+import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
 part 'users_api.g.dart';
 
-@RestApi(baseUrl: 'https://localhost:44312/api/users/')
+@RestApi(baseUrl: Constants.BASE_URL + 'users/')
 abstract class UsersAPI {
   factory UsersAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());

@@ -94,11 +94,13 @@ class _NewTravelPageState extends State<NewTravelPage> {
       }
 
       if(completed == true) {
-        travelEstimation =  CancelableOperation.fromFuture(
+        travelEstimation = CancelableOperation.fromFuture(
             bloc.submit()
         );
         bloc.changeIsSubmitting(true);
         travelEstimation.then((estimation) {
+          Travel travelEstimation = estimation;
+          print(travelEstimation.status.label);
           bloc.changeCurrentTravelEstimation(estimation);
           bloc.changeIsSubmitting(false);
         });
@@ -173,6 +175,18 @@ class _NewTravelPageState extends State<NewTravelPage> {
             ],
           ),
         ),
+    );
+  }
+
+  _buildTitle() {
+    return Center(
+      child: Text(
+          "Cotizá tu envío con nosotros",
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 25
+          )
+      ),
     );
   }
 
@@ -261,7 +275,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                 }
               }
           ),
-          SizedBox(height: 14),
+          SizedBox(height: 20),
           deviceWidth > 500 ? Row(
             children: [
               Expanded(
@@ -269,7 +283,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDriverHandlesLoading(),
-                    SizedBox(height: 12),
+                    SizedBox(height: 16),
                     _buildFitsInElevator(),
                   ],
                 ),
@@ -280,7 +294,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildNumberOfHelpers(),
-                    SizedBox(height: 14),
+                    SizedBox(height: 18),
                     _buildNumberOfFloors(),
                   ],
                 ),
@@ -290,11 +304,11 @@ class _NewTravelPageState extends State<NewTravelPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildDriverHandlesLoading(),
-                SizedBox(height: 14),
+                SizedBox(height: 15),
                 _buildNumberOfHelpers(),
-                SizedBox(height: 14),
+                SizedBox(height: 15),
                 _buildFitsInElevator(),
-                SizedBox(height: 14),
+                SizedBox(height: 15),
                 _buildNumberOfFloors(),
               ],
           ),
@@ -524,20 +538,15 @@ class _NewTravelPageState extends State<NewTravelPage> {
     return StreamBuilder(
         stream: bloc.numberOfHelpers,
         builder: (context, snap) {
-          return DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: 'Cantidad de ayudantes',
-              labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.2),
-              isDense: true,
-            ),
-            onChanged: (value) => bloc.changeNumberOfHelpers(value),
-            value: snap.hasData ? snap.data : null,
-            onTap: () => FocusManager.instance.primaryFocus.unfocus(),
-            items: [
-              DropdownMenuItem(child: Text("0"), value: 0),
-              DropdownMenuItem(child: Text("1"), value: 1),
-              DropdownMenuItem(child: Text("2"), value: 2),
-            ],
+          return _buildDropDown(
+              'Cantidad de ayudantes',
+              snap.hasData ? snap.data : null,
+              (value) => bloc.changeNumberOfHelpers(value),
+              [
+                DropdownMenuItem(child: Text("0"), value: 0),
+                DropdownMenuItem(child: Text("1"), value: 1),
+                DropdownMenuItem(child: Text("2"), value: 2),
+              ]
           );
         }
     );
@@ -563,6 +572,15 @@ class _NewTravelPageState extends State<NewTravelPage> {
                 labelText: 'Cantidad de pisos',
                 labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.3),
                 isDense: true,
+                fillColor: Color(0xfff3f3f4),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    style: BorderStyle.solid,
+                  ),
+                ),
               ),
               onChanged: (val) => bloc.changeNumberOfFloors(int.tryParse(val)),
               keyboardType: TextInputType.number
@@ -575,19 +593,14 @@ class _NewTravelPageState extends State<NewTravelPage> {
     return StreamBuilder(
       stream: bloc.fitsInElevator,
       builder: (context, snap) {
-        return DropdownButtonFormField(
-          decoration: InputDecoration(
-            labelText: 'Entra en el ascensor',
-            labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.2),
-            isDense: true,
-          ),
-          onChanged: (value) => bloc.changeFitsInElevator(value == 2),
-          onTap: () => FocusManager.instance.primaryFocus.unfocus(),
-          value: snap.hasData && snap.data ? 2 : 1,
-          items: [
-            DropdownMenuItem(child: Text("No"), value: 1),
-            DropdownMenuItem(child: Text("Sí"), value: 2),
-          ],
+        return _buildDropDown(
+            'Entra en el ascensor',
+            snap.hasData && snap.data ? 2 : 1,
+            (value) => bloc.changeFitsInElevator(value == 2),
+            [
+              DropdownMenuItem(child: Text("No"), value: 1),
+              DropdownMenuItem(child: Text("Sí"), value: 2),
+            ]
         );
       },
     );
@@ -597,50 +610,56 @@ class _NewTravelPageState extends State<NewTravelPage> {
     return StreamBuilder(
       stream: bloc.driverLoadingAndUnloadingIntStatus,
       builder: (context, snap) {
-        return DropdownButtonFormField(
-          decoration: InputDecoration(
-            labelText: 'El fletero...',
-            labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.2),
-            isDense: true,
-          ),
-          onChanged: (value) {
-            bloc.changeDriverLoadingAndUnloadingIntStatus(value);
-            if(value == 1) {
-              bloc.changeDriverHandlesLoading(true);
-              bloc.changeDriverHandlesUnloading(false);
-            } else if(value == 2) {
-              bloc.changeDriverHandlesLoading(false);
-              bloc.changeDriverHandlesUnloading(true);
-            } else if(value == 3) {
-              bloc.changeDriverHandlesLoading(true);
-              bloc.changeDriverHandlesUnloading(true);
-            } else if(value == 4) {
-              bloc.changeDriverHandlesLoading(false);
-              bloc.changeDriverHandlesUnloading(false);
-            }
-          },
-          onTap: () => FocusManager.instance.primaryFocus.unfocus(),
-          value: snap.data,
-          items: [
-            DropdownMenuItem(child: Text("Carga"), value: 1),
-            DropdownMenuItem(child: Text("Descarga"), value: 2),
-            DropdownMenuItem(child: Text("Carga y descarga"), value: 3),
-            DropdownMenuItem(child: Text("NO carga NI descarga"), value: 4),
-          ],
+        return _buildDropDown(
+            'El fletero...',
+            snap.data,
+            (value) {
+              bloc.changeDriverLoadingAndUnloadingIntStatus(value);
+              if(value == 1) {
+                bloc.changeDriverHandlesLoading(true);
+                bloc.changeDriverHandlesUnloading(false);
+              } else if(value == 2) {
+                bloc.changeDriverHandlesLoading(false);
+                bloc.changeDriverHandlesUnloading(true);
+              } else if(value == 3) {
+                bloc.changeDriverHandlesLoading(true);
+                bloc.changeDriverHandlesUnloading(true);
+              } else if(value == 4) {
+                bloc.changeDriverHandlesLoading(false);
+                bloc.changeDriverHandlesUnloading(false);
+              }
+            },
+            [
+              DropdownMenuItem(child: Text("Carga"), value: 1),
+              DropdownMenuItem(child: Text("Descarga"), value: 2),
+              DropdownMenuItem(child: Text("Carga y descarga"), value: 3),
+              DropdownMenuItem(child: Text("NO carga NI descarga"), value: 4),
+            ]
         );
       },
     );
   }
 
-  _buildTitle() {
-    return Center(
-      child: Text(
-          "Cotizá tu viaje con nosotros",
-          style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 25
-          )
+  _buildDropDown(labelText, value, onChanged, items) {
+    return DropdownButtonFormField(
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.2),
+        isDense: true,
+        fillColor: Color(0xfff3f3f4),
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(
+            width: 1.0,
+            style: BorderStyle.solid,
+          ),
+        ),
       ),
+      onChanged: onChanged,
+      onTap: () => FocusManager.instance.primaryFocus.unfocus(),
+      value: value,
+      items: items,
     );
   }
 }

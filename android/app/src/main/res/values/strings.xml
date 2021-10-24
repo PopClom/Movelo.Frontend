@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fletes31</string>
-    <string name="facebook_app_id">871698410048244</string>
-    <string name="fb_login_protocol_scheme">fb871698410048244</string>
+    <string name="app_name">Movelo</string>
+    <string name="facebook_app_id">402647127967687</string>
+    <string name="fb_login_protocol_scheme">fb402647127967687</string>
 </resources>

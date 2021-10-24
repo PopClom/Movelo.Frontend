@@ -1,5 +1,4 @@
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

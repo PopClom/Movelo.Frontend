@@ -73,11 +73,12 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<void> confirmTravelRequest() async {
+  Future<void> confirmTravelRequest(id) async {
+    ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('{id}/confirm',
+    await _dio.request<void>('$id/confirm',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -89,11 +90,12 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<void> claimTravel() async {
+  Future<void> claimTravel(id) async {
+    ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('{id}/claim',
+    await _dio.request<void>('$id/claim',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -105,11 +107,12 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<void> startTravel() async {
+  Future<void> startTravel(id) async {
+    ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('{id}/start',
+    await _dio.request<void>('$id/start',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -129,23 +132,6 @@ class _TravelAPI implements TravelAPI {
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    return null;
-  }
-
-  @override
-  Future<void> confirmTravel(id) async {
-    ArgumentError.checkNotNull(id, 'id');
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    await _dio.request<void>('travels/$id/confirm',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'POST',
             headers: <String, dynamic>{},
             extra: _extra,
             baseUrl: baseUrl),

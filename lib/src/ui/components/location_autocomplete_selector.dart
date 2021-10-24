@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';

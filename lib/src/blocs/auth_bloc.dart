@@ -79,6 +79,10 @@ class AuthBloc {
     _isSessionValid.sink.add(false);
   }
 
+  String getToken() {
+    return _tokenString;
+  }
+
   void dispose() {
     _isSessionValid.close();
   }
