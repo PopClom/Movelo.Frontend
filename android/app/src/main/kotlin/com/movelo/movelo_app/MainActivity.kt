@@ -1,4 +1,4 @@
-package com.fletes31.fletes_31_app
+package com.movelo.movelo_app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,7 +4,6 @@ import 'package:fletes_31_app/src/network/users_api.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 
-
 class RegistrationBloc {
   final apiService = UsersAPI(Dio());
 

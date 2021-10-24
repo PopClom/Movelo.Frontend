@@ -1,3 +1,5 @@
+import 'package:fletes_31_app/src/ui/landing_page.dart';
+import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      logo: 'images/logo-fletes31.png',
+      logo: 'assets/images/logos/logo-movelo-white.png',
       onLogin: _loginUser,
       onSignup: _signupUser,
       emailValidator: _emailValidator,
@@ -119,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
         if (authBloc.isSessionValid.hasValue && authBloc.isSessionValid.value) {
           Navigator.pushReplacementNamed(
             context,
-            LoginPage.routeName,
+            LandingPage.routeName,
           );
         } else {
           Navigator.pushReplacementNamed(
