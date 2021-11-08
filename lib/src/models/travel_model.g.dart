@@ -10,21 +10,33 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
   return Travel(
     id: json['id'] as int,
     requestingUserId: json['requestingUserId'] as int,
-    requestedVehicleTypeId: json['requestedVehicleTypeId'] as int,
+    requestedVehicleType: json['requestedVehicleType'] == null
+        ? null
+        : VehicleType.fromJson(
+            json['requestedVehicleType'] as Map<String, dynamic>),
     status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
     driverId: json['driverId'] as int,
+    origin: json['origin'] == null
+        ? null
+        : Location.fromJson(json['origin'] as Map<String, dynamic>),
+    destination: json['destination'] == null
+        ? null
+        : Location.fromJson(json['destination'] as Map<String, dynamic>),
     estimatedPrice: (json['estimatedPrice'] as num)?.toDouble(),
-  )..estimatedRoute = json['estimatedRoute'] == null
-      ? null
-      : Route.fromJson(json['estimatedRoute'] as Map<String, dynamic>);
+    estimatedRoute: json['estimatedRoute'] == null
+        ? null
+        : Route.fromJson(json['estimatedRoute'] as Map<String, dynamic>),
+  );
 }
 
 Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'id': instance.id,
       'requestingUserId': instance.requestingUserId,
-      'requestedVehicleTypeId': instance.requestedVehicleTypeId,
+      'requestedVehicleType': instance.requestedVehicleType,
       'status': _$TravelStatusEnumMap[instance.status],
       'driverId': instance.driverId,
+      'origin': instance.origin,
+      'destination': instance.destination,
       'estimatedPrice': instance.estimatedPrice,
       'estimatedRoute': instance.estimatedRoute,
     };

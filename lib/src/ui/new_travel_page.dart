@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:fletes_31_app/src/ui/components/map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
@@ -26,7 +27,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
   final NewTravelBloc bloc = NewTravelBloc();
 
   Map<String, Marker> mapMarkers = new Map();
-  GoogleMapController mapController;
   CancelableOperation travelEstimation;
 
   String _initialOriginString;
@@ -34,59 +34,11 @@ class _NewTravelPageState extends State<NewTravelPage> {
   bool _initialArgsLoaded = false;
 
   void _onMapCreated(GoogleMapController controller) async {
-    mapController = controller;
-
     bloc.informMapLoaded(true);
-  }
-
-  Future<void> updateCameraLocation(
-      LatLng source,
-      LatLng destination,
-      GoogleMapController mapController,
-      ) async {
-    if (mapController == null) return;
-
-    LatLngBounds bounds;
-
-    if (source.latitude > destination.latitude &&
-        source.longitude > destination.longitude) {
-      bounds = LatLngBounds(southwest: destination, northeast: source);
-    } else if (source.longitude > destination.longitude) {
-      bounds = LatLngBounds(
-          southwest: LatLng(source.latitude, destination.longitude),
-          northeast: LatLng(destination.latitude, source.longitude));
-    } else if (source.latitude > destination.latitude) {
-      bounds = LatLngBounds(
-          southwest: LatLng(destination.latitude, source.longitude),
-          northeast: LatLng(source.latitude, destination.longitude));
-    } else {
-      bounds = LatLngBounds(southwest: source, northeast: destination);
-    }
-
-    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 70);
-
-    return checkCameraLocation(cameraUpdate, mapController);
-  }
-
-  Future<void> checkCameraLocation(
-      CameraUpdate cameraUpdate, GoogleMapController mapController) async {
-    mapController.animateCamera(cameraUpdate);
-    LatLngBounds l1 = await mapController.getVisibleRegion();
-    LatLngBounds l2 = await mapController.getVisibleRegion();
-
-    if (l1.southwest.latitude == -90 || l2.southwest.latitude == -90) {
-      return checkCameraLocation(cameraUpdate, mapController);
-    }
   }
 
   @override
   void initState() {
-    bloc.originAndDestinationMarkers.listen((List<Marker> markerList) {
-      if(markerList.isNotEmpty) {
-        updateCameraLocation(markerList[0].position, markerList.length == 2 ? markerList[1].position : markerList[0].position, mapController);
-      }
-    });
-
     bloc.formCompleted.listen((completed) async {
       if (travelEstimation != null) {
         travelEstimation.cancel();
@@ -99,8 +51,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
         );
         bloc.changeIsSubmitting(true);
         travelEstimation.then((estimation) {
-          Travel travelEstimation = estimation;
-          print(travelEstimation.status.label);
           bloc.changeCurrentTravelEstimation(estimation);
           bloc.changeIsSubmitting(false);
         });
@@ -110,12 +60,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
     });
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
   }
 
   @override
@@ -404,13 +348,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
                   stream: bloc.originAndDestinationMarkers,
                   builder: (context, snapshot) {
                     List<Marker> markerList = snapshot.data;
-                    return GoogleMap(
-                      markers: markerList != null ? markerList.toSet() : {},
+                    return MapView(
+                      markers: bloc.originAndDestinationMarkers,
                       onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target: const LatLng(-34.60360641689277, -58.381548944057414),
-                        zoom: 13,
-                      ),
                     );
                   },
                 ),

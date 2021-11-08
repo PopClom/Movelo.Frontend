@@ -49,6 +49,7 @@ dependencies:
   json_annotation: ^3.1.1
   url_launcher: ^6.0.10
   carousel_slider: ^3.0.0
+  sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

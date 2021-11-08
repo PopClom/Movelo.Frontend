@@ -38,10 +38,12 @@ class _TravelsPageState extends State<TravelsPage> {
                 SizedBox(height: 6),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                  child: Text('Solicitudes',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3
+                  child: Text(
+                      "Solicitudes",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 25
+                      )
                   ),
                 ),
                 StreamBuilder<List<Travel>>(
@@ -56,91 +58,12 @@ class _TravelsPageState extends State<TravelsPage> {
                               return buildCompleteCard(context, snap.data[index]);
                             });
                       } else {
-                        return Container();
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
                     }
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => null));
-                  },
-                  child: Card(
-                    shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none),
-                    margin: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                    color: Colors.white,
-                    elevation: 1,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Stack(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(
-                                        'assets/images/map_icon.png',
-                                        height: 70,
-                                        width: 70,
-                                        fit: BoxFit.fill,
-                                      )),
-                                  SizedBox(width: 15),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Origen: Av. Córdoba 2190, CABA',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15),
-                                      ),
-                                      Text(
-                                        'Destino: Juan B. Justo 576, CABA',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15),
-                                      ),
-                                      SizedBox(height: 6),
-                                      Text(
-                                        'Flete mediano',
-                                        style: Theme.of(context).textTheme.subtitle2,
-                                      ),
-                                      Text('Duración estimada: 43 minutos (4.8km)',
-                                          style: Theme.of(context).textTheme.subtitle2
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                            BorderRadius.vertical(bottom: Radius.circular(8)),
-                            color: Colors.grey[100],
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 11.0, vertical: 12),
-                          child: Row(
-                            children: [
-                              buildGreyColumn(context, 'Pago', '\$${3400}'),
-                              Spacer(),
-                              buildGreyColumn(context, 'Medio de pago', 'En efectivo'),
-                              Spacer(),
-                              buildGreyColumn(context, 'Estado del pedido', 'Confirmado',
-                                  text2Color: Theme.of(context).primaryColor),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
               //),
               // beginOffset: Offset(0, 0.3),
@@ -155,18 +78,26 @@ class _TravelsPageState extends State<TravelsPage> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => null));
+            context, MaterialPageRoute(builder: (context) => null)
+        );
       },
       child: Card(
+        elevation: 8,
         shape: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none),
+            borderSide: BorderSide.none
+        ),
         margin: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        color: Colors.white,
-        elevation: 1,
         child: Column(
           children: [
-            buildItem(context, travel),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                BorderRadius.vertical(top: Radius.circular(8)),
+                color: Colors.deepPurple,
+              ),
+              child: buildItem(context, travel),
+            ),
             buildOrderInfoRow(context, travel),
           ],
         ),
@@ -188,7 +119,7 @@ class _TravelsPageState extends State<TravelsPage> {
           Spacer(),
           buildGreyColumn(context, 'Medio de pago', 'En efectivo'),
           Spacer(),
-          buildGreyColumn(context, 'Estado del pedido', /*travel.status.label*/"asd",
+          buildGreyColumn(context, 'Estado del pedido', travel.status.label,
               text2Color: Theme.of(context).primaryColor),
         ],
       ),
@@ -207,8 +138,8 @@ class _TravelsPageState extends State<TravelsPage> {
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
                     'assets/images/map_icon.png',
-                    height: 70,
-                    width: 70,
+                    height: 60,
+                    width: 60,
                     fit: BoxFit.fill,
                   )),
               SizedBox(width: 15),
@@ -217,23 +148,23 @@ class _TravelsPageState extends State<TravelsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Origen: Av. del Libertador 2417, CABA',
+                    'Origen: ' + (travel.origin.name != null ? travel.origin.name : 'Desconocido'),
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15),
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15, color: Colors.white),
                   ),
                   Text(
-                    'Destino: Helguera 1323, CABA',
+                    'Destino: ' + (travel.destination.name != null ? travel.destination.name : 'Desconocido'),
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15),
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15, color: Colors.white),
                   ),
                   SizedBox(height: 6),
                   Text(
-                    'Flete mediano',
-                    style: Theme.of(context).textTheme.subtitle2,
+                    "07/11/2021 a las 13.45",
+                    style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70),
                   ),
                   SizedBox(height: 16),
                   Text('Duración estimada: 55 minutos (5.3km)',
-                      style: Theme.of(context).textTheme.subtitle2
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70)
                   ),
                 ],
               ),
@@ -286,128 +217,3 @@ class _TravelsPageState extends State<TravelsPage> {
     );
   }
 }
-
-
-/*
-
-CircleAvatar buildStatusIcon(IconData icon, {bool disabled = false}) =>
-      CircleAvatar(
-          backgroundColor: !disabled ? Color(0xff222e3e) : Colors.grey[300],
-          child: Icon(
-            icon,
-            size: 20,
-            color: !disabled
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).scaffoldBackgroundColor,
-          ));
-
-* Card(
-              elevation: 3,
-              shape: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none),
-              margin: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-              color: Colors.white,
-              child: Column(
-                children: [
-                  buildItem(context, 'assets/images/seller1.png', 'Ni idea',
-                      '2 items'),
-                  buildOrderInfoRow(context, '\$30.50', 'En efectivo',
-                      'En camino',
-                      borderRadius: 0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 12),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            buildStatusIcon(Icons.done_all),
-                            Text('------'),
-                            buildStatusIcon(Icons.assignment_returned),
-                            Text('------'),
-                            buildStatusIcon(Icons.directions_bike),
-                            Text('------'),
-                            buildStatusIcon(Icons.navigation),
-                            Text('------'),
-                            buildStatusIcon(Icons.home, disabled: true),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Asignado' + '  ',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                'Empacando',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                'En camino',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                'Localizar',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                ' ' + 'Entregado',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.grey[100],
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Items pedidos',
-                          style: Theme.of(context).textTheme.subtitle2,
-                        ),
-                        buildAmountRow('Cebollas moradas frescas', '\$14.00'),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Qnt. 1',
-                            style: Theme.of(context).textTheme.subtitle2),
-                        buildAmountRow('Dedos de dama frescos', '\$14.00'),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Qnt. 1',
-                            style: Theme.of(context).textTheme.subtitle2),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8, bottom: 10, top: 5),
-                    child: Column(
-                      children: [
-                        buildAmountRow('Envio gratis', '\$4.50'),
-                        buildAmountRow('Cupon de descuento', '-\$2.00'),
-                        buildAmountRow('Total a pagar', '\$30.50',
-                            fontWeight: FontWeight.w700),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-* */

@@ -36,11 +36,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
               filled: true,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide(width: 1.5, color: Colors.orange),
+                borderSide: BorderSide(width: 1.5, color: Colors.deepPurpleAccent),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide(width: 1.5, color: Colors.red),
+                borderSide: BorderSide(width: 1.5, color: Colors.deepPurpleAccent),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
@@ -79,7 +79,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               filled: true,
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide(width: 1.5, color: Colors.orange),
+                borderSide: BorderSide(width: 1.5, color: Colors.deepPurpleAccent),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
@@ -133,7 +133,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         blurRadius: 5,
                         spreadRadius: 2)
                   ],
-                  color: snap.hasData ? Colors.orange : Colors.grey.shade300),
+                  color: snap.hasData ? Colors.deepPurple : Colors.grey.shade300),
               child: Text(
                 'Continuar',
                 style: TextStyle(fontSize: 20, color: Colors.white),

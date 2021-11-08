@@ -1,6 +1,7 @@
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
+import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
@@ -60,7 +61,7 @@ List<NavBarItem> navBarItems = [
     onTap: () {
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
-        ContactUsPage.routeName,
+        TravelsPage.routeName,
       );
     },
   ),
@@ -93,8 +94,9 @@ class MyApp extends StatelessWidget {
       navigatorKey: Navigation.navigationKey,
       routes: {
         LoginPage.routeName: (context) => _withScaffold(LoginPage()),
-        //RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
-        //TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+        RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
+        TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
+        TravelDetailPage.routeName: (context) => _withScaffold(TravelDetailPage()),
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
         ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),

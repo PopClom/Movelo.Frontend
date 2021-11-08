@@ -105,11 +105,22 @@ class NewTravelBloc {
               && driverLoadingAndUnloadingFilled != null);
 
   Future<Travel> submit() async {
+    GooglePlacesDetails origin = _originPlacesDetails.value;
+    GooglePlacesDetails destination = _destinationPlacesDetails.value;
+
     return apiService.createTravelRequest(
       TravelPricingRequest(
         vehicleTypeId: _selectedVehicleType.value.id,
-        origin: _originPlacesDetails.value.geometry.location,
-        destination: _destinationPlacesDetails.value.geometry.location,
+        origin: new Location(
+          name: origin.name,
+          lat: origin.geometry.location.lat,
+          lng: origin.geometry.location.lng,
+        ),
+        destination: new Location(
+          name: destination.name,
+          lat: destination.geometry.location.lat,
+          lng: destination.geometry.location.lng,
+        ),
         departureTime: DateTime.now(),
         driverHandlesLoading: _driverHandlesLoading.value,
         driverHandlesUnloading: _driverHandlesUnloading.value,
