@@ -16,6 +16,11 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
             json['requestedVehicleType'] as Map<String, dynamic>),
     status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
     driverId: json['driverId'] as int,
+    driverHandlesLoading: json['driverHandlesLoading'] as bool,
+    driverHandlesUnloading: json['driverHandlesUnloading'] as bool,
+    fitsInElevator: json['fitsInElevator'] as bool,
+    requiredAssistants: json['requiredAssistants'] as int,
+    numberOfFloors: json['numberOfFloors'] as int,
     origin: json['origin'] == null
         ? null
         : Location.fromJson(json['origin'] as Map<String, dynamic>),
@@ -35,6 +40,11 @@ Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'requestedVehicleType': instance.requestedVehicleType,
       'status': _$TravelStatusEnumMap[instance.status],
       'driverId': instance.driverId,
+      'driverHandlesLoading': instance.driverHandlesLoading,
+      'driverHandlesUnloading': instance.driverHandlesUnloading,
+      'fitsInElevator': instance.fitsInElevator,
+      'requiredAssistants': instance.requiredAssistants,
+      'numberOfFloors': instance.numberOfFloors,
       'origin': instance.origin,
       'destination': instance.destination,
       'estimatedPrice': instance.estimatedPrice,

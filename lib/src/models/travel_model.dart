@@ -33,6 +33,11 @@ class Travel {
   VehicleType requestedVehicleType;
   TravelStatus status;
   int driverId;
+  bool driverHandlesLoading;
+  bool driverHandlesUnloading;
+  bool fitsInElevator;
+  int requiredAssistants;
+  int numberOfFloors;
 
   Location origin;
   Location destination;
@@ -46,6 +51,11 @@ class Travel {
     this.requestedVehicleType,
     this.status,
     this.driverId,
+    this.driverHandlesLoading,
+    this.driverHandlesUnloading,
+    this.fitsInElevator,
+    this.requiredAssistants,
+    this.numberOfFloors,
     this.origin,
     this.destination,
     this.estimatedPrice,

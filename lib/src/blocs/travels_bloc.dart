@@ -13,16 +13,15 @@ class TravelsBloc {
   BehaviorSubject<List<Travel>> get travels => _travels;
 
   Future<void> fetchTravels() async {
-    //List<Travel> travels = await apiService.getTravels();
-    //print(travels.length);
-    List<Travel> travels = [new Travel(
+    List<Travel> travels = await apiService.getTravels();
+    /*List<Travel> travels = [new Travel(
         id: 5,
         requestedVehicleType: VehicleType(name: "Auto"),
         origin: Location(),
         destination: Location(),
         status: TravelStatus.PendingDriver,
         estimatedPrice: 4500
-    )];
+    )];*/
     _travels.sink.add(travels);
   }
 

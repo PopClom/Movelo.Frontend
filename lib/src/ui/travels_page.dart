@@ -1,8 +1,11 @@
 // import 'package:animation_wrappers/animation_wrappers.dart';
 import 'dart:math';
 import 'package:fletes_31_app/src/blocs/travels_bloc.dart';
+import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
+import 'package:flutter/rendering.dart';
 
 class MyOrderItem {
   MyOrderItem(this.img, this.name);
@@ -18,14 +21,19 @@ class TravelsPage extends StatefulWidget {
 }
 
 class _TravelsPageState extends State<TravelsPage> {
-  @override
-  Widget build(BuildContext context) {
-    final TravelsBloc bloc = TravelsBloc();
+  final TravelsBloc bloc = TravelsBloc();
 
+  @override
+  void initState() {
+    bloc.fetchTravels();
+
+    super.initState();
+  }
+
+    @override
+  Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final width = min(deviceSize.width, 560.0);
-
-    bloc.fetchTravels();
 
     return Container(
         alignment: Alignment.center,
@@ -39,7 +47,7 @@ class _TravelsPageState extends State<TravelsPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   child: Text(
-                      "Solicitudes",
+                      'Solicitudes',
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 25
@@ -65,41 +73,41 @@ class _TravelsPageState extends State<TravelsPage> {
                     }
                 ),
               ],
-              //),
-              // beginOffset: Offset(0, 0.3),
-              // endOffset: Offset(0, 0),
-              // slideCurve: Curves.linearToEaseOut,
             ),
-        )//FadedSlideAnimation(
+        )
       );
   }
 
-  GestureDetector buildCompleteCard(BuildContext context, Travel travel) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => null)
-        );
-      },
-      child: Card(
-        elevation: 8,
-        shape: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none
-        ),
-        margin: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.vertical(top: Radius.circular(8)),
-                color: Colors.deepPurple,
+  Widget buildCompleteCard(BuildContext context, Travel travel) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            Navigation.navigationKey.currentContext,
+            TravelDetailPage.routeName.replaceAll(':id', travel.id.toString()),
+          );
+        },
+        child: Card(
+          elevation: 8,
+          shape: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none
+          ),
+          margin: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(8)),
+                  color: Colors.deepPurple,
+                ),
+                child: buildItem(context, travel),
               ),
-              child: buildItem(context, travel),
-            ),
-            buildOrderInfoRow(context, travel),
-          ],
+              buildOrderInfoRow(context, travel),
+            ],
+          ),
         ),
       ),
     );
@@ -115,11 +123,11 @@ class _TravelsPageState extends State<TravelsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 11.0, vertical: 12),
       child: Row(
         children: [
-          buildGreyColumn(context, 'Pago', '\$${travel.estimatedPrice.toStringAsFixed(2)}'),
+          buildGreyColumn(context, 'Total', '\$${travel.estimatedPrice.toStringAsFixed(2)}'),
           Spacer(),
           buildGreyColumn(context, 'Medio de pago', 'En efectivo'),
           Spacer(),
-          buildGreyColumn(context, 'Estado del pedido', travel.status.label,
+          buildGreyColumn(context, 'Estado del envío', travel.status.label,
               text2Color: Theme.of(context).primaryColor),
         ],
       ),
@@ -138,35 +146,37 @@ class _TravelsPageState extends State<TravelsPage> {
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
                     'assets/images/map_icon.png',
-                    height: 60,
-                    width: 60,
+                    height: 50,
+                    width: 50,
                     fit: BoxFit.fill,
                   )),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'Origen: ' + (travel.origin.name != null ? travel.origin.name : 'Desconocido'),
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15, color: Colors.white),
-                  ),
-                  Text(
-                    'Destino: ' + (travel.destination.name != null ? travel.destination.name : 'Desconocido'),
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 15, color: Colors.white),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    "07/11/2021 a las 13.45",
-                    style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70),
-                  ),
-                  SizedBox(height: 16),
-                  Text('Duración estimada: 55 minutos (5.3km)',
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70)
-                  ),
-                ],
+              SizedBox(width: 10),
+              Expanded(child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Origen: ' + (travel.origin.name != null ? travel.origin.name : 'Desconocido'),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 14, color: Colors.white),
+                    ),
+                    Text(
+                      'Destino: ' + (travel.destination.name != null ? travel.destination.name : 'Desconocido'),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 14, color: Colors.white),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "07/11/2021 a las 13.45",
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70),
+                    ),
+                    SizedBox(height: 16),
+                    Text('Duración estimada: 55 minutos (5.3km)',
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70)
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -203,13 +213,13 @@ class _TravelsPageState extends State<TravelsPage> {
         Text(text1,
             style: Theme.of(context).textTheme.subtitle2
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 2),
         LimitedBox(
           child: Text(text2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 15,
+                  fontSize: 14,
                   color: text2Color)
           ),
         ),

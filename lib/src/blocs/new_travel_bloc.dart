@@ -112,12 +112,12 @@ class NewTravelBloc {
       TravelPricingRequest(
         vehicleTypeId: _selectedVehicleType.value.id,
         origin: new Location(
-          name: origin.name,
+          name: origin.formattedAddress,
           lat: origin.geometry.location.lat,
           lng: origin.geometry.location.lng,
         ),
         destination: new Location(
-          name: destination.name,
+          name: destination.formattedAddress,
           lat: destination.geometry.location.lat,
           lng: destination.geometry.location.lng,
         ),

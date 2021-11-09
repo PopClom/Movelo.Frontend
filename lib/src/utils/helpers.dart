@@ -51,3 +51,7 @@ String generatePassword(bool _isWithLetters, bool _isWithUppercase,
 
   return _result;
 }
+
+String booleanToWord(bool boolean) {
+  return boolean != null && boolean ? 'Sí' : 'No';
+}

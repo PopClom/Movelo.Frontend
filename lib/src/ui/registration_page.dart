@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:fletes_31_app/src/ui/login_page.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/blocs/registration_bloc.dart';
@@ -198,7 +199,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     } catch (err) {
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacementNamed(
-          context,
+          Navigation.navigationKey.currentContext,
           LoginPage.routeName,
         );
       });

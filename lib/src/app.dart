@@ -96,10 +96,20 @@ class MyApp extends StatelessWidget {
         LoginPage.routeName: (context) => _withScaffold(LoginPage()),
         RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
         TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
-        TravelDetailPage.routeName: (context) => _withScaffold(TravelDetailPage()),
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
         ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
+      },
+      onGenerateRoute: (routeSettings) {
+        RegExp travelRegExp = RegExp(r'^\/travels\/([0-9]+)\/?$');
+        if (routeSettings.name != null && travelRegExp.hasMatch(routeSettings.name)) {
+          final int travelId = int.parse(travelRegExp.firstMatch(routeSettings.name).group(1));
+          return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (context) => _withScaffold(TravelDetailPage(travelId)),
+          );
+        }
+        return null;
       },
       theme: theme,
       title: 'Movelo',

@@ -1,6 +1,7 @@
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/utils/sign_up_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -120,12 +121,12 @@ class _LoginPageState extends State<LoginPage> {
       onSubmitAnimationCompleted: () {
         if (authBloc.isSessionValid.hasValue && authBloc.isSessionValid.value) {
           Navigator.pushReplacementNamed(
-            context,
+            Navigation.navigationKey.currentContext,
             LandingPage.routeName,
           );
         } else {
           Navigator.pushReplacementNamed(
-            context,
+            Navigation.navigationKey.currentContext,
             RegistrationPage.routeName,
             arguments: SignUpArgs(_email, _password, _firstName, _lastName),
           );
