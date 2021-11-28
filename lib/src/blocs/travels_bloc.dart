@@ -2,6 +2,9 @@ import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
+import 'package:fletes_31_app/src/utils/flushbar.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 
@@ -13,7 +16,18 @@ class TravelsBloc {
   BehaviorSubject<List<Travel>> get travels => _travels;
 
   Future<void> fetchTravels() async {
-    List<Travel> travels = await apiService.getTravels();
+    try {
+      List<Travel> travels = await apiService.getTravels();
+      _travels.sink.add(travels);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudieron cargar tus envíos'
+        );
+      }
+    }
+
     /*List<Travel> travels = [new Travel(
         id: 5,
         requestedVehicleType: VehicleType(name: "Auto"),
@@ -22,7 +36,6 @@ class TravelsBloc {
         status: TravelStatus.PendingDriver,
         estimatedPrice: 4500
     )];*/
-    _travels.sink.add(travels);
   }
 
   void updateTravel(Travel travel) {

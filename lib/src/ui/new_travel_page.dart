@@ -344,15 +344,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(20))
                 ),
-                child: StreamBuilder(
-                  stream: bloc.originAndDestinationMarkers,
-                  builder: (context, snapshot) {
-                    List<Marker> markerList = snapshot.data;
-                    return MapView(
-                      markers: bloc.originAndDestinationMarkers,
-                      onMapCreated: _onMapCreated,
-                    );
-                  },
+                child: MapView(
+                  markers: bloc.originAndDestinationMarkers,
+                  onMapCreated: _onMapCreated,
                 ),
               ),
               Container(

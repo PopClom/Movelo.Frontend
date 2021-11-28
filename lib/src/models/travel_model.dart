@@ -38,6 +38,7 @@ class Travel {
   bool fitsInElevator;
   int requiredAssistants;
   int numberOfFloors;
+  String transportedObjectDescription;
 
   Location origin;
   Location destination;
@@ -56,6 +57,7 @@ class Travel {
     this.fitsInElevator,
     this.requiredAssistants,
     this.numberOfFloors,
+    this.transportedObjectDescription,
     this.origin,
     this.destination,
     this.estimatedPrice,

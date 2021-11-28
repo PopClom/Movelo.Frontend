@@ -47,7 +47,7 @@ class _TravelsPageState extends State<TravelsPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   child: Text(
-                      'Solicitudes',
+                      'Mis envíos',
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 25
@@ -58,13 +58,27 @@ class _TravelsPageState extends State<TravelsPage> {
                     stream: bloc.travels,
                     builder: (context, snap) {
                       if (snap.hasData) {
-                        return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: snap.data.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return buildCompleteCard(context, snap.data[index]);
-                            });
+                        if (snap.data.isEmpty) {
+                          return Container(
+                            margin: EdgeInsets.symmetric(horizontal: 35.0),
+                            child: Text(
+                                'No tienes envíos actualmente.\n¡Solicitá tu primer envío desde el cotizador!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
+                                ),
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snap.data.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return buildCompleteCard(context, snap.data[index]);
+                              });
+                        }
                       } else {
                         return Center(
                           child: CircularProgressIndicator(),

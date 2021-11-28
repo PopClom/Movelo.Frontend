@@ -18,34 +18,55 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   GoogleMapController mapController;
+  List<Marker> markerList;
 
   @override
   void initState() {
-    if (widget.markers != null) {
-      widget.markers.listen((List<Marker> markerList) {
-        if (markerList.isNotEmpty) {
-          updateCameraLocation(markerList[0].position, markerList.length == 2 ? markerList[1].position : markerList[0].position, mapController);
-        }
-      });
-    }
+    widget.markers.listen((List<Marker> markerList) {
+      if (markerList.isNotEmpty) {
+        updateCameraLocation(
+            markerList[0].position,
+            markerList.length == 2 ? markerList[1].position : markerList[0].position,
+            mapController
+        );
+
+        setState(() {
+          this.markerList = markerList;
+        });
+      }
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      scrollGesturesEnabled: widget.scrollable,
-      markers: {},
-      onMapCreated: widget.onMapCreated != null ? (controller) {
-        widget.onMapCreated(controller);
-        _onMapCreated(controller);
-      } : _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: const LatLng(-34.60360641689277, -58.381548944057414),
-        zoom: 13,
-      ),
+    Function(GoogleMapController) onMapCreated = widget.onMapCreated != null ? (controller) {
+      widget.onMapCreated(controller);
+      _onMapCreated(controller);
+    } : _onMapCreated;
+
+    CameraPosition initialCameraPosition = CameraPosition(
+      target: const LatLng(-34.60360641689277, -58.381548944057414),
+      zoom: 13,
     );
+
+
+    if (widget.markers != null) {
+      return GoogleMap(
+        scrollGesturesEnabled: widget.scrollable,
+        markers: markerList != null ? markerList.toSet() : {},
+        onMapCreated: onMapCreated,
+        initialCameraPosition: initialCameraPosition,
+      );
+    } else {
+      return GoogleMap(
+        scrollGesturesEnabled: widget.scrollable,
+        markers: {},
+        onMapCreated: onMapCreated,
+        initialCameraPosition: initialCameraPosition,
+      );
+    }
   }
 
   @override

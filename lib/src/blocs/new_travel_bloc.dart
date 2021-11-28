@@ -3,7 +3,12 @@ import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
+import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/flushbar.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/utils/whatsapp.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:dio/dio.dart';
@@ -54,34 +59,24 @@ class NewTravelBloc {
   Stream<bool> get isSubmitting => _isSubmitting.stream;
   Stream<bool> get mapLoaded => _mapLoaded.stream;
 
-  Stream<List<Marker>> get originAndDestinationMarkers => Rx.combineLatest3(originPlacesDetails, destinationPlacesDetails, mapLoaded,
-          (GooglePlacesDetails origin, GooglePlacesDetails destination, bool mapLoaded)
-          {
-            Marker placeToMarker(dynamic place, String name) {
-              return new Marker(
-                markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
-                position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
-                infoWindow: InfoWindow(
-                  title: name,
-                  snippet: place.name,
-                ),
-              );
-            }
+  Stream<List<Marker>> get originAndDestinationMarkers => Rx.combineLatest3(
+      originPlacesDetails, destinationPlacesDetails, mapLoaded, (
+      GooglePlacesDetails origin, GooglePlacesDetails destination, bool mapLoaded) {
+        if(origin == null || destination == null) {
+          if(origin != null)
+            return [_placeToMarker(origin, "Origen")];
+          else if(destination != null)
+            return [_placeToMarker(destination, "Destino")];
+          else
+            return [];
+        }
 
-            if(origin == null || destination == null) {
-              if(origin != null)
-                return [placeToMarker(origin, "Origen")];
-              else if(destination != null)
-                return [placeToMarker(destination, "Destino")];
-              else
-                return [];
-            }
-
-            return [
-              placeToMarker(origin, "Origen"),
-              placeToMarker(destination, "Destino"),
-            ];
-          });
+        return [
+          _placeToMarker(origin, "Origen"),
+          _placeToMarker(destination, "Destino"),
+        ];
+      }
+  );
 
   Stream<bool> get transportedObjectsDetailsFilled => transportedObjectsDetails.map(
           (details) => details != null && details.trim() != '');
@@ -131,7 +126,7 @@ class NewTravelBloc {
     );
   }
 
-  Future<bool> confirmTravelRequest() async {
+  Future<void> confirmTravelRequest() async {
     /*String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
         .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
         .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
@@ -165,8 +160,36 @@ class NewTravelBloc {
     message += "\n¡Muchas gracias!";
 
     return await sendWhatsAppMessage("5491158424244", message);*/
-    apiService.confirmTravelRequest(_currentTravelEstimation.value.id);
-    return true;
+    int id = _currentTravelEstimation.value.id;
+
+    try {
+      changeIsSubmitting(true);
+      await apiService.confirmTravelRequest(id);
+      Navigator.pushReplacementNamed(
+        Navigation.navigationKey.currentContext,
+        TravelDetailPage.routeName.replaceAll(':id', id.toString()),
+      );
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo realizar el pedido'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Marker _placeToMarker(dynamic place, String name) {
+    return new Marker(
+      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
+      infoWindow: InfoWindow(
+        title: name,
+        snippet: place.name,
+      ),
+    );
   }
 
   void dispose() {

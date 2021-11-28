@@ -1,5 +1,7 @@
+import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:dio/dio.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 
@@ -7,6 +9,13 @@ class TravelDetailBloc {
   final apiService = TravelAPI(Dio());
 
   final BehaviorSubject<Travel> _travel = BehaviorSubject<Travel>();
+
+  Stream<List<Marker>> get originAndDestinationMarkers => _travel.map((travel) {
+    return [
+      _locationToMarker(travel.origin, "Origen"),
+      _locationToMarker(travel.destination, "Destino"),
+    ];
+  });
 
   BehaviorSubject<Travel> get travel => _travel;
 
@@ -27,6 +36,17 @@ class TravelDetailBloc {
       ),
     );*/
     _travel.sink.add(travel);
+  }
+
+  Marker _locationToMarker(Location location, String name) {
+    return new Marker(
+      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      position: LatLng(location.lat, location.lng),
+      infoWindow: InfoWindow(
+        title: name,
+        snippet: location.name.split(",")[0],
+      ),
+    );
   }
 
   dispose() {
