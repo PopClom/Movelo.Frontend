@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatelessWidget {
   const Footer({ Key key }) : super(key: key);
@@ -9,7 +10,7 @@ class Footer extends StatelessWidget {
         alignment: Alignment.topCenter,
         children: [
           Image.asset(
-            'assets/images/footer.png',
+            'assets/images/ornaments/footer.png',
             fit: BoxFit.fitHeight,
             height: 184,
           ),
@@ -28,21 +29,41 @@ class Footer extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SelectableText(
-                          'hola.movelo@gmail.com',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                        InkWell(
+                          child: Text(
+                            'hola.movelo@gmail.com',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
+                          onTap: () {
+                            const url = 'mailto:hola.movelo@gmail.com';
+                            canLaunch(url).then((result) => {
+                              if (result) {
+                                launch(url)
+                              }
+                            });
+                          },
                         ),
-                        SelectableText(
-                          '@movelo.ar',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                        InkWell(
+                          child: Text(
+                            '@movelo.ar',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
+                          onTap: () {
+                            const url = 'https://www.instagram.com/movelo.ar/';
+                            canLaunch(url).then((result) => {
+                              if (result) {
+                                launch(url)
+                              }
+                            });
+                          },
                         ),
                       ],
                     )

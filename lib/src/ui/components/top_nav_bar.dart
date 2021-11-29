@@ -10,8 +10,9 @@ class TopNavBar extends StatefulWidget {
   final List<NavBarItem> navBarItems;
 
   TopNavBar({
+    Key key,
     this.navBarItems,
-  });
+  }): super(key: key);
 
   @override
   _TopNavBarState createState() => _TopNavBarState();

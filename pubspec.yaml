@@ -76,6 +76,7 @@ flutter:
     - assets/images/contactus/
     - assets/images/landing/
     - assets/images/logos/
+    - assets/images/ornaments/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

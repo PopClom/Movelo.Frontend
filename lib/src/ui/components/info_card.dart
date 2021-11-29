@@ -49,7 +49,7 @@ class _InfoCardState extends State<InfoCard> {
                 ),
               ),
               Image.asset(
-                'assets/images/smile-fluor.png',
+                'assets/images/ornaments/smile-fluor.png',
                 height: 25,
               ),
               SizedBox(height: 20),

@@ -25,7 +25,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                 fontFamily: 'Poppins',
                 color: Colors.black,
                 fontSize: 25,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
             SizedBox(height: 60),

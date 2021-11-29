@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -17,5 +18,6 @@ void main() {
     );
   }
   setPathUrlStrategy();
+  authBloc.restoreSession();
   runApp(MyApp());
 }

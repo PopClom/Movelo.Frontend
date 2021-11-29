@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
@@ -37,59 +38,12 @@ ThemeData theme = ThemeData(
   ),
 );
 
-List<NavBarItem> navBarItems = [
-  NavBarItem(
-    text: 'QUIENES SOMOS',
-    onTap: () {
-      Navigator.pushNamed(
-        Navigation.navigationKey.currentContext,
-        AboutUsPage.routeName,
-      );
-    },
-  ),
-  NavBarItem(
-    text: 'COTIZÁ',
-    onTap: () {
-      Navigator.pushNamed(
-        Navigation.navigationKey.currentContext,
-        NewTravelPage.routeName,
-      );
-    },
-  ),
-  NavBarItem(
-    text: 'CONTACTANOS',
-    onTap: () {
-      Navigator.pushNamed(
-        Navigation.navigationKey.currentContext,
-        TravelsPage.routeName,
-      );
-    },
-  ),
-  NavBarItem(
-    text: '@movelo.ar',
-    onTap: () {
-      const url = 'https://www.instagram.com/movelo.ar/';
-      canLaunch(url).then((result) => {
-        if (result) {
-          launch(url)
-        }
-      });
-    },
-  ),
-  /*NavBarItem(
-    text: 'INGRESÁ',
-    onTap: () {
-      Navigator.pushNamed(
-        Navigation.navigationKey.currentContext,
-        LoginPage.routeName,
-      );
-    },
-  ),*/
-];
-
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
       routes: {
@@ -127,8 +81,103 @@ class MyApp extends StatelessWidget {
             body: page,
           )
         ),
-        TopNavBar(navBarItems: navBarItems),
+        StreamBuilder<bool>(
+            stream: authBloc.isSessionValid,
+            builder: (context, snap) {
+              if (snap.hasData && snap.data) {
+                return TopNavBar(
+                    key: UniqueKey(),
+                    navBarItems: navBarItemsLogged
+                );
+              } else {
+                return TopNavBar(
+                    key: UniqueKey(),
+                    navBarItems: navBarItemsNotLogged
+                );
+              }
+            }
+        ),
       ],
     );
   }
 }
+
+List<NavBarItem> navBarItemsLogged = [
+  NavBarItem(
+    text: 'COTIZÁ',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        NewTravelPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'QUIENES SOMOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        AboutUsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'MIS ENVÍOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        TravelsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CERRAR SESIÓN',
+    onTap: () {
+      authBloc.closeSession();
+      Navigator.pushNamedAndRemoveUntil(
+          Navigation.navigationKey.currentContext,'/',(_) => false
+      );
+    },
+  ),
+];
+
+List<NavBarItem> navBarItemsNotLogged = [
+  NavBarItem(
+    text: 'COTIZÁ',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        NewTravelPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'QUIENES SOMOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        AboutUsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'INGRESÁ',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        LoginPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: '@movelo.ar',
+    onTap: () {
+      const url = 'https://www.instagram.com/movelo.ar/';
+      canLaunch(url).then((result) => {
+        if (result) {
+          launch(url)
+        }
+      });
+    },
+  ),
+];

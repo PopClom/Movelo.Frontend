@@ -91,7 +91,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   children: deviceSize.width > 1000 ? [
-                    SizedBox(height: 10),
+                    SizedBox(height: 20),
                     _buildTitle(),
                     SizedBox(height: 10),
                     Row(
