@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:name="ar.com.movelo.android"
         android:icon="@mipmap/ic_launcher"
         android:label="movelo_app">
 
