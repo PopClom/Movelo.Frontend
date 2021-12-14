@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:async/async.dart';
@@ -368,9 +369,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
                           child: IntrinsicWidth(child: StreamBuilder(
                             stream: bloc.currentTravelEstimation,
                             builder: (context, snapshot) {
-                              Travel travelEstimation = snapshot.data;
-
                               if(snapshot.hasData && !snapshot.hasError && snapshot.data != null) {
+                                Travel travelEstimation = (snapshot.data as TravelPricingResult).travel;
                                 return Column(
                                   children: [
                                     Container(

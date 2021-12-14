@@ -54,7 +54,7 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<Travel> createTravelRequest(travelPricingRequest) async {
+  Future<TravelPricingResult> createTravelRequest(travelPricingRequest) async {
     ArgumentError.checkNotNull(travelPricingRequest, 'travelPricingRequest');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -68,17 +68,18 @@ class _TravelAPI implements TravelAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    final value = Travel.fromJson(_result.data);
+    final value = TravelPricingResult.fromJson(_result.data);
     return value;
   }
 
   @override
-  Future<void> confirmTravelRequest(id) async {
-    ArgumentError.checkNotNull(id, 'id');
+  Future<Travel> confirmTravelRequest(travelCreate) async {
+    ArgumentError.checkNotNull(travelCreate, 'travelCreate');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('$id/confirm',
+    _data.addAll(travelCreate?.toJson() ?? <String, dynamic>{});
+    final _result = await _dio.request<Map<String, dynamic>>('confirm',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -86,7 +87,8 @@ class _TravelAPI implements TravelAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    return null;
+    final value = Travel.fromJson(_result.data);
+    return value;
   }
 
   @override

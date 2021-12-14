@@ -1,7 +1,7 @@
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'travel_pricing_request_model.g.dart';
+part 'travel_pricing_request_dto.g.dart';
 
 
 @JsonSerializable()

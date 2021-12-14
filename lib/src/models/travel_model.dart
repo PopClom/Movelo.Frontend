@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'travel_model.g.dart';
 
 enum TravelStatus {
-  PendingUserConfirmation,
+  PendingClientConfirmation,
   PendingDriver,
   ConfirmedAndPendingStart,
   InProcess,
@@ -19,7 +19,7 @@ extension TravelStatusExt on TravelStatus {
     TravelStatus.ConfirmedAndPendingStart: 'Confirmado',
     TravelStatus.PendingDriver: 'Buscando conductor',
     TravelStatus.InProcess: 'En curso',
-    TravelStatus.PendingUserConfirmation: 'Esperando confirmación',
+    TravelStatus.PendingClientConfirmation: 'Esperando confirmación',
   };
 
   String get label => labels[this];

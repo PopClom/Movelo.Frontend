@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'travel_pricing_request_model.dart';
+part of 'travel_pricing_request_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

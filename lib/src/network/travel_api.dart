@@ -1,4 +1,6 @@
-import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
@@ -23,10 +25,10 @@ abstract class TravelAPI {
   Future<Travel> getTravelById(@Path("id") int id);
 
   @POST('')
-  Future<Travel> createTravelRequest(@Body() TravelPricingRequest travelPricingRequest);
+  Future<TravelPricingResult> createTravelRequest(@Body() TravelPricingRequest travelPricingRequest);
 
-  @PUT('{id}/confirm')
-  Future<void> confirmTravelRequest(@Path("id") int id);
+  @PUT('confirm')
+  Future<Travel> confirmTravelRequest(@Body() TravelCreate travelCreate);
 
   @PUT('{id}/claim')
   Future<void> claimTravel(@Path("id") int id);

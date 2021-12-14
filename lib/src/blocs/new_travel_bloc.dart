@@ -1,6 +1,8 @@
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
-import 'package:fletes_31_app/src/models/travel_pricing_request_model.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
+import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
@@ -26,7 +28,7 @@ class NewTravelBloc {
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
-  final BehaviorSubject<Travel> _currentTravelEstimation = BehaviorSubject<Travel>();
+  final BehaviorSubject<TravelPricingResult> _currentTravelEstimation = BehaviorSubject<TravelPricingResult>();
   final BehaviorSubject<bool> _isSubmitting = BehaviorSubject<bool>.seeded(false);
   //TODO evitar esta monstruosidad de dejar esto abierto
   final BehaviorSubject<bool> _mapLoaded = BehaviorSubject<bool>();
@@ -41,7 +43,7 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
-  Function(Travel) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
+  Function(TravelPricingResult) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
   Function(bool) get changeIsSubmitting => _isSubmitting.sink.add;
   Function(bool) get informMapLoaded => _mapLoaded.sink.add;
 
@@ -55,7 +57,7 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
-  Stream<Travel> get currentTravelEstimation => _currentTravelEstimation.stream;
+  Stream<TravelPricingResult> get currentTravelEstimation => _currentTravelEstimation.stream;
   Stream<bool> get isSubmitting => _isSubmitting.stream;
   Stream<bool> get mapLoaded => _mapLoaded.stream;
 
@@ -99,7 +101,7 @@ class NewTravelBloc {
               && transportedObjectsDetailsFilled
               && driverLoadingAndUnloadingFilled != null);
 
-  Future<Travel> submit() async {
+  Future<TravelPricingResult> submit() async {
     GooglePlacesDetails origin = _originPlacesDetails.value;
     GooglePlacesDetails destination = _destinationPlacesDetails.value;
 
@@ -160,14 +162,18 @@ class NewTravelBloc {
     message += "\n¡Muchas gracias!";
 
     return await sendWhatsAppMessage("5491158424244", message);*/
-    int id = _currentTravelEstimation.value.id;
 
     try {
       changeIsSubmitting(true);
-      await apiService.confirmTravelRequest(id);
+      Travel travel = await apiService.confirmTravelRequest(
+        TravelCreate(
+          travelPricingToken: _currentTravelEstimation.value.travelPricingToken,
+          transportedObjectDescription: _transportedObjectsDetails.value,
+        )
+      );
       Navigator.pushReplacementNamed(
         Navigation.navigationKey.currentContext,
-        TravelDetailPage.routeName.replaceAll(':id', id.toString()),
+        TravelDetailPage.routeName.replaceAll(':id', travel.id.toString()),
       );
     } catch(err) {
       if (is4xxError(err)) {

@@ -9,7 +9,7 @@ part of 'users_api.dart';
 class _UsersAPI implements UsersAPI {
   _UsersAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/users/';
+    baseUrl ??= 'https://localhost:44312/api/profiles/';
   }
 
   final Dio _dio;
@@ -59,7 +59,7 @@ class _UsersAPI implements UsersAPI {
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(user?.toJson() ?? <String, dynamic>{});
-    final _result = await _dio.request<String>('',
+    final _result = await _dio.request<String>('clients',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'POST',

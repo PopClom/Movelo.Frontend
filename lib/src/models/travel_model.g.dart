@@ -21,6 +21,8 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
     fitsInElevator: json['fitsInElevator'] as bool,
     requiredAssistants: json['requiredAssistants'] as int,
     numberOfFloors: json['numberOfFloors'] as int,
+    transportedObjectDescription:
+        json['transportedObjectDescription'] as String,
     origin: json['origin'] == null
         ? null
         : Location.fromJson(json['origin'] as Map<String, dynamic>),
@@ -45,6 +47,7 @@ Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'fitsInElevator': instance.fitsInElevator,
       'requiredAssistants': instance.requiredAssistants,
       'numberOfFloors': instance.numberOfFloors,
+      'transportedObjectDescription': instance.transportedObjectDescription,
       'origin': instance.origin,
       'destination': instance.destination,
       'estimatedPrice': instance.estimatedPrice,
@@ -84,7 +87,7 @@ T _$enumDecodeNullable<T>(
 }
 
 const _$TravelStatusEnumMap = {
-  TravelStatus.PendingUserConfirmation: 'PendingUserConfirmation',
+  TravelStatus.PendingClientConfirmation: 'PendingClientConfirmation',
   TravelStatus.PendingDriver: 'PendingDriver',
   TravelStatus.ConfirmedAndPendingStart: 'ConfirmedAndPendingStart',
   TravelStatus.InProcess: 'InProcess',
