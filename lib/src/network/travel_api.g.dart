@@ -9,7 +9,7 @@ part of 'travel_api.dart';
 class _TravelAPI implements TravelAPI {
   _TravelAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/travels/';
+    baseUrl ??= 'https://movelo.com.ar/api/travels/';
   }
 
   final Dio _dio;

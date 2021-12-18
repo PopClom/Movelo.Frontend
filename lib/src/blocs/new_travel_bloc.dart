@@ -129,7 +129,7 @@ class NewTravelBloc {
   }
 
   Future<void> confirmTravelRequest() async {
-    /*String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
+    String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
         .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
         .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
         .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
@@ -161,9 +161,9 @@ class NewTravelBloc {
 
     message += "\n¡Muchas gracias!";
 
-    return await sendWhatsAppMessage("5491158424244", message);*/
+    return await sendWhatsAppMessage("5491158424244", message);
 
-    try {
+    /*try {
       changeIsSubmitting(true);
       Travel travel = await apiService.confirmTravelRequest(
         TravelCreate(
@@ -184,7 +184,7 @@ class NewTravelBloc {
       }
     } finally {
       changeIsSubmitting(false);
-    }
+    }*/
   }
 
   Marker _placeToMarker(dynamic place, String name) {

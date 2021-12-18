@@ -42,16 +42,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
+    
     return MaterialApp(
       navigatorKey: Navigation.navigationKey,
       routes: {
-        LoginPage.routeName: (context) => _withScaffold(LoginPage()),
         RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
-        TravelsPage.routeName: (context) => _withScaffold(TravelsPage()),
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
-        ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
       },
       onGenerateRoute: (routeSettings) {
@@ -157,15 +153,6 @@ List<NavBarItem> navBarItemsNotLogged = [
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         AboutUsPage.routeName,
-      );
-    },
-  ),
-  NavBarItem(
-    text: 'INGRESÁ',
-    onTap: () {
-      Navigator.pushNamed(
-        Navigation.navigationKey.currentContext,
-        LoginPage.routeName,
       );
     },
   ),
