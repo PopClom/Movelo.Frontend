@@ -88,4 +88,42 @@ class _UsersAPI implements UsersAPI {
     final value = CheckEmail.fromJson(_result.data);
     return value;
   }
+
+  @override
+  Future<TravelList> getClientTravels(id) async {
+    ArgumentError.checkNotNull(id, 'id');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        'clients/$id/travels',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = TravelList.fromJson(_result.data);
+    return value;
+  }
+
+  @override
+  Future<TravelList> getDriverTravels(id) async {
+    ArgumentError.checkNotNull(id, 'id');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        'drivers/$id/travels',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = TravelList.fromJson(_result.data);
+    return value;
+  }
 }

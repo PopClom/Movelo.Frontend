@@ -1,6 +1,7 @@
 import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
+import 'package:fletes_31_app/src/models/travel_list_model.dart';
 import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
@@ -18,11 +19,11 @@ abstract class TravelAPI {
     return _TravelAPI(dio, baseUrl: baseUrl);
   }
 
-  @GET('')
-  Future<List<Travel>> getTravels();
-
   @GET('{id}')
   Future<Travel> getTravelById(@Path("id") int id);
+
+  @GET('potential')
+  Future<List<Travel>> getPotentialTravels();
 
   @POST('')
   Future<TravelPricingResult> createTravelRequest(@Body() TravelPricingRequest travelPricingRequest);

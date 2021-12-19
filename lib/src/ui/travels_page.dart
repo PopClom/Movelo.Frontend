@@ -1,5 +1,6 @@
 // import 'package:animation_wrappers/animation_wrappers.dart';
 import 'dart:math';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/blocs/travels_bloc.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
@@ -43,6 +44,49 @@ class _TravelsPageState extends State<TravelsPage> {
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
+                authBloc.isDriver() ? SizedBox(height: 6) : Container(),
+                authBloc.isDriver() ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  child: Text(
+                      'Solicitudes',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 25
+                      )
+                  ),
+                ) : Container(),
+                authBloc.isDriver() ? StreamBuilder<List<Travel>>(
+                    stream: bloc.potentialTravels,
+                    builder: (context, snap) {
+                      if (snap.hasData) {
+                        if (snap.data.isEmpty) {
+                          return Container(
+                            margin: EdgeInsets.symmetric(horizontal: 35.0),
+                            child: Text(
+                              'No hay solicitudes actualmente.\n¡Acá van a aparecer los pedidos de los clientes para que los aceptes!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snap.data.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return buildCompleteCard(context, snap.data[index]);
+                              });
+                        }
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }
+                ) : Container(),
                 SizedBox(height: 6),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
@@ -62,12 +106,14 @@ class _TravelsPageState extends State<TravelsPage> {
                           return Container(
                             margin: EdgeInsets.symmetric(horizontal: 35.0),
                             child: Text(
-                                'No tienes envíos actualmente.\n¡Solicitá tu primer envío desde el cotizador!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 20,
-                                ),
+                              authBloc.isClient() ?
+                              'No tenés envíos actualmente.\n¡Solicitá tu primer envío desde el cotizador!' :
+                              'No tenés envíos actualmente.\n¡Acá van a aparecer los pedidos de los clientes que aceptaste!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                              ),
                             ),
                           );
                         } else {

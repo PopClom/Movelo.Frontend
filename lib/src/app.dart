@@ -85,10 +85,17 @@ class MyApp extends StatelessWidget {
             stream: authBloc.isSessionValid,
             builder: (context, snap) {
               if (snap.hasData && snap.data) {
-                return TopNavBar(
-                    key: UniqueKey(),
-                    navBarItems: navBarItemsLogged
-                );
+                if (authBloc.isClient()) {
+                  return TopNavBar(
+                      key: UniqueKey(),
+                      navBarItems: navBarItemsClientLogged
+                  );
+                } else {
+                  return TopNavBar(
+                      key: UniqueKey(),
+                      navBarItems: navBarItemsDriverLogged
+                  );
+                }
               } else {
                 return TopNavBar(
                     key: UniqueKey(),
@@ -102,7 +109,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-List<NavBarItem> navBarItemsLogged = [
+List<NavBarItem> navBarItemsClientLogged = [
   NavBarItem(
     text: 'COTIZÁ',
     onTap: () {
@@ -137,6 +144,47 @@ List<NavBarItem> navBarItemsLogged = [
       Navigator.pushNamedAndRemoveUntil(
           Navigation.navigationKey.currentContext,'/',(_) => false
       );
+    },
+  ),
+];
+
+List<NavBarItem> navBarItemsDriverLogged = [
+  NavBarItem(
+    text: 'QUIENES SOMOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        AboutUsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'MIS ENVÍOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        TravelsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CERRAR SESIÓN',
+    onTap: () {
+      authBloc.closeSession();
+      Navigator.pushNamedAndRemoveUntil(
+          Navigation.navigationKey.currentContext,'/',(_) => false
+      );
+    },
+  ),
+  NavBarItem(
+    text: '@movelo.ar',
+    onTap: () {
+      const url = 'https://www.instagram.com/movelo.ar/';
+      canLaunch(url).then((result) => {
+        if (result) {
+          launch(url)
+        }
+      });
     },
   ),
 ];

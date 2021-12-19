@@ -17,25 +17,6 @@ class _TravelAPI implements TravelAPI {
   String baseUrl;
 
   @override
-  Future<List<Travel>> getTravels() async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.request<List<dynamic>>('',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'GET',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    var value = _result.data
-        .map((dynamic i) => Travel.fromJson(i as Map<String, dynamic>))
-        .toList();
-    return value;
-  }
-
-  @override
   Future<Travel> getTravelById(id) async {
     ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
@@ -50,6 +31,25 @@ class _TravelAPI implements TravelAPI {
             baseUrl: baseUrl),
         data: _data);
     final value = Travel.fromJson(_result.data);
+    return value;
+  }
+
+  @override
+  Future<List<Travel>> getPotentialTravels() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<List<dynamic>>('potential',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    var value = _result.data
+        .map((dynamic i) => Travel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 

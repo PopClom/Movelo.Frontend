@@ -1,4 +1,6 @@
 import 'package:fletes_31_app/src/models/check_email_model.dart';
+import 'package:fletes_31_app/src/models/travel_list_model.dart';
+import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -11,6 +13,7 @@ part 'users_api.g.dart';
 abstract class UsersAPI {
   factory UsersAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());
+    dio.interceptors.add(AuthenticationInterceptor());
     return _UsersAPI(dio, baseUrl: baseUrl);
   }
 
@@ -25,4 +28,10 @@ abstract class UsersAPI {
 
   @GET('verify-email')
   Future<CheckEmail> checkEmailAvailable(@Query('email') String email);
+
+  @GET('clients/{id}/travels')
+  Future<TravelList> getClientTravels(@Path('id') id);
+
+  @GET('drivers/{id}/travels')
+  Future<TravelList> getDriverTravels(@Path('id') id);
 }

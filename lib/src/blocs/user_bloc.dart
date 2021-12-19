@@ -9,7 +9,7 @@ class UserBloc {
 
   final BehaviorSubject<User> _user = BehaviorSubject<User>();
 
-  BehaviorSubject<User> get subject => _user;
+  BehaviorSubject<User> get user => _user;
 
   void setUser(User user) {
     _user.sink.add(user);
