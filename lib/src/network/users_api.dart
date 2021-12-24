@@ -1,9 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:fletes_31_app/src/models/check_email_model.dart';
 import 'package:fletes_31_app/src/models/travel_list_model.dart';
 import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
-import 'package:retrofit/retrofit.dart';
-import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
 import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
@@ -34,4 +35,7 @@ abstract class UsersAPI {
 
   @GET('drivers/{id}/travels')
   Future<TravelList> getDriverTravels(@Path('id') id);
+
+  @GET('drivers/{id}/vehicles')
+  Future<List<Vehicle>> getDriverVehicles(@Path('id') id);
 }

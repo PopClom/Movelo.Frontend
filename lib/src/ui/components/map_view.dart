@@ -21,25 +21,6 @@ class _MapViewState extends State<MapView> {
   List<Marker> markerList;
 
   @override
-  void initState() {
-    widget.markers.listen((List<Marker> markerList) {
-      if (markerList.isNotEmpty) {
-        updateCameraLocation(
-            markerList[0].position,
-            markerList.length == 2 ? markerList[1].position : markerList[0].position,
-            mapController
-        );
-
-        setState(() {
-          this.markerList = markerList;
-        });
-      }
-    });
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Function(GoogleMapController) onMapCreated = widget.onMapCreated != null ? (controller) {
       widget.onMapCreated(controller);
@@ -50,7 +31,6 @@ class _MapViewState extends State<MapView> {
       target: const LatLng(-34.60360641689277, -58.381548944057414),
       zoom: 13,
     );
-
 
     if (widget.markers != null) {
       return GoogleMap(
@@ -71,7 +51,8 @@ class _MapViewState extends State<MapView> {
 
   @override
   void dispose() {
-    mapController.dispose();
+    if (mapController != null)
+      mapController.dispose();
     super.dispose();
   }
 
@@ -107,6 +88,20 @@ class _MapViewState extends State<MapView> {
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+
+    widget.markers.listen((List<Marker> markerList) {
+      if (markerList.isNotEmpty) {
+        updateCameraLocation(
+            markerList[0].position,
+            markerList.length == 2 ? markerList[1].position : markerList[0].position,
+            mapController
+        );
+
+        setState(() {
+          this.markerList = markerList;
+        });
+      }
+    });
   }
 
   Future<void> checkCameraLocation(

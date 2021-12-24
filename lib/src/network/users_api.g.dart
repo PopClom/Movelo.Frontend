@@ -126,4 +126,24 @@ class _UsersAPI implements UsersAPI {
     final value = TravelList.fromJson(_result.data);
     return value;
   }
+
+  @override
+  Future<List<Vehicle>> getDriverVehicles(id) async {
+    ArgumentError.checkNotNull(id, 'id');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<List<dynamic>>('drivers/$id/vehicles',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    var value = _result.data
+        .map((dynamic i) => Vehicle.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
 }

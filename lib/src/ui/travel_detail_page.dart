@@ -127,6 +127,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     ),
                     _buildDescription('Detalle de la carga', travel.transportedObjectDescription),
                     _buildDescription('Medio de pago', 'En efectivo'),
+                    SizedBox(height: 28.0),
+                    _buildContinueButton(),
                     SizedBox(
                       height: 24,
                     ),
@@ -188,6 +190,58 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           Text(description != null ? description : ''),
         ],
       ),
+    );
+  }
+
+  Widget _buildContinueButton() {
+    return TextButton(
+        onPressed: () async {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('AlertDialog Title'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: const <Widget>[
+                      Text('This is a demo alert dialog.'),
+                      Text('Would you like to approve of this message?'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Approve'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: Container(
+          height: 45,
+          width: 180,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.shade200,
+                    offset: Offset(2, 4),
+                    blurRadius: 5,
+                    spreadRadius: 2)
+              ],
+              color: true ? Colors.deepPurple : Colors.grey.shade300),
+          child: Text(
+            'Aceptar envío',
+            style: TextStyle(fontSize: 15, color: Colors.white),
+          ),
+        )
     );
   }
 }

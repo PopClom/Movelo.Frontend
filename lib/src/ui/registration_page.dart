@@ -122,8 +122,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
         return TextButton(
             onPressed: (!snap.hasData) ? null : bloc.submit,
             child: Container(
+              height: 50,
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(vertical: 15),
+              padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -137,7 +138,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   color: snap.hasData ? Colors.deepPurple : Colors.grey.shade300),
               child: Text(
                 'Continuar',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             )
         );

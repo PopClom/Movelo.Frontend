@@ -443,7 +443,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                       padding: EdgeInsets.all(5),
                                       child: Center(
                                         child: Text(
-                                          "Por favor, complete el formulario.",
+                                          "Por favor, completá el formulario.",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.white,

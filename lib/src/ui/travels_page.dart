@@ -44,7 +44,7 @@ class _TravelsPageState extends State<TravelsPage> {
             child: ListView(
               physics: BouncingScrollPhysics(),
               children: [
-                authBloc.isDriver() ? SizedBox(height: 6) : Container(),
+                SizedBox(height: 6),
                 authBloc.isDriver() ? Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   child: Text(
@@ -87,7 +87,6 @@ class _TravelsPageState extends State<TravelsPage> {
                       }
                     }
                 ) : Container(),
-                SizedBox(height: 6),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   child: Text(
@@ -132,6 +131,7 @@ class _TravelsPageState extends State<TravelsPage> {
                       }
                     }
                 ),
+                SizedBox(height: 6),
               ],
             ),
         )
