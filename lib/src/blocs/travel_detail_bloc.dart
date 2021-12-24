@@ -1,14 +1,18 @@
+import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/utils/flushbar.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
-import 'package:dio/dio.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 
 class TravelDetailBloc {
   final apiService = TravelAPI(Dio());
 
   final BehaviorSubject<Travel> _travel = BehaviorSubject<Travel>();
+  final BehaviorSubject<bool> _isSubmitting = BehaviorSubject<bool>.seeded(false);
 
   Stream<List<Marker>> get originAndDestinationMarkers => _travel.map((travel) {
     return [
@@ -16,26 +20,33 @@ class TravelDetailBloc {
       _locationToMarker(travel.destination, "Destino"),
     ];
   });
+  Function(bool) get changeIsSubmitting => _isSubmitting.sink.add;
 
   BehaviorSubject<Travel> get travel => _travel;
+  Stream<bool> get isSubmitting => _isSubmitting.stream;
 
   Future<void> fetchTravel(int id) async {
     Travel travel = await apiService.getTravelById(id);
-    /*Travel travel = Travel(
-      id: 1,
-      requestingUserId: 1,
-      requestedVehicleType: VehicleType(name: "Auto", imageUrl: "/resources/vehicle-images/auto.png"),
-      status: TravelStatus.PendingDriver,
-      driverId: 1,
-      origin: Location(name: "Helguera 1323, CABA, dasdsa, adssad, adsads, adsdsa, dsadas"),
-      destination: Location(name: "Monroe 1161, CABA"),
-      estimatedPrice: 3550.00,
-      estimatedRoute: Route(
-        distanceInMeters: 19000,
-        travelTimeInSeconds: 360,
-      ),
-    );*/
     _travel.sink.add(travel);
+  }
+
+  Future<void> claimTravel(int id) async {
+    try {
+      print(id);
+      changeIsSubmitting(true);
+      Travel travel = await apiService.claimTravel(id, 1);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo aceptar este viaje.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
   }
 
   Marker _locationToMarker(Location location, String name) {
@@ -51,5 +62,6 @@ class TravelDetailBloc {
 
   dispose() {
     _travel.close();
+    _isSubmitting.close();
   }
 }

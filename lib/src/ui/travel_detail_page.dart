@@ -128,7 +128,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     _buildDescription('Detalle de la carga', travel.transportedObjectDescription),
                     _buildDescription('Medio de pago', 'En efectivo'),
                     SizedBox(height: 28.0),
-                    _buildContinueButton(),
+                    _buildContinueButton(travel),
                     SizedBox(
                       height: 24,
                     ),
@@ -193,55 +193,80 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     );
   }
 
-  Widget _buildContinueButton() {
+  Widget _buildContinueButton(Travel travel) {
     return TextButton(
-        onPressed: () async {
-          return showDialog<void>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('AlertDialog Title'),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: const <Widget>[
-                      Text('This is a demo alert dialog.'),
-                      Text('Would you like to approve of this message?'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('Approve'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
+        onPressed: _getOnPressedButton(
+          'Confirmá tu selección',
+          '¿Estás seguro de que querés aceptar este envío?',
+          () => bloc.claimTravel(travel.id),
+        ),
+        child: Container(
+            height: 45,
+            width: 180,
+            padding: EdgeInsets.symmetric(vertical: 10),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey.shade200,
+                      offset: Offset(2, 4),
+                      blurRadius: 5,
+                      spreadRadius: 2)
                 ],
-              );
-            },
+                color: true ? Colors.deepPurple : Colors.grey.shade300),
+            child: StreamBuilder<bool>(
+              stream: bloc.isSubmitting,
+              builder: (context, snap) {
+                return !(snap.hasData && snap.data != null && snap.data) ? Text(
+                  'Aceptar envío',
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ) : SizedBox(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                  ),
+                  height: 20.0,
+                  width: 20.0,
+                );
+              },
+            ),
+        ),
+    );
+  }
+
+  void Function() _getOnPressedButton(String title, String body, void Function() actionYes) {
+    return () async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(body),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Sí'),
+                onPressed: ()  {
+                  actionYes();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           );
         },
-        child: Container(
-          height: 45,
-          width: 180,
-          padding: EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.shade200,
-                    offset: Offset(2, 4),
-                    blurRadius: 5,
-                    spreadRadius: 2)
-              ],
-              color: true ? Colors.deepPurple : Colors.grey.shade300),
-          child: Text(
-            'Aceptar envío',
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        )
-    );
+      );
+    };
   }
 }

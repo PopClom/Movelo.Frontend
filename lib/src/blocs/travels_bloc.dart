@@ -34,19 +34,10 @@ class TravelsBloc {
       if (is4xxError(err)) {
         showErrorToast(
             Navigation.navigationKey.currentContext,
-            'Ocurrió un error', 'No se pudieron cargar tus envíos'
+            'Ocurrió un error', 'No se pudieron cargar tus envíos.'
         );
       }
     }
-
-    /*List<Travel> travels = [new Travel(
-        id: 5,
-        requestedVehicleType: VehicleType(name: "Auto"),
-        origin: Location(),
-        destination: Location(),
-        status: TravelStatus.PendingDriver,
-        estimatedPrice: 4500
-    )];*/
   }
 
   void updateTravel(Travel travel) {

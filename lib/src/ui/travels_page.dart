@@ -1,12 +1,12 @@
 // import 'package:animation_wrappers/animation_wrappers.dart';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/blocs/travels_bloc.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
-import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
-import 'package:flutter/rendering.dart';
 
 class MyOrderItem {
   MyOrderItem(this.img, this.name);

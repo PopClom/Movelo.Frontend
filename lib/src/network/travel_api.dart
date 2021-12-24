@@ -1,11 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
-import 'package:fletes_31_app/src/models/travel_list_model.dart';
 import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
-import 'package:retrofit/retrofit.dart';
-import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
@@ -32,14 +31,14 @@ abstract class TravelAPI {
   Future<Travel> confirmTravelRequest(@Body() TravelCreate travelCreate);
 
   @PUT('{id}/claim')
-  Future<void> claimTravel(@Path("id") int id);
+  Future<Travel> claimTravel(@Path("id") int id, @Body() int vehicleId);
 
   @PUT('{id}/start')
-  Future<void> startTravel(@Path("id") int id);
+  Future<Travel> startTravel(@Path("id") int id);
 
   /*@PUT('{id}/update_driver_position')
   Future<void> updateDriverPosition(Location location);*/
 
   @PUT('{id}/confirm_delivery')
-  Future<void> confirmDelivery();
+  Future<Travel> confirmDelivery();
 }

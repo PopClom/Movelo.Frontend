@@ -92,12 +92,31 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<void> claimTravel(id) async {
+  Future<Travel> claimTravel(id, vehicleId) async {
+    ArgumentError.checkNotNull(id, 'id');
+    ArgumentError.checkNotNull(vehicleId, 'vehicleId');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = vehicleId;
+    final _result = await _dio.request<Map<String, dynamic>>('$id/claim',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'PUT',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = Travel.fromJson(_result.data);
+    return value;
+  }
+
+  @override
+  Future<Travel> startTravel(id) async {
     ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('$id/claim',
+    final _result = await _dio.request<Map<String, dynamic>>('$id/start',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -105,16 +124,17 @@ class _TravelAPI implements TravelAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    return null;
+    final value = Travel.fromJson(_result.data);
+    return value;
   }
 
   @override
-  Future<void> startTravel(id) async {
-    ArgumentError.checkNotNull(id, 'id');
+  Future<Travel> confirmDelivery() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.request<void>('$id/start',
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '{id}/confirm_delivery',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',
@@ -122,22 +142,7 @@ class _TravelAPI implements TravelAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    return null;
-  }
-
-  @override
-  Future<void> confirmDelivery() async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    await _dio.request<void>('{id}/confirm_delivery',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'PUT',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    return null;
+    final value = Travel.fromJson(_result.data);
+    return value;
   }
 }
