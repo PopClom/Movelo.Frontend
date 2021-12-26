@@ -90,6 +90,7 @@ const _$TravelStatusEnumMap = {
   TravelStatus.PendingClientConfirmation: 'PendingClientConfirmation',
   TravelStatus.PendingDriver: 'PendingDriver',
   TravelStatus.ConfirmedAndPendingStart: 'ConfirmedAndPendingStart',
-  TravelStatus.InProcess: 'InProcess',
+  TravelStatus.InProgress: 'InProgress',
+  TravelStatus.CancelledByClient: 'CancelledByClient',
   TravelStatus.Completed: 'Completed',
 };

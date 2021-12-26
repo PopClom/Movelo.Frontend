@@ -9,16 +9,18 @@ enum TravelStatus {
   PendingClientConfirmation,
   PendingDriver,
   ConfirmedAndPendingStart,
-  InProcess,
+  InProgress,
+  CancelledByClient,
   Completed
 }
 
 extension TravelStatusExt on TravelStatus {
   static const Map<TravelStatus, String> labels = {
-    TravelStatus.Completed: 'Completado',
+    TravelStatus.Completed: 'Entregado',
     TravelStatus.ConfirmedAndPendingStart: 'Confirmado',
     TravelStatus.PendingDriver: 'Buscando conductor',
-    TravelStatus.InProcess: 'En curso',
+    TravelStatus.InProgress: 'En curso',
+    TravelStatus.CancelledByClient: 'Cancelado',
     TravelStatus.PendingClientConfirmation: 'Esperando confirmación',
   };
 

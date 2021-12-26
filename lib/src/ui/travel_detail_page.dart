@@ -1,9 +1,11 @@
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
+import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:fletes_31_app/src/blocs/travel_detail_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
-import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 
 class TravelDetailPage extends StatefulWidget {
   static const routeName = '/travels/:id/';
@@ -127,8 +129,10 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     ),
                     _buildDescription('Detalle de la carga', travel.transportedObjectDescription),
                     _buildDescription('Medio de pago', 'En efectivo'),
-                    SizedBox(height: 28.0),
-                    _buildContinueButton(travel),
+                    SizedBox(height: 20.0),
+                    _buildActionButton(travel),
+                    SizedBox(height: 18.0),
+                    authBloc.isClient() ? _getContactUsButton() : Container(),
                     SizedBox(
                       height: 24,
                     ),
@@ -193,33 +197,35 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     );
   }
 
-  Widget _buildContinueButton(Travel travel) {
-    return TextButton(
-        onPressed: _getOnPressedButton(
-          'Confirmá tu selección',
-          '¿Estás seguro de que querés aceptar este envío?',
-          () => bloc.claimTravel(travel.id),
-        ),
-        child: Container(
-            height: 45,
-            width: 180,
-            padding: EdgeInsets.symmetric(vertical: 10),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey.shade200,
-                      offset: Offset(2, 4),
-                      blurRadius: 5,
-                      spreadRadius: 2)
-                ],
-                color: true ? Colors.deepPurple : Colors.grey.shade300),
-            child: StreamBuilder<bool>(
-              stream: bloc.isSubmitting,
-              builder: (context, snap) {
-                return !(snap.hasData && snap.data != null && snap.data) ? Text(
-                  'Aceptar envío',
+  Widget _buildActionButton(Travel travel) {
+    if ((authBloc.isDriver() && travel.status != TravelStatus.Completed) ||
+        (authBloc.isClient() && travel.status == TravelStatus.PendingDriver)) {
+      return StreamBuilder<bool>(
+          stream: bloc.isSubmitting,
+          builder: (context, snap) {
+            bool isSubmitting = (snap.hasData && snap.data != null && snap.data);
+            return TextButton(
+              onPressed: _getOnPressedForTravel(travel),
+              child: Container(
+                height: 40,
+                width: 180,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Colors.grey.shade200,
+                          offset: Offset(2, 4),
+                          blurRadius: 5,
+                          spreadRadius: 2)
+                    ],
+                    color: isSubmitting ? Colors.grey.shade300 : (
+                        authBloc.isDriver() ? Colors.deepPurple : Colors.pink
+                    )
+                ),
+                child: !isSubmitting ? Text(
+                  _getButtonWordingForTravel(travel),
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ) : SizedBox(
                   child: CircularProgressIndicator(
@@ -227,14 +233,17 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                   ),
                   height: 20.0,
                   width: 20.0,
-                );
-              },
-            ),
-        ),
-    );
+                ),
+              ),
+            );
+          }
+      );
+    }
+
+    return Container();
   }
 
-  void Function() _getOnPressedButton(String title, String body, void Function() actionYes) {
+  void Function() _getOnPressed(String title, String body, void Function() actionYes) {
     return () async {
       return showDialog<void>(
         context: context,
@@ -268,5 +277,100 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         },
       );
     };
+  }
+
+  void Function() _getOnPressedForTravel(Travel travel) {
+    if (authBloc.isDriver()) {
+      if (travel.status == TravelStatus.PendingDriver) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          '¿Estás seguro de que querés aceptar este envío?',
+              () => bloc.claimTravel(travel.id),
+        );
+      } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          '¿Estás seguro de que querés iniciar este envío?',
+              () => bloc.startTravel(travel.id),
+        );
+      } else if (travel.status == TravelStatus.InProgress) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          '¿Estás seguro de que querés finalizar este envío?',
+              () => bloc.endTravel(travel.id),
+        );
+      }
+    }
+    return _getOnPressed(
+      'Confirmá tu selección',
+      '¿Estás seguro de que querés cancelar este envío?',
+          () => bloc.cancelTravel(travel.id),
+    );
+  }
+
+  String _getButtonWordingForTravel(Travel travel) {
+    if (authBloc.isDriver()) {
+      if (travel.status == TravelStatus.PendingDriver) {
+        return 'Aceptar envío';
+      } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
+        return 'Iniciar envío';
+      } else if (travel.status == TravelStatus.InProgress) {
+        return 'Finalizar envío';
+      }
+    }
+    return 'Cancelar envío';
+  }
+
+  Widget _getContactUsButton() {
+    return Column(
+        children: [
+          Text(
+            '¿Tenés un problema? ¡Contactanos!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          SizedBox(height: 6),
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/contactus/whatsapp-logo.png',
+                            height: 30.0,
+                          ),
+                          SizedBox(width: 10), Text(
+                            '11 5842-4244',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        sendWhatsAppMessage("5491158424244", "");
+                      },
+                    )
+                ),
+              ],
+            ),
+          ),
+        ]
+    );
   }
 }

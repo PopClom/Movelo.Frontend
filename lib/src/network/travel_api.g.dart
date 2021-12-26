@@ -129,12 +129,31 @@ class _TravelAPI implements TravelAPI {
   }
 
   @override
-  Future<Travel> confirmDelivery() async {
+  Future<Travel> confirmDelivery(id) async {
+    ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.request<Map<String, dynamic>>(
-        '{id}/confirm_delivery',
+        '$id/confirm_delivery',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'PUT',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = Travel.fromJson(_result.data);
+    return value;
+  }
+
+  @override
+  Future<Travel> cancelTravel(id) async {
+    ArgumentError.checkNotNull(id, 'id');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>('$id/cancel',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'PUT',

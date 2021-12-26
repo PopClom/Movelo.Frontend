@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/utils/flushbar.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
@@ -32,7 +32,6 @@ class TravelDetailBloc {
 
   Future<void> claimTravel(int id) async {
     try {
-      print(id);
       changeIsSubmitting(true);
       Travel travel = await apiService.claimTravel(id, 1);
       _travel.sink.add(travel);
@@ -41,7 +40,61 @@ class TravelDetailBloc {
       if (is4xxError(err)) {
         showErrorToast(
             Navigation.navigationKey.currentContext,
-            'Ocurrió un error', 'No se pudo aceptar este viaje.'
+            'Ocurrió un error', 'No se pudo aceptar este envío.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> startTravel(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.startTravel(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo iniciar este envío.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> endTravel(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.confirmDelivery(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo finalizar este envío.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> cancelTravel(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.cancelTravel(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo cancelar este envío.'
         );
       }
     } finally {

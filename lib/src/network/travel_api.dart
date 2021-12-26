@@ -40,5 +40,8 @@ abstract class TravelAPI {
   Future<void> updateDriverPosition(Location location);*/
 
   @PUT('{id}/confirm_delivery')
-  Future<Travel> confirmDelivery();
+  Future<Travel> confirmDelivery(@Path("id") int id);
+
+  @PUT('{id}/cancel')
+  Future<Travel> cancelTravel(@Path("id") int id);
 }
