@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:fletes_31_app/src/models/check_email_model.dart';
@@ -33,11 +34,15 @@ class AuthBloc {
         .then(_handleLogin);
   }
 
-  void _handleLogin(HttpResponse<User> response) {
+  void _handleLogin(HttpResponse<User> response) async {
     String token = response.response.headers.value('Authorization');
     User user = response.data;
     userBloc.setUser(user);
-    authBloc.openSession(token, user);
+    await authBloc.openSession(token, user);
+    if (isDriver()) {
+      List<Vehicle> vehicles = await apiService.getDriverVehicles(user.id);
+      userBloc.setVehicles(vehicles);
+    }
   }
 
   Future<void> signUp(String email, String password, String firstName, String lastName, String phone) {

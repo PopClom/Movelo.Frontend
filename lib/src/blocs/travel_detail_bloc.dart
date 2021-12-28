@@ -30,10 +30,10 @@ class TravelDetailBloc {
     _travel.sink.add(travel);
   }
 
-  Future<void> claimTravel(int id) async {
+  Future<void> claimTravel(int id, int vehicleId) async {
     try {
       changeIsSubmitting(true);
-      Travel travel = await apiService.claimTravel(id, 1);
+      Travel travel = await apiService.claimTravel(id, vehicleId);
       _travel.sink.add(travel);
       changeIsSubmitting(false);
     } catch(err) {

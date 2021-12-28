@@ -1,6 +1,9 @@
-import 'package:fletes_31_app/src/utils/whatsapp.dart';
+import 'package:fletes_31_app/src/blocs/user_bloc.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
 import 'package:fletes_31_app/src/blocs/travel_detail_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
@@ -21,6 +24,8 @@ class TravelDetailPage extends StatefulWidget {
 class _TravelDetailPageState extends State<TravelDetailPage> {
   final TravelDetailBloc bloc = TravelDetailBloc();
   bool scrollMap = true;
+  int _selectedVehicle;
+  BehaviorSubject<bool> _isYesButtonEnabled = BehaviorSubject<bool>.seeded(true);
 
   @override
   void initState() {
@@ -226,7 +231,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                 ),
                 child: !isSubmitting ? Text(
                   _getButtonWordingForTravel(travel),
-                  style: TextStyle(fontSize: 15, color: Colors.white),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ) : SizedBox(
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
@@ -243,7 +248,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     return Container();
   }
 
-  void Function() _getOnPressed(String title, String body, void Function() actionYes) {
+  void Function() _getOnPressed(String title, Widget body, void Function() actionYes) {
     return () async {
       return showDialog<void>(
         context: context,
@@ -252,11 +257,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           return AlertDialog(
             title: Text(title),
             content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(body),
-                ],
-              ),
+              child: body,
             ),
             actions: <Widget>[
               TextButton(
@@ -265,13 +266,18 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                   Navigator.of(context).pop();
                 },
               ),
-              TextButton(
-                child: const Text('Sí'),
-                onPressed: ()  {
-                  actionYes();
-                  Navigator.of(context).pop();
-                },
-              ),
+              StreamBuilder<bool>(
+                  stream: _isYesButtonEnabled,
+                  builder: (context, snap) {
+                    void Function() _onPressed = snap.hasData && snap.data ? () {
+                      actionYes();
+                      Navigator.of(context).pop();
+                    } : null;
+                    return TextButton(
+                      child: const Text('Sí'),
+                      onPressed: _onPressed,
+                    );
+                  }),
             ],
           );
         },
@@ -280,31 +286,35 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   }
 
   void Function() _getOnPressedForTravel(Travel travel) {
+    _isYesButtonEnabled.sink.add(true);
     if (authBloc.isDriver()) {
       if (travel.status == TravelStatus.PendingDriver) {
+        _isYesButtonEnabled.sink.add(false);
         return _getOnPressed(
           'Confirmá tu selección',
-          '¿Estás seguro de que querés aceptar este envío?',
-              () => bloc.claimTravel(travel.id),
+          ListBody(children: [
+            Text('¿Estás seguro de que querés aceptar este envío?'),
+            _dropdownSelectVehicle("Elegí un vehículo", travel),
+          ]), () => bloc.claimTravel(travel.id, _selectedVehicle),
         );
       } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
         return _getOnPressed(
           'Confirmá tu selección',
-          '¿Estás seguro de que querés iniciar este envío?',
-              () => bloc.startTravel(travel.id),
+          Text('¿Estás seguro de que querés iniciar este envío?'),
+          () => bloc.startTravel(travel.id),
         );
       } else if (travel.status == TravelStatus.InProgress) {
         return _getOnPressed(
           'Confirmá tu selección',
-          '¿Estás seguro de que querés finalizar este envío?',
-              () => bloc.endTravel(travel.id),
+          Text('¿Estás seguro de que querés finalizar este envío?'),
+          () => bloc.endTravel(travel.id),
         );
       }
     }
     return _getOnPressed(
       'Confirmá tu selección',
-      '¿Estás seguro de que querés cancelar este envío?',
-          () => bloc.cancelTravel(travel.id),
+      Text('¿Estás seguro de que querés cancelar este envío?'),
+      () => bloc.cancelTravel(travel.id),
     );
   }
 
@@ -320,6 +330,51 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     }
     return 'Cancelar envío';
   }
+
+  Widget _dropdownSelectVehicle(String title, Travel travel) {
+    return StreamBuilder<List<Vehicle>>(
+        stream: userBloc.vehicles,
+        builder: (context, snap) {
+          return Container(
+            height: 48,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: DropdownButtonFormField<int>(
+              isExpanded: true,
+              hint: Text(title),
+              decoration: InputDecoration(
+                isDense: true,
+                fillColor: Color(0xfff3f3f4),
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(width: 1.5, color: Colors.deepPurpleAccent),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
+              ),
+              value: _selectedVehicle,
+              onChanged: (value) {
+                _isYesButtonEnabled.sink.add(true);
+                _selectedVehicle = value;
+              },
+              items: snap.hasData && snap.data != null ? snap.data
+                .where((vehicle) => vehicle.type.id == travel.requestedVehicleType.id)
+                .map<DropdownMenuItem<int>>((Vehicle vehicle) {
+                  return DropdownMenuItem<int>(
+                    value: vehicle.id,
+                    child: Text("${vehicle.type.name} - ${vehicle.licensePlate}"),
+                  );
+              }).toList() : [],
+            ),
+          );
+        });
+  }
+
 
   Widget _getContactUsButton() {
     return Column(
@@ -372,5 +427,11 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           ),
         ]
     );
+  }
+
+  @override
+  void dispose() {
+    _isYesButtonEnabled.close();
+    super.dispose();
   }
 }
