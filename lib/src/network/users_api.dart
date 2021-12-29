@@ -31,11 +31,17 @@ abstract class UsersAPI {
   Future<CheckEmail> checkEmailAvailable(@Query('email') String email);
 
   @GET('clients/{id}/travels')
-  Future<TravelList> getClientTravels(@Path('id') id);
+  Future<TravelList> getClientTravels(
+      @Path('id') int id,
+      @Query('OrderBy.FieldName') String orderByField,
+      @Query('OrderBy.Direction') String orderByDirection);
 
   @GET('drivers/{id}/travels')
-  Future<TravelList> getDriverTravels(@Path('id') id);
+  Future<TravelList> getDriverTravels(
+      @Path('id') int id,
+      @Query('OrderBy.FieldName') String orderByField,
+      @Query('OrderBy.Direction') String orderByDirection);
 
   @GET('drivers/{id}/vehicles')
-  Future<List<Vehicle>> getDriverVehicles(@Path('id') id);
+  Future<List<Vehicle>> getDriverVehicles(@Path('id') int id);
 }

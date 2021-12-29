@@ -22,10 +22,14 @@ class TravelsBloc {
   Future<void> fetchTravels() async {
     try {
       if (authBloc.isClient()) {
-        TravelList travels = await usersApi.getClientTravels(authBloc.getUserId());
+        TravelList travels = await usersApi.getClientTravels(
+          authBloc.getUserId(), "Id", "desc",
+        );
         _travels.sink.add(travels.data);
       } else {
-        TravelList travels = await usersApi.getDriverTravels(authBloc.getUserId());
+        TravelList travels = await usersApi.getDriverTravels(
+          authBloc.getUserId(), "Id", "desc",
+        );
         List<Travel> potentialTravels = await travelApi.getPotentialTravels();
         _travels.sink.add(travels.data);
         _potentialTravels.sink.add(potentialTravels);

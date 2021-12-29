@@ -90,10 +90,16 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
-  Future<TravelList> getClientTravels(id) async {
+  Future<TravelList> getClientTravels(
+      id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
+    ArgumentError.checkNotNull(orderByField, 'orderByField');
+    ArgumentError.checkNotNull(orderByDirection, 'orderByDirection');
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'OrderBy.FieldName': orderByField,
+      r'OrderBy.Direction': orderByDirection
+    };
     final _data = <String, dynamic>{};
     final _result = await _dio.request<Map<String, dynamic>>(
         'clients/$id/travels',
@@ -109,10 +115,16 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
-  Future<TravelList> getDriverTravels(id) async {
+  Future<TravelList> getDriverTravels(
+      id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
+    ArgumentError.checkNotNull(orderByField, 'orderByField');
+    ArgumentError.checkNotNull(orderByDirection, 'orderByDirection');
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'OrderBy.FieldName': orderByField,
+      r'OrderBy.Direction': orderByDirection
+    };
     final _data = <String, dynamic>{};
     final _result = await _dio.request<Map<String, dynamic>>(
         'drivers/$id/travels',
