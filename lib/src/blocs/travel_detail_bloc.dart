@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/utils/flushbar.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
@@ -12,22 +16,58 @@ class TravelDetailBloc {
   final apiService = TravelAPI(Dio());
 
   final BehaviorSubject<Travel> _travel = BehaviorSubject<Travel>();
+  final BehaviorSubject<Marker> _driverPosition = BehaviorSubject<Marker>.seeded(null);
   final BehaviorSubject<bool> _isSubmitting = BehaviorSubject<bool>.seeded(false);
 
-  Stream<List<Marker>> get originAndDestinationMarkers => _travel.map((travel) {
-    return [
-      _locationToMarker(travel.origin, "Origen"),
-      _locationToMarker(travel.destination, "Destino"),
-    ];
-  });
+  Stream<List<Marker>> get markers =>
+      Rx.combineLatest2(_travel, _driverPosition, (Travel t, Marker m) {
+        List<Marker> originAndDestination = [
+          _locationToMarker(t.origin, "Origen"),
+          _locationToMarker(t.destination, "Destino"),
+        ];
+
+        return m != null ? [...originAndDestination, m] : originAndDestination;
+      });
+
   Function(bool) get changeIsSubmitting => _isSubmitting.sink.add;
 
   BehaviorSubject<Travel> get travel => _travel;
-  Stream<bool> get isSubmitting => _isSubmitting.stream;
+  BehaviorSubject<bool> get isSubmitting => _isSubmitting.stream;
+
+  BitmapDescriptor _customIcon = BitmapDescriptor.defaultMarker;
+  Timer timer;
 
   Future<void> fetchTravel(int id) async {
     Travel travel = await apiService.getTravelById(id);
     _travel.sink.add(travel);
+    _configureLocation();
+  }
+
+  void _configureLocation() async {
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+
+    _customIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(60, 60)), 'assets/images/marker.png'
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+      _driverPosition.sink.add(_trackMarker(position, "Conductor"));
+    }).onError((err) {
+      // Ignore error
+    });
+
+    timer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+      if (_travel.hasValue && _travel.value.status == TravelStatus.InProgress) {
+        if (authBloc.isDriver()) {
+          
+        } else {
+
+        }
+      }
+    });
   }
 
   Future<void> claimTravel(int id, int vehicleId) async {
@@ -113,8 +153,22 @@ class TravelDetailBloc {
     );
   }
 
+  Marker _trackMarker(Position position, String name) {
+    return new Marker(
+      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      position: LatLng(position.latitude, position.longitude),
+      icon: _customIcon,
+      infoWindow: InfoWindow(
+        title: name,
+        snippet: name,
+      ),
+    );
+  }
+
   dispose() {
     _travel.close();
+    _driverPosition.close();
     _isSubmitting.close();
+    timer.cancel();
   }
 }

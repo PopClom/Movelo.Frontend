@@ -1,8 +1,8 @@
 import 'dart:math';
+import 'package:async/async.dart';
+import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
-import 'package:flutter/material.dart';
-import 'package:async/async.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
@@ -10,7 +10,6 @@ import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/utils/new_travel_args.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'components/location_autocomplete_selector.dart';
 import 'components/transport_type_info.dart';
 import 'components/transport_type_selector.dart';
@@ -386,7 +385,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                   return Row(
                                                     children: [
                                                       Image.network(
-                                                          "https://movelo.com.ar" + selectedVehicleType.imageUrl,
+                                                          "https://localhost:44312" + selectedVehicleType.imageUrl,
                                                           height: 35,
                                                           fit: BoxFit.contain,
                                                           color: Colors.white
@@ -595,5 +594,11 @@ class _NewTravelPageState extends State<NewTravelPage> {
       value: value,
       items: items,
     );
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 }

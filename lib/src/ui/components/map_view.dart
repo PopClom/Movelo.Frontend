@@ -93,7 +93,7 @@ class _MapViewState extends State<MapView> {
       if (markerList.isNotEmpty) {
         updateCameraLocation(
             markerList[0].position,
-            markerList.length == 2 ? markerList[1].position : markerList[0].position,
+            markerList.length >= 2 ? markerList[1].position : markerList[0].position,
             mapController
         );
 

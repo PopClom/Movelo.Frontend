@@ -2,6 +2,8 @@
     package="com.movelo.movelo_app">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:name="ar.com.movelo.android"
         android:icon="@mipmap/ic_launcher"

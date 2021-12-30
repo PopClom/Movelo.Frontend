@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
@@ -36,12 +37,15 @@ abstract class TravelAPI {
   @PUT('{id}/start')
   Future<Travel> startTravel(@Path("id") int id);
 
-  /*@PUT('{id}/update_driver_position')
-  Future<void> updateDriverPosition(Location location);*/
-
   @PUT('{id}/confirm_delivery')
   Future<Travel> confirmDelivery(@Path("id") int id);
 
   @PUT('{id}/cancel')
   Future<Travel> cancelTravel(@Path("id") int id);
+
+  /*@PUT('{id}/driverPosition')
+  Future<void> updateDriverPosition(@Path("id") int id, @Body() Location location);
+
+  @GET('{id}/driverPosition')
+  Future<Location> getDriverPosition(@Path("id") int id);*/
 }

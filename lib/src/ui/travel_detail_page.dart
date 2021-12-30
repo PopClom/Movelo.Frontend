@@ -1,8 +1,9 @@
-import 'package:fletes_31_app/src/blocs/user_bloc.dart';
-import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fletes_31_app/src/blocs/user_bloc.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:fletes_31_app/src/utils/whatsapp.dart';
 import 'package:fletes_31_app/src/blocs/travel_detail_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
@@ -58,7 +59,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       },
       body: MapView(
         scrollable: scrollMap,
-        markers: bloc.originAndDestinationMarkers,
+        markers: bloc.markers,
       ),
       borderRadius: radius,
     );
@@ -88,7 +89,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Image.network(
-                            'https://movelo.com.ar' + travel.requestedVehicleType.imageUrl,
+                            'https://localhost:44312' + travel.requestedVehicleType.imageUrl,
                             height: 60,
                             width: 60,
                             fit: BoxFit.contain,
@@ -432,6 +433,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   @override
   void dispose() {
     _isYesButtonEnabled.close();
+    bloc.dispose();
     super.dispose();
   }
 }
