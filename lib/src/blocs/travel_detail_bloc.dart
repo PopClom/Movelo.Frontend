@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/utils/flushbar.dart';
@@ -25,7 +25,6 @@ class TravelDetailBloc {
           _locationToMarker(t.origin, "Origen"),
           _locationToMarker(t.destination, "Destino"),
         ];
-
         return m != null ? [...originAndDestination, m] : originAndDestination;
       });
 
@@ -44,27 +43,38 @@ class TravelDetailBloc {
   }
 
   void _configureLocation() async {
-    final LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
-
     _customIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(60, 60)), 'assets/images/marker.png'
     );
 
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-      _driverPosition.sink.add(_trackMarker(position, "Conductor"));
-    }).onError((err) {
-      // Ignore error
-    });
+    if (_travel.hasValue && _travel.value.status == TravelStatus.InProgress && authBloc.isDriver()) {
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      );
 
-    timer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+        _driverPosition.sink.add(_driverMarker(position.latitude, position.longitude, "Conductor"));
+      }).onError((err) {
+        // Ignore error
+      });
+    }
+
+    timer = Timer.periodic(Duration(seconds: 15), (Timer t) {
       if (_travel.hasValue && _travel.value.status == TravelStatus.InProgress) {
         if (authBloc.isDriver()) {
-          
+          if (_driverPosition.hasValue) {
+            apiService.updateDriverPosition(
+              _travel.value.id,
+              _markerToLocation(_driverPosition.value, "Conductor"),
+            );
+          }
         } else {
-
+          apiService.getDriverPosition(_travel.value.id).then((location) {
+            _driverPosition.sink.add(_driverMarker(location.lat, location.lng, "Conductor"));
+          }).catchError((err) {
+            // Ignore error
+          });
         }
       }
     });
@@ -153,10 +163,18 @@ class TravelDetailBloc {
     );
   }
 
-  Marker _trackMarker(Position position, String name) {
+  Location _markerToLocation(Marker marker, String name) {
+    return new Location(
+      lat: marker.position.latitude,
+      lng: marker.position.longitude,
+      name: name,
+    );
+  }
+
+  Marker _driverMarker(double lat, double lng, String name) {
     return new Marker(
       markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
-      position: LatLng(position.latitude, position.longitude),
+      position: LatLng(lat, lng),
       icon: _customIcon,
       infoWindow: InfoWindow(
         title: name,

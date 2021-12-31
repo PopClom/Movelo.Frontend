@@ -164,4 +164,42 @@ class _TravelAPI implements TravelAPI {
     final value = Travel.fromJson(_result.data);
     return value;
   }
+
+  @override
+  Future<void> updateDriverPosition(id, location) async {
+    ArgumentError.checkNotNull(id, 'id');
+    ArgumentError.checkNotNull(location, 'location');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(location?.toJson() ?? <String, dynamic>{});
+    await _dio.request<void>('$id/driverPosition',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'PUT',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    return null;
+  }
+
+  @override
+  Future<Location> getDriverPosition(id) async {
+    ArgumentError.checkNotNull(id, 'id');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '$id/driverPosition',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = Location.fromJson(_result.data);
+    return value;
+  }
 }

@@ -91,11 +91,13 @@ class _MapViewState extends State<MapView> {
 
     widget.markers.listen((List<Marker> markerList) {
       if (markerList.isNotEmpty) {
-        updateCameraLocation(
-            markerList[0].position,
-            markerList.length >= 2 ? markerList[1].position : markerList[0].position,
-            mapController
-        );
+        if (this.markerList == null) {
+          updateCameraLocation(
+              markerList[0].position,
+              markerList.length >= 2 ? markerList[1].position : markerList[0].position,
+              mapController
+          );
+        }
 
         setState(() {
           this.markerList = markerList;
