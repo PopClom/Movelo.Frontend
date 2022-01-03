@@ -131,7 +131,11 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                             'El fletero descarga: ${booleanToWord(travel.driverHandlesUnloading)}\n'
                             'Asistentes: ${travel.requiredAssistants}\n'
                             'Entra en el ascensor: ${booleanToWord(travel.fitsInElevator)}\n'
-                            'Cantidad de pisos: ${travel.numberOfFloors}'
+                            'Cantidad de pisos: ${travel.numberOfFloors}\n'
+                            'Programado para: ${travel.requestedDepatureTime != null ?
+                        'El ' + dateTimeToString(travel.requestedDepatureTime) : 'Ahora'}\n'
+                            'Duración estimada: ${secondsToString(travel.estimatedRoute.travelTimeInSeconds)} '
+                            '(${metersToString(travel.estimatedRoute.distanceInMeters)})'
                     ),
                     _buildDescription('Detalle de la carga', travel.transportedObjectDescription),
                     _buildDescription('Medio de pago', 'En efectivo'),

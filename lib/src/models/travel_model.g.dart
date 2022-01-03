@@ -23,6 +23,9 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
     numberOfFloors: json['numberOfFloors'] as int,
     transportedObjectDescription:
         json['transportedObjectDescription'] as String,
+    requestedDepatureTime: json['requestedDepatureTime'] == null
+        ? null
+        : DateTime.parse(json['requestedDepatureTime'] as String),
     origin: json['origin'] == null
         ? null
         : Location.fromJson(json['origin'] as Map<String, dynamic>),
@@ -48,6 +51,8 @@ Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'requiredAssistants': instance.requiredAssistants,
       'numberOfFloors': instance.numberOfFloors,
       'transportedObjectDescription': instance.transportedObjectDescription,
+      'requestedDepatureTime':
+          instance.requestedDepatureTime?.toIso8601String(),
       'origin': instance.origin,
       'destination': instance.destination,
       'estimatedPrice': instance.estimatedPrice,

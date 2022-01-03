@@ -1,5 +1,6 @@
 // import 'package:animation_wrappers/animation_wrappers.dart';
 import 'dart:math';
+import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
@@ -228,11 +229,13 @@ class _TravelsPageState extends State<TravelsPage> {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      "07/11/2021 a las 13.45",
+                      'Programado para: ${travel.requestedDepatureTime != null ?
+                      'El ' + dateTimeToString(travel.requestedDepatureTime) : 'Ahora'}',
                       style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70),
                     ),
                     SizedBox(height: 16),
-                    Text('Duración estimada: 55 minutos (5.3km)',
+                    Text('Duración estimada: ${secondsToString(travel.estimatedRoute.travelTimeInSeconds)} '
+                        '(${metersToString(travel.estimatedRoute.distanceInMeters)})',
                         style: Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.white70)
                     ),
                   ],

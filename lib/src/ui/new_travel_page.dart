@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:async/async.dart';
+import 'package:fletes_31_app/src/ui/components/datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
@@ -275,6 +276,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
                       child: Text("CANCELAR PEDIDO", style: TextStyle(color: Colors.black)),
                     )
                 ),
+                SizedBox(width: 10),
+                DatetimePickerWidget(changeDateTime:  bloc.changeDepartureDateTime),
                 SizedBox(width: 10),
                 StreamBuilder(
                   stream: bloc.currentTravelEstimation,

@@ -28,6 +28,7 @@ class NewTravelBloc {
   final BehaviorSubject<bool> _driverHandlesLoading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<bool> _driverHandlesUnloading = BehaviorSubject<bool>.seeded(false);
   final BehaviorSubject<int> _driverLoadingAndUnloadingIntStatus = BehaviorSubject<int>.seeded(4);
+  final BehaviorSubject<DateTime> _departureDateTime = BehaviorSubject<DateTime>.seeded(null);
   final BehaviorSubject<TravelPricingResult> _currentTravelEstimation = BehaviorSubject<TravelPricingResult>();
   final BehaviorSubject<bool> _isSubmitting = BehaviorSubject<bool>.seeded(false);
   //TODO evitar esta monstruosidad de dejar esto abierto
@@ -43,6 +44,7 @@ class NewTravelBloc {
   Function(bool) get changeDriverHandlesLoading => _driverHandlesLoading.sink.add;
   Function(bool) get changeDriverHandlesUnloading => _driverHandlesUnloading.sink.add;
   Function(int) get changeDriverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.sink.add;
+  Function(DateTime) get changeDepartureDateTime => _departureDateTime.sink.add;
   Function(TravelPricingResult) get changeCurrentTravelEstimation => _currentTravelEstimation.sink.add;
   Function(bool) get changeIsSubmitting => _isSubmitting.sink.add;
   Function(bool) get informMapLoaded => _mapLoaded.sink.add;
@@ -57,6 +59,7 @@ class NewTravelBloc {
   Stream<bool> get driverHandlesLoading => _driverHandlesLoading.stream;
   Stream<bool> get driverHandlesUnloading => _driverHandlesUnloading.stream;
   Stream<int> get driverLoadingAndUnloadingIntStatus => _driverLoadingAndUnloadingIntStatus.stream;
+  Stream<DateTime> get departureDateTime => _departureDateTime.stream;
   Stream<TravelPricingResult> get currentTravelEstimation => _currentTravelEstimation.stream;
   Stream<bool> get isSubmitting => _isSubmitting.stream;
   Stream<bool> get mapLoaded => _mapLoaded.stream;
@@ -89,11 +92,11 @@ class NewTravelBloc {
   Stream<bool> get elevatorAndNumberOfFloorsFilled => Rx.combineLatest2(fitsInElevator, numberOfFloors,
     (fitsInElevator, numberOfFloors) => fitsInElevator == true || (numberOfFloors != null && numberOfFloors >= 0));
 
-  Stream<bool> get formCompleted => Rx.combineLatest6(
-      originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
-      numberOfHelpers, transportedObjectsDetailsFilled.distinct(), driverLoadingAndUnloadingIntStatus,
-          (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType,
-          numberOfHelpers, transportedObjectsDetailsFilled, driverLoadingAndUnloadingFilled) =>
+  Stream<bool> get formCompleted => Rx.combineLatest7(
+      originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers,
+      transportedObjectsDetailsFilled.distinct(), driverLoadingAndUnloadingIntStatus, departureDateTime,
+          (originAndDestinationFilled, elevatorAndNumberOfFloorsFilled, selectedVehicleType, numberOfHelpers,
+          transportedObjectsDetailsFilled, driverLoadingAndUnloadingFilled, departureDateTime) =>
               originAndDestinationFilled
               && elevatorAndNumberOfFloorsFilled
               && selectedVehicleType != null
@@ -118,7 +121,7 @@ class NewTravelBloc {
           lat: destination.geometry.location.lat,
           lng: destination.geometry.location.lng,
         ),
-        departureTime: DateTime.now(),
+        departureDateTime: _departureDateTime.value,
         driverHandlesLoading: _driverHandlesLoading.value,
         driverHandlesUnloading: _driverHandlesUnloading.value,
         fitsInElevator: _fitsInElevator.value,
@@ -209,6 +212,7 @@ class NewTravelBloc {
     _driverHandlesLoading.close();
     _driverHandlesUnloading.close();
     _driverLoadingAndUnloadingIntStatus.close();
+    _departureDateTime.close();
     _currentTravelEstimation.close();
     _isSubmitting.close();
     _mapLoaded.close();

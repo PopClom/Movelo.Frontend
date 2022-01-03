@@ -41,6 +41,7 @@ class Travel {
   int requiredAssistants;
   int numberOfFloors;
   String transportedObjectDescription;
+  DateTime requestedDepatureTime;
 
   Location origin;
   Location destination;
@@ -60,6 +61,7 @@ class Travel {
     this.requiredAssistants,
     this.numberOfFloors,
     this.transportedObjectDescription,
+    this.requestedDepatureTime,
     this.origin,
     this.destination,
     this.estimatedPrice,

@@ -55,3 +55,20 @@ String generatePassword(bool _isWithLetters, bool _isWithUppercase,
 String booleanToWord(bool boolean) {
   return boolean != null && boolean ? 'Sí' : 'No';
 }
+
+String dateTimeToString(DateTime dateTime) {
+  final String hour = dateTime.hour.toString();
+  final String minute = dateTime.minute.toString().padLeft(2, '0');
+  return '${dateTime.day}/${dateTime.month}/${dateTime.year} a las $hour.$minute';
+}
+
+String secondsToString(int seconds) {
+  int minutes = (seconds / 60).floor();
+  int hours = (minutes / 60).floor();
+  minutes -= hours * 60;
+  return hours == 0 ? '$minutes minutos' : '$hours horas y $minutes minutos';
+}
+
+String metersToString(int meters) {
+  return '${(meters / 1000).toStringAsFixed(1)}km';
+}
