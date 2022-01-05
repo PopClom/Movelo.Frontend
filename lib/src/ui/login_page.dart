@@ -150,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
       await authBloc.logInGoogle(accessToken);
       return null;
     } catch(err) {
+      print(err.toString());
       if (is4xxError(err)) {
         List<String> firstAndLastName = splitName(_googleSignIn.currentUser.displayName);
         _email = _googleSignIn.currentUser.email;

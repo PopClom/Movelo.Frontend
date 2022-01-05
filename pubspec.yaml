@@ -51,6 +51,7 @@ dependencies:
   carousel_slider: ^3.0.0
   sliding_up_panel: ^2.0.0+1
   geolocator: ^8.0.1
+  firebase_messaging: ^11.2.4
 
 dev_dependencies:
   flutter_test:

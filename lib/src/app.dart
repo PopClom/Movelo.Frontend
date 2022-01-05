@@ -72,7 +72,8 @@ class MyApp extends StatelessWidget {
   }
 
   _withScaffold(Widget page) {
-    return Column(
+    return SafeArea(
+        child: Column(
       verticalDirection: VerticalDirection.up,
       children: [
         Expanded(
@@ -105,7 +106,7 @@ class MyApp extends StatelessWidget {
             }
         ),
       ],
-    );
+    ));
   }
 }
 

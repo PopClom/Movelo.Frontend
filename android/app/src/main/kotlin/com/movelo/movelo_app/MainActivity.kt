@@ -1,4 +1,4 @@
-package com.movelo.movelo_app
+package com.movelo.movelo_ar_app
 
 import io.flutter.embedding.android.FlutterActivity
 
