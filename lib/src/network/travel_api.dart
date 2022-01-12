@@ -37,15 +37,24 @@ abstract class TravelAPI {
   @PUT('{id}/start')
   Future<Travel> startTravel(@Path("id") int id);
 
-  @PUT('{id}/confirm_delivery')
+  @PUT('{id}/confirm-arrived-origin')
+  Future<Travel> confirmArrivedAtOrigin(@Path("id") int id);
+
+  @PUT('{id}/confirm-driving-destination')
+  Future<Travel> confirmDrivingTowardsDestination(@Path("id") int id);
+
+  @PUT('{id}/confirm-arrived-destination')
+  Future<Travel> confirmArrivedAtDestination(@Path("id") int id);
+
+  @PUT('{id}/confirm-delivery')
   Future<Travel> confirmDelivery(@Path("id") int id);
 
   @PUT('{id}/cancel')
   Future<Travel> cancelTravel(@Path("id") int id);
 
-  @PUT('{id}/driverPosition')
+  @PUT('{id}/driver-position')
   Future<void> updateDriverPosition(@Path("id") int id, @Body() Location location);
 
-  @GET('{id}/driverPosition')
+  @GET('{id}/driver-position')
   Future<Location> getDriverPosition(@Path("id") int id);
 }
