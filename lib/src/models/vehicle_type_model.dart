@@ -6,6 +6,7 @@ part 'vehicle_type_model.g.dart';
 @JsonSerializable()
 class VehicleType {
   int id;
+  int sizeOrder;
   String name;
   String imageUrl;
   double maxWeightInKilograms;
@@ -15,6 +16,7 @@ class VehicleType {
 
   VehicleType({
     this.id,
+    this.sizeOrder,
     this.name,
     this.imageUrl,
     this.maxWeightInKilograms,

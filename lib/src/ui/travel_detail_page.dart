@@ -368,7 +368,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                 _selectedVehicle = value;
               },
               items: snap.hasData && snap.data != null ? snap.data
-                .where((vehicle) => vehicle.type.id == travel.requestedVehicleType.id)
+                .where((vehicle) => vehicle.type.id == travel.requestedVehicleType.id || vehicle.type.sizeOrder >= travel.requestedVehicleType.sizeOrder)
                 .map<DropdownMenuItem<int>>((Vehicle vehicle) {
                   return DropdownMenuItem<int>(
                     value: vehicle.id,

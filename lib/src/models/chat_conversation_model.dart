@@ -9,9 +9,10 @@ class ChatConversation {
   int id;
   List<User> participants;
   List<ChatMessage> messages;
+  String title;
   bool active;
 
-  ChatConversation(this.id, this.participants, this.messages, this.active);
+  ChatConversation(this.id, this.participants, this.messages, this.title, this.active);
 
   factory ChatConversation.fromJson(Map<String, dynamic> json) => _$ChatConversationFromJson(json);
   Map<String, dynamic> toJson() => _$ChatConversationToJson(this);

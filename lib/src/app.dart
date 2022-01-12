@@ -1,5 +1,6 @@
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
+import 'package:fletes_31_app/src/ui/chat_conversations_list_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
         ContactUsPage.routeName: (context) => _withScaffold(ContactUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
+        ChatConversationsListPage.routeName: (context) => _withScaffold(ChatConversationsListPage()),
       },
       onGenerateRoute: (routeSettings) {
         RegExp travelRegExp = RegExp(r'^\/travels\/([0-9]+)\/?$');
@@ -139,6 +141,15 @@ List<NavBarItem> navBarItemsClientLogged = [
     },
   ),
   NavBarItem(
+    text: 'CHAT',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        ChatConversationsListPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
     text: 'CERRAR SESIÓN',
     onTap: () {
       authBloc.closeSession();
@@ -165,6 +176,15 @@ List<NavBarItem> navBarItemsDriverLogged = [
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         TravelsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CHAT',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        ChatConversationsListPage.routeName,
       );
     },
   ),
