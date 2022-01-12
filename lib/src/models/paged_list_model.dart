@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'paged_list.g.dart';
+part 'paged_list_model.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true, fieldRename: FieldRename.snake)
 class PagedList<T> {

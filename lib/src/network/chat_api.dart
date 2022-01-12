@@ -1,3 +1,6 @@
+import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
+import 'package:fletes_31_app/src/models/chat_message_model.dart';
+import 'package:fletes_31_app/src/models/paged_list_model.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +16,9 @@ abstract class ChatAPI {
     return _ChatAPI(dio, baseUrl: baseUrl);
   }
 
-  @GET('vehicle-types')
-  Future<List<VehicleType>> getVehicleTypes();
+  @GET('')
+  Future<PagedList<ChatConversation>> queryConversations();
+
+  @GET('{conversationId}')
+  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(@Path('conversationId') int conversationId);
 }

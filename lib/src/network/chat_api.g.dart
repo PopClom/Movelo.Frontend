@@ -17,11 +17,11 @@ class _ChatAPI implements ChatAPI {
   String baseUrl;
 
   @override
-  Future<List<VehicleType>> getVehicleTypes() async {
+  Future<PagedList<ChatConversation>> queryConversations() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<List<dynamic>>('vehicle-types',
+    final _result = await _dio.request<Map<String, dynamic>>('',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',
@@ -29,9 +29,32 @@ class _ChatAPI implements ChatAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    var value = _result.data
-        .map((dynamic i) => VehicleType.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = PagedList<ChatConversation>.fromJson(
+      _result.data,
+      (json) => ChatConversation.fromJson(json),
+    );
+    return value;
+  }
+
+  @override
+  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(
+      conversationId) async {
+    ArgumentError.checkNotNull(conversationId, 'conversationId');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>('$conversationId',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = PagedList<ChatMessage>.fromJson(
+      _result.data,
+      (json) => ChatMessage.fromJson(json),
+    );
     return value;
   }
 }
