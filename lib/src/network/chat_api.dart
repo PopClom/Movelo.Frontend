@@ -7,8 +7,8 @@ import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 part 'chat_api.g.dart';
 
 @RestApi(baseUrl: Constants.BASE_URL + 'chats/')
-abstract class VehicleTypeAPI {
-  factory VehicleTypeAPI(Dio dio, {String baseUrl}) {
+abstract class ChatAPI {
+  factory ChatAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());
     return _ChatAPI(dio, baseUrl: baseUrl);
   }
