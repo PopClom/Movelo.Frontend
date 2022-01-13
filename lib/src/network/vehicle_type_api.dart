@@ -6,7 +6,7 @@ import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
 part 'vehicle_type_api.g.dart';
 
-@RestApi(baseUrl: Constants.BASE_URL)
+@RestApi(baseUrl: Constants.API_BASE_URL)
 abstract class VehicleTypeAPI {
   factory VehicleTypeAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());

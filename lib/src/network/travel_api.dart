@@ -11,7 +11,7 @@ import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
 part 'travel_api.g.dart';
 
-@RestApi(baseUrl: Constants.BASE_URL + 'travels/')
+@RestApi(baseUrl: Constants.API_BASE_URL + 'travels/')
 abstract class TravelAPI {
   factory TravelAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());

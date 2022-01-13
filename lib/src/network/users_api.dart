@@ -10,7 +10,7 @@ import 'package:fletes_31_app/src/utils/constants.dart' as Constants;
 
 part 'users_api.g.dart';
 
-@RestApi(baseUrl: Constants.BASE_URL + 'profiles/')
+@RestApi(baseUrl: Constants.API_BASE_URL + 'profiles/')
 abstract class UsersAPI {
   factory UsersAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());

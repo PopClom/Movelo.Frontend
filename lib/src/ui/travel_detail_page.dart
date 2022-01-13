@@ -1,7 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/blocs/user_bloc.dart';
 import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:fletes_31_app/src/utils/whatsapp.dart';

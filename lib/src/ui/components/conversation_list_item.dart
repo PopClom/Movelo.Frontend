@@ -2,6 +2,8 @@ import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
 import 'package:fletes_31_app/src/models/chat_message_model.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
+import 'package:fletes_31_app/src/ui/chat_conversation_page.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:flutter/material.dart';
 
 class ConversationListItem extends StatefulWidget{
@@ -27,6 +29,10 @@ class _ConversationListItemState extends State<ConversationListItem> {
 
     return GestureDetector(
       onTap: (){
+        Navigator.pushNamed(
+          Navigation.navigationKey.currentContext,
+          ChatConversationPage.routeName.replaceAll(':id', widget.conversation.id.toString()),
+        );
       },
       child: Container(
         padding: EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),

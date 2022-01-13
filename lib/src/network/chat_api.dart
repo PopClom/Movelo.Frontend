@@ -1,5 +1,6 @@
 import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
 import 'package:fletes_31_app/src/models/chat_message_model.dart';
+import 'package:fletes_31_app/src/models/dtos/send_message_dto.dart';
 import 'package:fletes_31_app/src/models/paged_list_model.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:retrofit/retrofit.dart';
@@ -10,7 +11,7 @@ import 'authentication_interceptor.dart';
 
 part 'chat_api.g.dart';
 
-@RestApi(baseUrl: Constants.BASE_URL + 'chats/')
+@RestApi(baseUrl: Constants.API_BASE_URL + 'chats/')
 abstract class ChatAPI {
   factory ChatAPI(Dio dio, {String baseUrl}) {
     dio.interceptors.add(ErrorInterceptor());
@@ -22,5 +23,14 @@ abstract class ChatAPI {
   Future<PagedList<ChatConversation>> queryConversations();
 
   @GET('{conversationId}')
+  Future<ChatConversation> getConversationById(@Path('conversationId') int conversationId);
+
+  @GET('{conversationId}/messages')
+  Future<PagedList<ChatMessage>> queryConversationMessagesWithLatestDownloadedIdAsync(@Path('conversationId') int conversationId, @Path('latestDownloadedId') int latestDownloadedId);
+
+  @GET('{conversationId}/messages')
   Future<PagedList<ChatMessage>> queryConversationMessagesAsync(@Path('conversationId') int conversationId);
+
+  @POST('{conversationId}/messages')
+  Future<ChatMessage> postMessageAsync(@Path('conversationId') int conversationId, @Body() SendMessageDTO messageDTO);
 }

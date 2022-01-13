@@ -1,5 +1,6 @@
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
+import 'package:fletes_31_app/src/ui/chat_conversation_page.dart';
 import 'package:fletes_31_app/src/ui/chat_conversations_list_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
@@ -65,6 +66,16 @@ class MyApp extends StatelessWidget {
             builder: (context) => _withScaffold(TravelDetailPage(travelId)),
           );
         }
+
+        RegExp chatRegExp = RegExp(r'^\/chats\/([0-9]+)\/?$');
+        if (routeSettings.name != null && chatRegExp.hasMatch(routeSettings.name)) {
+          final int chatId = int.parse(chatRegExp.firstMatch(routeSettings.name).group(1));
+          return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (context) => _withScaffold(ChatConversationPage(chatId)),
+          );
+        }
+
         return null;
       },
       theme: theme,

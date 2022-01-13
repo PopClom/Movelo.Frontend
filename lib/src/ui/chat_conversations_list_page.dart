@@ -1,10 +1,7 @@
 import 'package:fletes_31_app/src/blocs/chat_list_bloc.dart';
 import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
-import 'package:fletes_31_app/src/models/chat_message_model.dart';
-import 'package:fletes_31_app/src/models/user_model.dart';
 import 'package:fletes_31_app/src/ui/components/conversation_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class ChatConversationsListPage extends StatefulWidget {
   static const routeName = '/chats';
@@ -27,23 +24,6 @@ class _ChatConversationsListPageState extends State<ChatConversationsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<ChatConversation> conversations = <ChatConversation>[
-      ChatConversation(
-          1,
-          <User>[
-            User(
-              email: "holanico11@gmail.com",
-              firstName: "Nicolas",
-              lastName: "Barrera",
-              profileType: "CLIENT"
-            )
-          ],
-          new List<ChatMessage>(),
-          null,
-          true
-      )
-    ];
-
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -86,13 +66,13 @@ class _ChatConversationsListPageState extends State<ChatConversationsListPage> {
                         );
                       } else {
                         return ListView.builder(
-                          itemCount: conversations.length,
+                          itemCount: snap.data.length,
                           shrinkWrap: true,
                           padding: EdgeInsets.only(top: 16),
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index){
                             return ConversationListItem(
-                              conversation: conversations[index],
+                              conversation: snap.data[index],
                             );
                           },
                         );
@@ -108,5 +88,11 @@ class _ChatConversationsListPageState extends State<ChatConversationsListPage> {
         ],
       )
     );
+  }
+  
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 }

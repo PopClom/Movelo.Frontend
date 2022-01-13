@@ -37,8 +37,7 @@ class _ChatAPI implements ChatAPI {
   }
 
   @override
-  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(
-      conversationId) async {
+  Future<ChatConversation> getConversationById(conversationId) async {
     ArgumentError.checkNotNull(conversationId, 'conversationId');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -51,10 +50,76 @@ class _ChatAPI implements ChatAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
+    final value = ChatConversation.fromJson(_result.data);
+    return value;
+  }
+
+  @override
+  Future<PagedList<ChatMessage>>
+      queryConversationMessagesWithLatestDownloadedIdAsync(
+          conversationId, latestDownloadedId) async {
+    ArgumentError.checkNotNull(conversationId, 'conversationId');
+    ArgumentError.checkNotNull(latestDownloadedId, 'latestDownloadedId');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '$conversationId/messages',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
     final value = PagedList<ChatMessage>.fromJson(
       _result.data,
       (json) => ChatMessage.fromJson(json),
     );
+    return value;
+  }
+
+  @override
+  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(
+      conversationId) async {
+    ArgumentError.checkNotNull(conversationId, 'conversationId');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '$conversationId/messages',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = PagedList<ChatMessage>.fromJson(
+      _result.data,
+      (json) => ChatMessage.fromJson(json),
+    );
+    return value;
+  }
+
+  @override
+  Future<ChatMessage> postMessageAsync(conversationId, messageDTO) async {
+    ArgumentError.checkNotNull(conversationId, 'conversationId');
+    ArgumentError.checkNotNull(messageDTO, 'messageDTO');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(messageDTO?.toJson() ?? <String, dynamic>{});
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '$conversationId/messages',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'POST',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = ChatMessage.fromJson(_result.data);
     return value;
   }
 }

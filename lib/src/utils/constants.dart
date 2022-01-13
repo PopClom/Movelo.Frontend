@@ -1,3 +1,7 @@
-const String DEV_URL = 'https://localhost:44312/api/';
-const String PROD_URL = 'https://movelo.com.ar/api/';
-const String BASE_URL = DEV_URL;
+const String DEV_URL = 'https://localhost:44312/';
+const String PROD_URL = 'https://movelo.com.ar/';
+
+const String CURR_ENV_URL = DEV_URL;
+
+const String API_BASE_URL = CURR_ENV_URL + 'api/';
+const String HUBS_BASE_URL = CURR_ENV_URL + 'hubs/';
