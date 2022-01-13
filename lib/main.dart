@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -6,7 +7,7 @@ import 'package:url_strategy/url_strategy.dart';
 import 'package:fletes_31_app/src/app.dart';
 
 
-void main() {
+void main() async {
   // check if is running on Web
   if (kIsWeb) {
     // initialiaze the facebook javascript SDK
@@ -19,5 +20,11 @@ void main() {
   }
   setPathUrlStrategy();
   authBloc.restoreSession();
+  await initializeFirebase();
   runApp(MyApp());
+}
+
+Future initializeFirebase() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 }
