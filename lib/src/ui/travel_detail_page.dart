@@ -121,6 +121,11 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         ),
                       ],
                     ),
+                    travel.driverId != 0 ? _buildDescription(
+                      'Conductor',
+                      '${travel.driver.firstName} ${travel.driver.lastName}\n'
+                          '${travel.vehicle.brand} ${travel.vehicle.model} - ${travel.vehicle.licensePlate}'
+                    ) : Container(),
                     _buildDescription('Origen', travel.origin.name),
                     _buildDescription('Destino', travel.destination.name),
                     _buildDescription('Estado del envío', travel.status.label),

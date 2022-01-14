@@ -1,5 +1,7 @@
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/route_model.dart';
+import 'package:fletes_31_app/src/models/user_model.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -35,6 +37,8 @@ class Travel {
   VehicleType requestedVehicleType;
   TravelStatus status;
   int driverId;
+  User driver;
+  Vehicle vehicle;
   bool driverHandlesLoading;
   bool driverHandlesUnloading;
   bool fitsInElevator;
@@ -55,6 +59,8 @@ class Travel {
     this.requestedVehicleType,
     this.status,
     this.driverId,
+    this.driver,
+    this.vehicle,
     this.driverHandlesLoading,
     this.driverHandlesUnloading,
     this.fitsInElevator,
