@@ -26,10 +26,13 @@ abstract class ChatAPI {
   Future<ChatConversation> getConversationById(@Path('conversationId') int conversationId);
 
   @GET('{conversationId}/messages')
-  Future<PagedList<ChatMessage>> queryConversationMessagesWithLatestDownloadedIdAsync(@Path('conversationId') int conversationId, @Path('latestDownloadedId') int latestDownloadedId);
+  Future<PagedList<ChatMessage>> queryConversationMessagesWithIdLowerLimit(@Path('conversationId') int conversationId, @Query('idLowerLimit') int idLowerLimit);
 
   @GET('{conversationId}/messages')
-  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(@Path('conversationId') int conversationId);
+  Future<PagedList<ChatMessage>> queryConversationMessagesWithIdUpperLimit(@Path('conversationId') int conversationId, @Query('idUpperLimit') int idUpperLimit);
+
+  @GET('{conversationId}/messages')
+  Future<PagedList<ChatMessage>> queryConversationMessages(@Path('conversationId') int conversationId);
 
   @POST('{conversationId}/messages')
   Future<ChatMessage> postMessageAsync(@Path('conversationId') int conversationId, @Body() SendMessageDTO messageDTO);

@@ -52,6 +52,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   geolocator: ^8.0.1
   firebase_messaging: ^11.2.4
+  date_format: ^2.0.5
 
 dev_dependencies:
   flutter_test:

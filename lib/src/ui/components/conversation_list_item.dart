@@ -1,5 +1,6 @@
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
+import 'package:date_format/date_format.dart';
 import 'package:fletes_31_app/src/models/chat_message_model.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
 import 'package:fletes_31_app/src/ui/chat_conversation_page.dart';
@@ -23,9 +24,9 @@ class _ConversationListItemState extends State<ConversationListItem> {
     List<User> otherParticipants = new List<User>.from(widget.conversation.participants);
     otherParticipants.removeWhere((user) => user.id == authBloc.getUserId());
 
-    String subtitle = "";
-    bool isMessageRead = true;
-    ChatMessage lastMessage = ChatMessage(1, widget.conversation.id, widget.conversation, authBloc.getUserId(), null, DateTime.now(), "Hola Jorge");
+    String subtitle = widget.conversation.latestMessage != null ? widget.conversation.latestMessage.body : "";
+    ChatMessage latestMessage = widget.conversation.latestMessage;
+    bool isMessageRead = false;
 
     return GestureDetector(
       onTap: (){
@@ -55,7 +56,12 @@ class _ConversationListItemState extends State<ConversationListItem> {
                         children: <Widget>[
                           Text('${otherParticipants[0].firstName} ${otherParticipants[0].lastName}', style: TextStyle(fontSize: 16),),
                           SizedBox(height: 6,),
-                          Text(lastMessage.body,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: isMessageRead ? FontWeight.bold:FontWeight.normal),),
+                          Text(
+                            latestMessage != null
+                                ? ((latestMessage.senderId == authBloc.getUserId() ? "Tu: " : "${latestMessage.sender.firstName}: ") + latestMessage.body)
+                                : '',
+                            style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: isMessageRead ? FontWeight.bold : FontWeight.normal),
+                          ),
                         ],
                       ),
                     ),
@@ -63,7 +69,10 @@ class _ConversationListItemState extends State<ConversationListItem> {
                 ],
               ),
             ),
-            Text(lastMessage.sendTime.toString(),style: TextStyle(fontSize: 12,fontWeight: isMessageRead?FontWeight.bold:FontWeight.normal),),
+            Text(
+              latestMessage != null ? formatDate(latestMessage.sentTime, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn, ':', ss]) : '',
+              style: TextStyle(fontSize: 12, fontWeight: isMessageRead ? FontWeight.bold : FontWeight.normal),
+            ),
           ],
         ),
       ),

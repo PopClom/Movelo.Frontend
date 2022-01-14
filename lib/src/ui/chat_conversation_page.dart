@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/blocs/chat_conversation_bloc.dart';
 import 'package:fletes_31_app/src/models/chat_conversation_model.dart';
@@ -22,7 +23,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
   @override
   void initState() {
     bloc.fetchConversation(widget.id);
-    bloc.fetchMessages(widget.id);
+    bloc.fetchLatestMessages(widget.id);
 
     //bloc.initializeSignalRHub(widget.id);
     bloc.startMessagePolling(widget.id);
@@ -89,58 +90,70 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
           ),
         ),
       body: Stack(
-        children: <Widget>[
-        StreamBuilder<List<ChatMessage>>(
-          stream: bloc.messages,
-          builder: (context, snap) {
-            if (snap.hasData) {
-              if (snap.data.isEmpty) {
-                return Container(
-                  child: Center(
-                    child: Text(
-                      'Aun no hay mensajes.\n¡Envia uno!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                  )
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: snap.data.length,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(top: 10,bottom: 10),
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index){
-                    ChatMessage message = snap.data[index];
-                    bool isSender = message.senderId == authBloc.getUserId();
+        children: <Widget>[StreamBuilder<List<ChatMessage>>(
+                  stream: bloc.messages,
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      if (snap.data.isEmpty) {
+                        return Container(
+                            child: Center(
+                              child: Text(
+                                'Aun no hay mensajes.\n¡Envia uno!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            )
+                        );
+                      } else {
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (ScrollNotification scrollInfo) {
+                            if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                              bloc.fetchOlderMessages(widget.id);
+                            }
+                            return true;
+                          },
+                          child: ListView.builder(
+                            reverse: true,
+                            itemCount: snap.data.length,
+                            shrinkWrap: true,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.only(top: 10, bottom: 70),
+                            itemBuilder: (context, index){
+                              ChatMessage message = snap.data[index];
+                              bool isSender = message.senderId == authBloc.getUserId();
 
-                    return Container(
-                      padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
-                      child: Align(
-                        alignment: (!isSender ? Alignment.topLeft : Alignment.topRight),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: (!isSender ? Colors.grey.shade200:Colors.blue[200]),
+                              return Container(
+                                padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
+                                child: Align(
+                                    alignment: (!isSender ? Alignment.topLeft : Alignment.topRight),
+                                    child: Tooltip(
+                                      message: formatDate(message.sentTime, [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn, ':', ss]),
+                                      waitDuration: const Duration(seconds: 1),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          color: (!isSender ? Colors.grey.shade200:Colors.blue[200]),
+                                        ),
+                                        padding: EdgeInsets.all(16),
+                                        child: Text(message.body, style: TextStyle(fontSize: 15),),
+                                      ),
+                                    )
+                                ),
+                              );
+                            },
                           ),
-                          padding: EdgeInsets.all(16),
-                          child: Text(message.body, style: TextStyle(fontSize: 15),),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }
-        ),
+                        );
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }
+              ),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -171,12 +184,14 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                           hintStyle: TextStyle(color: Colors.black54),
                           border: InputBorder.none
                       ),
-                      onChanged: bloc.changeNewMessageText
+                      onChanged: bloc.changeNewMessageText,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (value) { bloc.sendMessage(widget.id); },
                     ),
                   ),
                   SizedBox(width: 15,),
                   FloatingActionButton(
-                    onPressed: (){ bloc.sendMessage(widget.id); },
+                    onPressed: () { bloc.sendMessage(widget.id); },
                     child: Icon(Icons.send,color: Colors.white,size: 18,),
                     backgroundColor: Colors.blue,
                     elevation: 0,

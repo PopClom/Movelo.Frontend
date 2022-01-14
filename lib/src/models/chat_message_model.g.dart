@@ -18,9 +18,9 @@ ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) {
     json['sender'] == null
         ? null
         : User.fromJson(json['sender'] as Map<String, dynamic>),
-    json['sendTime'] == null
+    json['sentTime'] == null
         ? null
-        : DateTime.parse(json['sendTime'] as String),
+        : DateTime.parse(json['sentTime'] as String),
     json['body'] as String,
   );
 }
@@ -32,6 +32,6 @@ Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
       'conversation': instance.conversation,
       'senderId': instance.senderId,
       'sender': instance.sender,
-      'sendTime': instance.sendTime?.toIso8601String(),
+      'sentTime': instance.sentTime?.toIso8601String(),
       'body': instance.body,
     };

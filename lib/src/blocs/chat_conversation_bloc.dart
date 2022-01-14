@@ -19,7 +19,10 @@ class ChatConversationBloc {
   //final connection = HubConnectionBuilder().withUrl(Constants.HUBS_BASE_URL + 'chat/', options: HttpConnectionOptions()).build();
 
   Timer messagePollingTimer;
-  int latestDownloadedMessageId = 0;
+  int messageIdLowerLimit = 0;
+  int messageIdUpperLimit = 0;
+
+  bool loading = false;
 
   final BehaviorSubject<ChatConversation> _conversation = BehaviorSubject<ChatConversation>();
   final BehaviorSubject<List<ChatMessage>> _messages = BehaviorSubject<List<ChatMessage>>();
@@ -33,11 +36,59 @@ class ChatConversationBloc {
 
   Function(String) get changeNewMessageText => _newMessageText.sink.add;
 
-  Future<void> fetchMessages(int conversationId) async {
+  Future<void> fetchLatestMessages(int conversationId) async {
+    if(loading)
+      return;
     try {
-      PagedList<ChatMessage> conversationsPagedList = await chatApi.queryConversationMessagesWithLatestDownloadedIdAsync(conversationId, latestDownloadedMessageId);
-      latestDownloadedMessageId = conversationsPagedList.data.length > 0 ? conversationsPagedList.data[conversationsPagedList.data.length - 1].id : 0;
-      _messages.sink.add(conversationsPagedList.data);
+      loading = true;
+      PagedList<ChatMessage> conversationsPagedList = await chatApi.queryConversationMessagesWithIdLowerLimit(conversationId, messageIdLowerLimit);
+      messageIdLowerLimit = conversationsPagedList.data.length > 0 ? conversationsPagedList.data[0].id : 0;
+      if(!(conversationsPagedList.data.length > 0))
+        return;
+
+      if(messageIdUpperLimit == 0) {
+        messageIdUpperLimit = conversationsPagedList.data.length > 0 ? conversationsPagedList.data[conversationsPagedList.data.length - 1].id : 0;
+      }
+
+      if(_messages.hasValue) {
+        List<ChatMessage> newList = new List.from(conversationsPagedList.data);
+        newList.addAll(_messages.value);
+        _messages.sink.add(newList);
+      } else {
+        _messages.sink.add(conversationsPagedList.data);
+      }
+
+      loading = false;
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudieron cargar los mensajes de esta conversacion.'
+        );
+      }
+    }
+  }
+
+  Future<void> fetchOlderMessages(int conversationId) async {
+    if(loading || messageIdUpperLimit == 0)
+      return;
+    try {
+      loading = true;
+      PagedList<ChatMessage> conversationsPagedList = await chatApi.queryConversationMessagesWithIdUpperLimit(conversationId, messageIdUpperLimit);
+      if(!(conversationsPagedList.data.length > 0))
+        return;
+
+      messageIdUpperLimit = conversationsPagedList.data.length > 0 ? conversationsPagedList.data[conversationsPagedList.data.length - 1].id : 0;
+
+      if(_messages.hasValue) {
+        List<ChatMessage> newList = new List.from(_messages.value);
+        newList.addAll(conversationsPagedList.data);
+        _messages.sink.add(newList);
+      } else {
+        _messages.sink.add(conversationsPagedList.data);
+      }
+
+      loading = false;
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(
@@ -50,7 +101,7 @@ class ChatConversationBloc {
 
   Future<void> startMessagePolling(int conversationId) async {
     messagePollingTimer = Timer.periodic(Duration(seconds: 5), (Timer t) async {
-      fetchMessages(conversationId);
+      fetchLatestMessages(conversationId);
     });
   }
 
@@ -90,7 +141,7 @@ class ChatConversationBloc {
 
     try {
       ChatMessage message = await chatApi.postMessageAsync(conversationId, dto);
-      fetchMessages(conversationId);
+      fetchLatestMessages(conversationId);
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(

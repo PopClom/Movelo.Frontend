@@ -55,13 +55,12 @@ class _ChatAPI implements ChatAPI {
   }
 
   @override
-  Future<PagedList<ChatMessage>>
-      queryConversationMessagesWithLatestDownloadedIdAsync(
-          conversationId, latestDownloadedId) async {
+  Future<PagedList<ChatMessage>> queryConversationMessagesWithIdLowerLimit(
+      conversationId, idLowerLimit) async {
     ArgumentError.checkNotNull(conversationId, 'conversationId');
-    ArgumentError.checkNotNull(latestDownloadedId, 'latestDownloadedId');
+    ArgumentError.checkNotNull(idLowerLimit, 'idLowerLimit');
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'idLowerLimit': idLowerLimit};
     final _data = <String, dynamic>{};
     final _result = await _dio.request<Map<String, dynamic>>(
         '$conversationId/messages',
@@ -80,7 +79,31 @@ class _ChatAPI implements ChatAPI {
   }
 
   @override
-  Future<PagedList<ChatMessage>> queryConversationMessagesAsync(
+  Future<PagedList<ChatMessage>> queryConversationMessagesWithIdUpperLimit(
+      conversationId, idUpperLimit) async {
+    ArgumentError.checkNotNull(conversationId, 'conversationId');
+    ArgumentError.checkNotNull(idUpperLimit, 'idUpperLimit');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'idUpperLimit': idUpperLimit};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.request<Map<String, dynamic>>(
+        '$conversationId/messages',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'GET',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = PagedList<ChatMessage>.fromJson(
+      _result.data,
+      (json) => ChatMessage.fromJson(json),
+    );
+    return value;
+  }
+
+  @override
+  Future<PagedList<ChatMessage>> queryConversationMessages(
       conversationId) async {
     ArgumentError.checkNotNull(conversationId, 'conversationId');
     const _extra = <String, dynamic>{};

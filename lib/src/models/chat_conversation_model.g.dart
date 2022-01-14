@@ -19,6 +19,14 @@ ChatConversation _$ChatConversationFromJson(Map<String, dynamic> json) {
         ?.toList(),
     json['title'] as String,
     json['active'] as bool,
+    json['travelId'] as int,
+    json['travel'] == null
+        ? null
+        : Travel.fromJson(json['travel'] as Map<String, dynamic>),
+    json['latestMessageId'] as int,
+    json['latestMessage'] == null
+        ? null
+        : ChatMessage.fromJson(json['latestMessage'] as Map<String, dynamic>),
   );
 }
 
@@ -29,4 +37,8 @@ Map<String, dynamic> _$ChatConversationToJson(ChatConversation instance) =>
       'messages': instance.messages,
       'title': instance.title,
       'active': instance.active,
+      'travelId': instance.travelId,
+      'travel': instance.travel,
+      'latestMessageId': instance.latestMessageId,
+      'latestMessage': instance.latestMessage,
     };
