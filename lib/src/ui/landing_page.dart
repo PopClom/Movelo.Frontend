@@ -1,10 +1,11 @@
 import 'dart:math';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fletes_31_app/src/utils/notification.dart';
 import 'package:fletes_31_app/src/ui/fragments/footer_fragment.dart';
 import 'package:fletes_31_app/src/ui/fragments/new_travel_fragment.dart';
 import 'package:fletes_31_app/src/ui/components/info_card.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LandingPage extends StatefulWidget {
   static const routeName = '/';
@@ -16,6 +17,14 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    final firebaseMessaging = FCM();
+    firebaseMessaging.setNotifications();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
