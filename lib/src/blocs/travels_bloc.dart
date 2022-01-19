@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/models/paged_list_model.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:fletes_31_app/src/models/travel_list_model.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/network/travel_api.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
@@ -22,16 +22,16 @@ class TravelsBloc {
   Future<void> fetchTravels() async {
     try {
       if (authBloc.isClient()) {
-        TravelList travels = await usersApi.getClientTravels(
-          authBloc.getUserId(), "Id", "desc",
+        PagedList<Travel> travelsList = await usersApi.getClientTravels(
+          authBloc.getUserId(), 'Id', 'desc',
         );
-        _travels.sink.add(travels.data);
+        _travels.sink.add(travelsList.data);
       } else {
-        TravelList travels = await usersApi.getDriverTravels(
-          authBloc.getUserId(), "Id", "desc",
+        PagedList<Travel> travelsList = await usersApi.getDriverTravels(
+          authBloc.getUserId(), 'Id', 'desc',
         );
         List<Travel> potentialTravels = await travelApi.getPotentialTravels();
-        _travels.sink.add(travels.data);
+        _travels.sink.add(travelsList.data);
         _potentialTravels.sink.add(potentialTravels);
       }
     } catch(err) {

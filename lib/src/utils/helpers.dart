@@ -28,12 +28,12 @@ bool is4xxError(error) {
 String generatePassword(bool _isWithLetters, bool _isWithUppercase,
     bool _isWithNumbers, bool _isWithSpecial, double _numberCharPassword) {
 
-  String _lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
-  String _upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  String _numbers = "0123456789";
-  String _special = "@#=+!£\$%&?[](){}";
+  String _lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+  String _upperCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  String _numbers = '0123456789';
+  String _special = '@#=+!£\$%&?[](){}';
 
-  String _allowedChars = "";
+  String _allowedChars = '';
 
   _allowedChars += (_isWithLetters ? _lowerCaseLetters : '');
   _allowedChars += (_isWithUppercase ? _upperCaseLetters : '');
@@ -41,7 +41,7 @@ String generatePassword(bool _isWithLetters, bool _isWithUppercase,
   _allowedChars += (_isWithSpecial ? _special : '');
 
   int i = 0;
-  String _result = "";
+  String _result = '';
 
   while (i < _numberCharPassword.round()) {
     int randomInt = Random.secure().nextInt(_allowedChars.length);

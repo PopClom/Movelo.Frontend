@@ -120,11 +120,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         ),
                       ],
                     ),
-                    travel.driverId != 0 ? _buildDescription(
-                      'Conductor',
-                      '${travel.driver.firstName} ${travel.driver.lastName}\n'
-                          '${travel.vehicle.brand} ${travel.vehicle.model} - ${travel.vehicle.licensePlate}'
-                    ) : Container(),
+                    _buildProfileDetails(travel),
                     _buildDescription('Origen', travel.origin.name),
                     _buildDescription('Destino', travel.destination.name),
                     _buildDescription('Estado del envío', travel.status.label),
@@ -211,6 +207,21 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     );
   }
 
+  Widget _buildProfileDetails(Travel travel) {
+    if (authBloc.isDriver()) {
+      return _buildDescription(
+          'Cliente',
+          '${travel.requestingUser.firstName} ${travel.requestingUser.lastName}'
+      );
+    } else if (travel.driverId != null) {
+      return _buildDescription(
+          'Conductor', '${travel.driver.firstName} ${travel.driver.lastName}\n'
+          '${travel.vehicle.brand} ${travel.vehicle.model} - ${travel.vehicle.licensePlate}'
+      );
+    }
+    return Container();
+  }
+
   Widget _buildActionButton(Travel travel) {
     if ((authBloc.isDriver() && travel.status != TravelStatus.Completed) ||
         (authBloc.isClient() && travel.status == TravelStatus.PendingDriver)) {
@@ -222,7 +233,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
               onPressed: _getOnPressedForTravel(travel),
               child: Container(
                 height: 40,
-                width: 180,
+                width: 240,
                 padding: EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -303,7 +314,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           'Confirmá tu selección',
           ListBody(children: [
             Text('¿Estás seguro de que querés aceptar este envío?'),
-            _dropdownSelectVehicle("Elegí un vehículo", travel),
+            _dropdownSelectVehicle('Elegí un vehículo', travel),
           ]), () => bloc.claimTravel(travel.id, _selectedVehicle),
         );
       } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
@@ -312,7 +323,25 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           Text('¿Estás seguro de que querés iniciar este envío?'),
           () => bloc.startTravel(travel.id),
         );
-      } else if (travel.status == TravelStatus.InProgress) {
+      } else if (travel.status == TravelStatus.DrivingTowardsOrigin) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que llegaste al punto de partida?'),
+          () => bloc.confirmArrivedAtOrigin(travel.id),
+        );
+      } else if (travel.status == TravelStatus.ArrivedAtOrigin) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que estás viajando al destino?'),
+          () => bloc.confirmDrivingTowardsDestination(travel.id),
+        );
+      } else if (travel.status == TravelStatus.DrivingTowardsDestination) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que llegaste al destino?'),
+          () => bloc.confirmArrivedAtDestination(travel.id),
+        );
+      } else if (travel.status == TravelStatus.ArrivedAtDestination) {
         return _getOnPressed(
           'Confirmá tu selección',
           Text('¿Estás seguro de que querés finalizar este envío?'),
@@ -333,7 +362,13 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         return 'Aceptar envío';
       } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
         return 'Iniciar envío';
-      } else if (travel.status == TravelStatus.InProgress) {
+      } else if (travel.status == TravelStatus.DrivingTowardsOrigin) {
+        return 'Llegué al punto de partida';
+      } else if (travel.status == TravelStatus.ArrivedAtOrigin) {
+        return 'Estoy yendo al destino';
+      } else if (travel.status == TravelStatus.DrivingTowardsDestination) {
+        return 'Llegué al destino';
+      } else if (travel.status == TravelStatus.ArrivedAtDestination) {
         return 'Finalizar envío';
       }
     }
@@ -376,7 +411,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                 .map<DropdownMenuItem<int>>((Vehicle vehicle) {
                   return DropdownMenuItem<int>(
                     value: vehicle.id,
-                    child: Text("${vehicle.type.name} - ${vehicle.licensePlate}"),
+                    child: Text('${vehicle.type.name} - ${vehicle.licensePlate}'),
                   );
               }).toList() : [],
             ),
@@ -427,7 +462,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         ],
                       ),
                       onTap: () {
-                        sendWhatsAppMessage("5491158424244", "");
+                        sendWhatsAppMessage('5491158424244', '');
                       },
                     )
                 ),

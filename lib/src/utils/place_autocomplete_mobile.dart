@@ -17,16 +17,16 @@ class GoogleMapsHelpers {
 
     //https://cors-anywhere.herokuapp.com/
     var response = await Dio().get(
-      "https://maps.googleapis.com/maps/api/place/autocomplete/json",
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json',
       queryParameters: {
-        "key": "AIzaSyDHwZdNQeCf2lZWSyMkALVcmGGahBkxPhs",
-        "sessiontoken": "1234567890",
-        "language": "es_ES",
-        "location": "-34.581834427449245,-58.37982525831364",
-        "radius": 1000000,
-        "strictbounds": null,
+        'key': 'AIzaSyDHwZdNQeCf2lZWSyMkALVcmGGahBkxPhs',
+        'sessiontoken': '1234567890',
+        'language': 'es_ES',
+        'location': '-34.581834427449245,-58.37982525831364',
+        'radius': 1000000,
+        'strictbounds': null,
         //TODO "types": "establishment,address",
-        "input": filter,
+        'input': filter,
       },
     );
     return GooglePlacesAutocompleteResponse.fromJson(response.data);
@@ -34,13 +34,13 @@ class GoogleMapsHelpers {
 
   static Future<GooglePlacesDetails> getPlacesDetails(String placeId, String sessionToken) async {
     var response = await Dio().get(
-      "https://maps.googleapis.com/maps/api/place/details/json",
+      'https://maps.googleapis.com/maps/api/place/details/json',
       queryParameters: {
-        "key": "AIzaSyDHwZdNQeCf2lZWSyMkALVcmGGahBkxPhs",
-        "sessiontoken": sessionToken,
-        "language": "es_ES",
-        "fields": "name,geometry,formatted_address",
-        "place_id": placeId,
+        'key': 'AIzaSyDHwZdNQeCf2lZWSyMkALVcmGGahBkxPhs',
+        'sessiontoken': sessionToken,
+        'language': 'es_ES',
+        'fields': 'name,geometry,formatted_address',
+        'place_id': placeId,
       },
     );
     return GooglePlacesDetailsResponse.fromJson(response.data).result;

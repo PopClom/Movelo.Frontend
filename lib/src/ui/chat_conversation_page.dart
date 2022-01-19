@@ -18,6 +18,7 @@ class ChatConversationPage extends StatefulWidget {
 
 class _ChatConversationPageState extends State<ChatConversationPage> {
   final ChatConversationBloc bloc = ChatConversationBloc();
+  final TextEditingController controller = new TextEditingController();
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                               children: <Widget>[
                                 Text('${otherParticipants[0].firstName} ${otherParticipants[0].lastName}', style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
                                 SizedBox(height: 6,),
-                                Text("En linea",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                                Text('En linea', style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
                               ],
                             ),
                           ),
@@ -98,7 +99,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                 return Container(
                   child: Center(
                     child: Text(
-                      'Aun no hay mensajes.\n¡Envia uno!',
+                      'Aun no hay mensajes.\n¡Enviá uno!',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -167,16 +168,20 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                          hintText: "Escribe un mensaje...",
+                          hintText: 'Escribí un mensaje...',
                           hintStyle: TextStyle(color: Colors.black54),
                           border: InputBorder.none
                       ),
-                      onChanged: bloc.changeNewMessageText
+                      controller: controller,
+                      onChanged: bloc.changeNewMessageText,
                     ),
                   ),
                   SizedBox(width: 15,),
                   FloatingActionButton(
-                    onPressed: (){ bloc.sendMessage(widget.id); },
+                    onPressed: () {
+                      bloc.sendMessage(widget.id);
+                      controller.text = '';
+                    },
                     child: Icon(Icons.send,color: Colors.white,size: 18,),
                     backgroundColor: Colors.blue,
                     elevation: 0,

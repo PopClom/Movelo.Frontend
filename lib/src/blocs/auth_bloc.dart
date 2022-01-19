@@ -101,11 +101,11 @@ class AuthBloc {
   }
 
   bool isDriver() {
-    return _userType == "Driver";
+    return _userType == 'Driver';
   }
 
   bool isClient() {
-    return _userType == "Client";
+    return _userType == 'Client';
   }
 
   int getUserId() {

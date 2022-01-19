@@ -19,7 +19,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
 
   String getText() {
     if (dateTime == null) {
-      return 'No programar';
+      return 'Programar envío';
     } else {
       return dateTimeToString(dateTime);
     }

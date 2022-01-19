@@ -16,10 +16,6 @@ class ErrorInterceptor extends Interceptor {
           Navigation.navigationKey.currentContext,
           'Ocurrió un error', 'No se pudo procesar esta operación'
       );
-      print(err.message);
-      print(err.type);
-      print(err.error.toString());
-      print(err.response);
     } else if (err.type == DioErrorType.CONNECT_TIMEOUT) {
       showErrorToast(
           Navigation.navigationKey.currentContext,

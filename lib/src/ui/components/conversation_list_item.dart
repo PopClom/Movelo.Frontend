@@ -23,9 +23,9 @@ class _ConversationListItemState extends State<ConversationListItem> {
     List<User> otherParticipants = new List<User>.from(widget.conversation.participants);
     otherParticipants.removeWhere((user) => user.id == authBloc.getUserId());
 
-    String subtitle = "";
+    String subtitle = '';
     bool isMessageRead = true;
-    ChatMessage lastMessage = ChatMessage(1, widget.conversation.id, widget.conversation, authBloc.getUserId(), null, DateTime.now(), "Hola Jorge");
+    ChatMessage lastMessage = ChatMessage(1, widget.conversation.id, widget.conversation, authBloc.getUserId(), null, DateTime.now(), 'Hola Jorge');
 
     return GestureDetector(
       onTap: (){

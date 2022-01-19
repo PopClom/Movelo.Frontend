@@ -208,17 +208,6 @@ List<NavBarItem> navBarItemsDriverLogged = [
       );
     },
   ),
-  NavBarItem(
-    text: '@movelo.ar',
-    onTap: () {
-      const url = 'https://www.instagram.com/movelo.ar/';
-      canLaunch(url).then((result) => {
-        if (result) {
-          launch(url)
-        }
-      });
-    },
-  ),
 ];
 
 List<NavBarItem> navBarItemsNotLogged = [

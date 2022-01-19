@@ -9,6 +9,9 @@ part of 'travel_model.dart';
 Travel _$TravelFromJson(Map<String, dynamic> json) {
   return Travel(
     id: json['id'] as int,
+    requestingUser: json['requestingUser'] == null
+        ? null
+        : User.fromJson(json['requestingUser'] as Map<String, dynamic>),
     requestingUserId: json['requestingUserId'] as int,
     requestedVehicleType: json['requestedVehicleType'] == null
         ? null
@@ -16,6 +19,12 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
             json['requestedVehicleType'] as Map<String, dynamic>),
     status: _$enumDecodeNullable(_$TravelStatusEnumMap, json['status']),
     driverId: json['driverId'] as int,
+    driver: json['driver'] == null
+        ? null
+        : User.fromJson(json['driver'] as Map<String, dynamic>),
+    vehicle: json['vehicle'] == null
+        ? null
+        : Vehicle.fromJson(json['vehicle'] as Map<String, dynamic>),
     driverHandlesLoading: json['driverHandlesLoading'] as bool,
     driverHandlesUnloading: json['driverHandlesUnloading'] as bool,
     fitsInElevator: json['fitsInElevator'] as bool,
@@ -32,6 +41,10 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
     destination: json['destination'] == null
         ? null
         : Location.fromJson(json['destination'] as Map<String, dynamic>),
+    driverCurrentLocation: json['driverCurrentLocation'] == null
+        ? null
+        : Location.fromJson(
+            json['driverCurrentLocation'] as Map<String, dynamic>),
     estimatedPrice: (json['estimatedPrice'] as num)?.toDouble(),
     estimatedRoute: json['estimatedRoute'] == null
         ? null
@@ -42,9 +55,12 @@ Travel _$TravelFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
       'id': instance.id,
       'requestingUserId': instance.requestingUserId,
+      'requestingUser': instance.requestingUser,
       'requestedVehicleType': instance.requestedVehicleType,
       'status': _$TravelStatusEnumMap[instance.status],
       'driverId': instance.driverId,
+      'driver': instance.driver,
+      'vehicle': instance.vehicle,
       'driverHandlesLoading': instance.driverHandlesLoading,
       'driverHandlesUnloading': instance.driverHandlesUnloading,
       'fitsInElevator': instance.fitsInElevator,
@@ -55,6 +71,7 @@ Map<String, dynamic> _$TravelToJson(Travel instance) => <String, dynamic>{
           instance.requestedDepatureTime?.toIso8601String(),
       'origin': instance.origin,
       'destination': instance.destination,
+      'driverCurrentLocation': instance.driverCurrentLocation,
       'estimatedPrice': instance.estimatedPrice,
       'estimatedRoute': instance.estimatedRoute,
     };
@@ -95,7 +112,11 @@ const _$TravelStatusEnumMap = {
   TravelStatus.PendingClientConfirmation: 'PendingClientConfirmation',
   TravelStatus.PendingDriver: 'PendingDriver',
   TravelStatus.ConfirmedAndPendingStart: 'ConfirmedAndPendingStart',
-  TravelStatus.InProgress: 'InProgress',
-  TravelStatus.CancelledByClient: 'CancelledByClient',
+  TravelStatus.DrivingTowardsOrigin: 'DrivingTowardsOrigin',
+  TravelStatus.ArrivedAtOrigin: 'ArrivedAtOrigin',
+  TravelStatus.DrivingTowardsDestination: 'DrivingTowardsDestination',
+  TravelStatus.ArrivedAtDestination: 'ArrivedAtDestination',
   TravelStatus.Completed: 'Completed',
+  TravelStatus.CancelledByClient: 'CancelledByClient',
+  TravelStatus.CancelledByTimeout: 'CancelledByTimeout',
 };

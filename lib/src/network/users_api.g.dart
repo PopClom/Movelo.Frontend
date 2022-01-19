@@ -53,6 +53,28 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
+  Future<HttpResponse<ProfileDeviceData>> authenticateUserWithResponse(
+      authHeader, deviceRegister) async {
+    ArgumentError.checkNotNull(authHeader, 'authHeader');
+    ArgumentError.checkNotNull(deviceRegister, 'deviceRegister');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(deviceRegister?.toJson() ?? <String, dynamic>{});
+    final _result = await _dio.request<Map<String, dynamic>>('authenticate',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'POST',
+            headers: <String, dynamic>{r'Authorization': authHeader},
+            extra: _extra,
+            baseUrl: baseUrl),
+        data: _data);
+    final value = ProfileDeviceData.fromJson(_result.data);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<String> createUser(user) async {
     ArgumentError.checkNotNull(user, 'user');
     const _extra = <String, dynamic>{};
@@ -90,7 +112,7 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
-  Future<TravelList> getClientTravels(
+  Future<PagedList<Travel>> getClientTravels(
       id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
     ArgumentError.checkNotNull(orderByField, 'orderByField');
@@ -110,12 +132,15 @@ class _UsersAPI implements UsersAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    final value = TravelList.fromJson(_result.data);
+    final value = PagedList<Travel>.fromJson(
+      _result.data,
+      (json) => Travel.fromJson(json),
+    );
     return value;
   }
 
   @override
-  Future<TravelList> getDriverTravels(
+  Future<PagedList<Travel>> getDriverTravels(
       id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
     ArgumentError.checkNotNull(orderByField, 'orderByField');
@@ -135,7 +160,10 @@ class _UsersAPI implements UsersAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    final value = TravelList.fromJson(_result.data);
+    final value = PagedList<Travel>.fromJson(
+      _result.data,
+      (json) => Travel.fromJson(json),
+    );
     return value;
   }
 
