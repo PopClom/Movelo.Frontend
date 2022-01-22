@@ -321,144 +321,152 @@ class _NewTravelPageState extends State<NewTravelPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Stack(
-          children: [
-            Container(
-              height: mapSize,
-              width: mapSize,
-              clipBehavior: Clip.hardEdge,
-              foregroundDecoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 96,46,209),
-                      width: 1.5
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(20))
+        GestureDetector(
+          onVerticalDragUpdate: (_) {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Stack(
+            children: [
+              Container(
+                height: mapSize,
+                width: mapSize,
+                clipBehavior: Clip.hardEdge,
+                foregroundDecoration: BoxDecoration(
+                    border: Border.all(
+                        color: Color.fromARGB(255, 96,46,209),
+                        width: 1.5
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Color.fromARGB(255, 96,46,209),
+                        width: 1.5
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(20))
+                ),
+                child: MapView(
+                  markers: bloc.originAndDestinationMarkers,
+                  onMapCreated: _onMapCreated,
+                ),
               ),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 96,46,209),
-                      width: 1.5
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(20))
-              ),
-              child: MapView(
-                markers: bloc.originAndDestinationMarkers,
-                onMapCreated: _onMapCreated,
-              ),
-            ),
-            Container(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Wrap(
-                    children: [
-                      Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Color.fromARGB(255, 96,46,209),
-                                width: 3
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.white
-                        ),
-                        child: IntrinsicWidth(child: StreamBuilder(
-                          stream: bloc.currentTravelEstimation,
-                          builder: (context, snapshot) {
-                            if(snapshot.hasData && !snapshot.hasError && snapshot.data != null) {
-                              Travel travelEstimation = (snapshot.data as TravelPricingResult).travel;
-                              return Column(
-                                children: [
-                                  Container(
-                                      color: Color.fromARGB(255, 96,46,209),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: StreamBuilder(
-                                            stream: bloc.selectedVehicleType,
-                                            builder: (context, snapshot) {
-                                              if(snapshot.hasData && !snapshot.hasError) {
-                                                VehicleType selectedVehicleType = snapshot.data;
-
-                                                return Row(
-                                                  children: [
-                                                    Image.network(
-                                                        'https://movelo.com.ar' + selectedVehicleType.imageUrl,
-                                                        height: 35,
-                                                        fit: BoxFit.contain,
-                                                        color: Colors.white
-                                                    ),
-                                                    Expanded(child: Text(
-                                                      '\$${travelEstimation.estimatedPrice.toStringAsFixed(2)}',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight: FontWeight.w600
-                                                      ),
-                                                    ))
-                                                  ],
-                                                );
-                                              } else {
-                                                return Container();
-                                              }
-                                            }
-                                        ),
-                                      )
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.timer,
-                                          color: Color.fromARGB(255, 96,46,209),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Tiempo estimado: ${(travelEstimation.estimatedRoute.travelTimeInSeconds / 60.0).toStringAsFixed(0)} minutos')
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.square_foot,
-                                          color: Color.fromARGB(255, 96,46,209),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Distancia a recorrer: ${(travelEstimation.estimatedRoute.distanceInMeters / 1000.0).toStringAsFixed(1)}km')
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Container(
+              Container(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Wrap(
+                      children: [
+                        Container(
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              border: Border.all(
                                   color: Color.fromARGB(255, 96,46,209),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: Center(
-                                      child: Text(
-                                        'Por favor, completá el formulario.',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600
-                                        ),
+                                  width: 3
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.white
+                          ),
+                          child: IntrinsicWidth(child: StreamBuilder(
+                            stream: bloc.currentTravelEstimation,
+                            builder: (context, snapshot) {
+                              if(snapshot.hasData && !snapshot.hasError && snapshot.data != null) {
+                                Travel travelEstimation = (snapshot.data as TravelPricingResult).travel;
+                                return Column(
+                                  children: [
+                                    Container(
+                                        color: Color.fromARGB(255, 96,46,209),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: StreamBuilder(
+                                              stream: bloc.selectedVehicleType,
+                                              builder: (context, snapshot) {
+                                                if(snapshot.hasData && !snapshot.hasError) {
+                                                  VehicleType selectedVehicleType = snapshot.data;
+
+                                                  return Row(
+                                                    children: [
+                                                      Image.network(
+                                                          'https://movelo.com.ar' + selectedVehicleType.imageUrl,
+                                                          height: 35,
+                                                          fit: BoxFit.contain,
+                                                          color: Colors.white
+                                                      ),
+                                                      Expanded(child: Text(
+                                                        '\$${travelEstimation.estimatedPrice.toStringAsFixed(2)}',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600
+                                                        ),
+                                                      ))
+                                                    ],
+                                                  );
+                                                } else {
+                                                  return Container();
+                                                }
+                                              }
+                                          ),
+                                        )
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.timer,
+                                            color: Color.fromARGB(255, 96,46,209),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text('Tiempo estimado: ${(travelEstimation.estimatedRoute.travelTimeInSeconds / 60.0).toStringAsFixed(0)} minutos')
+                                        ],
                                       ),
                                     ),
-                                  )
-                              );
-                            }
-                          },
-                        )),
-                      ),
-                    ],
-                  )
-              ),
-            )
-          ],
-        ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.square_foot,
+                                            color: Color.fromARGB(255, 96,46,209),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text('Distancia a recorrer: ${(travelEstimation.estimatedRoute.distanceInMeters / 1000.0).toStringAsFixed(1)}km')
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return Container(
+                                    color: Color.fromARGB(255, 96,46,209),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: Center(
+                                        child: Text(
+                                          'Por favor, completá el formulario.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                );
+                              }
+                            },
+                          )),
+                        ),
+                      ],
+                    )
+                ),
+              )
+            ],
+          ),
+        )
       ],
     );
   }
