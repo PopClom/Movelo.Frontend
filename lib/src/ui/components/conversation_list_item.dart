@@ -23,9 +23,10 @@ class _ConversationListItemState extends State<ConversationListItem> {
     List<User> otherParticipants = new List<User>.from(widget.conversation.participants);
     otherParticipants.removeWhere((user) => user.id == authBloc.getUserId());
 
-    String subtitle = '';
     bool isMessageRead = true;
-    ChatMessage lastMessage = ChatMessage(1, widget.conversation.id, widget.conversation, authBloc.getUserId(), null, DateTime.now(), 'Hola Jorge');
+
+    ChatMessage lastMessage = widget.conversation.messages.length
+        > 0 ? widget.conversation.messages[0] : null;
 
     return GestureDetector(
       onTap: (){
@@ -55,7 +56,13 @@ class _ConversationListItemState extends State<ConversationListItem> {
                         children: <Widget>[
                           Text('${otherParticipants[0].firstName} ${otherParticipants[0].lastName}', style: TextStyle(fontSize: 16),),
                           SizedBox(height: 6,),
-                          Text(lastMessage.body,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: isMessageRead ? FontWeight.bold:FontWeight.normal),),
+                          Text(lastMessage != null ? lastMessage.body : "",
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                                fontWeight: isMessageRead ? FontWeight.bold : FontWeight.normal
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -63,7 +70,12 @@ class _ConversationListItemState extends State<ConversationListItem> {
                 ],
               ),
             ),
-            Text(lastMessage.sendTime.toString(),style: TextStyle(fontSize: 12,fontWeight: isMessageRead?FontWeight.bold:FontWeight.normal),),
+            Text(lastMessage != null ? lastMessage.sentTime.toString() : "",
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isMessageRead ? FontWeight.bold : FontWeight.normal
+              ),
+            ),
           ],
         ),
       ),

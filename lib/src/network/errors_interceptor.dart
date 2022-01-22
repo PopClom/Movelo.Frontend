@@ -12,6 +12,7 @@ class ErrorInterceptor extends Interceptor {
       DioErrorType.CANCEL,
       DioErrorType.DEFAULT,
     ].contains(err.type)){
+      print(err.message);
       showErrorToast(
           Navigation.navigationKey.currentContext,
           'Ocurrió un error', 'No se pudo procesar esta operación'

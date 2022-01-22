@@ -12,11 +12,11 @@ class ChatMessage {
   ChatConversation conversation;
   int senderId;
   User sender;
-  DateTime sendTime;
+  DateTime sentTime;
   String body;
 
   ChatMessage(this.id, this.conversationId, this.conversation, this.senderId,
-      this.sender, this.sendTime, this.body);
+      this.sender, this.sentTime, this.body);
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) => _$ChatMessageFromJson(json);
   Map<String, dynamic> toJson() => _$ChatMessageToJson(this);

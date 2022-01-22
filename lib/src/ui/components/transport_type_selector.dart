@@ -126,7 +126,7 @@ class VehicleTypeBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.network(
-                  'https://localhost:44312' + vehicleType.imageUrl,
+                  'https://movelo.com.ar' + vehicleType.imageUrl,
                   height: 75,
                   width: 75,
                   fit: BoxFit.contain,

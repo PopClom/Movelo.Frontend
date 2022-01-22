@@ -88,7 +88,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Image.network(
-                            'https://localhost:44312' + travel.requestedVehicleType.imageUrl,
+                            'https://movelo.com.ar' + travel.requestedVehicleType.imageUrl,
                             height: 60,
                             width: 60,
                             fit: BoxFit.contain,

@@ -128,7 +128,14 @@ class NewTravelBloc {
         numberOfFloors: _numberOfFloors.value,
         requiredAssistants: _numberOfHelpers.value,
       )
-    );
+    ).catchError((error, stackTrace) {
+      if (is4xxError(error)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo cotizar el pedido'
+        );
+      }
+    });
   }
 
   Future<void> confirmTravelRequest() async {

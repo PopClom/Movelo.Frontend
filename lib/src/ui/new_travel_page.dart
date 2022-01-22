@@ -390,7 +390,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                   return Row(
                                                     children: [
                                                       Image.network(
-                                                          'https://localhost:44312' + selectedVehicleType.imageUrl,
+                                                          'https://movelo.com.ar' + selectedVehicleType.imageUrl,
                                                           height: 35,
                                                           fit: BoxFit.contain,
                                                           color: Colors.white
