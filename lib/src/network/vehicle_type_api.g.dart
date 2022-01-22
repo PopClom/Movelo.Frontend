@@ -9,7 +9,7 @@ part of 'vehicle_type_api.dart';
 class _VehicleTypeAPI implements VehicleTypeAPI {
   _VehicleTypeAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://movelo.com.ar/api/';
+    baseUrl ??= 'https://localhost:44312/api/';
   }
 
   final Dio _dio;
@@ -21,7 +21,7 @@ class _VehicleTypeAPI implements VehicleTypeAPI {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<List<dynamic>>('vehicleTypes',
+    final _result = await _dio.request<List<dynamic>>('vehicle-types',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',

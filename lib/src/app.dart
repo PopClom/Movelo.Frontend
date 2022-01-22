@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
 import 'package:fletes_31_app/src/ui/chat_conversation_page.dart';
@@ -5,14 +7,12 @@ import 'package:fletes_31_app/src/ui/chat_conversations_list_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
-import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/ui/login_page.dart';
 import 'package:fletes_31_app/src/ui/registration_page.dart';
 import 'package:fletes_31_app/src/ui/travels_page.dart';
 import 'package:fletes_31_app/src/ui/components/top_nav_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 ThemeData theme = ThemeData(
   primarySwatch: Colors.deepPurple,
