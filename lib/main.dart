@@ -29,10 +29,4 @@ void main() async {
 Future initializeFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  authBloc.isSessionValid.listen((isValid) {
-    if (isValid) {
-      final firebaseMessaging = FCM();
-      firebaseMessaging.setNotifications();
-    }
-  });
 }

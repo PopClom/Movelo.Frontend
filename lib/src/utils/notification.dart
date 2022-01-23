@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {
-  print("MENSAJEE4");
+  //print("onBackgroundMessage");
 
   await Firebase.initializeApp();
   // Or do other work.
@@ -17,7 +17,7 @@ class FCM {
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
 
     // handle when app in active state
-    forgroundNotification();
+    foregroundNotification();
 
     // handle when app running in background state
     backgroundNotification();
@@ -26,14 +26,13 @@ class FCM {
     terminateNotification();
 
     // With this token you can test it easily on your phone
-    final token = await _firebaseMessaging.getToken();
-    print('Token: $token');
+    return await _firebaseMessaging.getToken();
   }
 
-  forgroundNotification() {
+  foregroundNotification() {
     FirebaseMessaging.onMessage.listen(
           (message) async {
-            print("MENSAJEE2");
+            //print("foregroundNotification");
       },
     );
   }
@@ -41,7 +40,7 @@ class FCM {
   backgroundNotification() {
     FirebaseMessaging.onMessageOpenedApp.listen(
           (message) async {
-        print("MENSAJEE3");
+        //print("backgroundNotification");
       },
     );
   }
@@ -51,7 +50,7 @@ class FCM {
     await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      print("MENSAJEE1");
+      //print("terminateNotification");
     }
   }
 }

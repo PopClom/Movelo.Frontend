@@ -12,11 +12,17 @@ class ErrorInterceptor extends Interceptor {
       DioErrorType.CANCEL,
       DioErrorType.DEFAULT,
     ].contains(err.type)){
-      print(err.message);
-      showErrorToast(
+      if (err.message == "session_expired") {
+        showErrorToast(
           Navigation.navigationKey.currentContext,
-          'Ocurrió un error', 'No se pudo procesar esta operación'
-      );
+          'Tu sesión expiró', 'Volvé a iniciar sesión para continuar',
+        );
+      } else {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo procesar esta operación'
+        );
+      }
     } else if (err.type == DioErrorType.CONNECT_TIMEOUT) {
       showErrorToast(
           Navigation.navigationKey.currentContext,

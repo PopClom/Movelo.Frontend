@@ -1,11 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:fletes_31_app/src/models/dtos/device_register_dto.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:fletes_31_app/src/models/profile_device_data_model.dart';
 import 'package:fletes_31_app/src/models/paged_list_model.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_model.dart';
-import 'package:fletes_31_app/src/models/check_email_model.dart';
 import 'package:fletes_31_app/src/network/authentication_interceptor.dart';
 import 'package:fletes_31_app/src/network/errors_interceptor.dart';
 import 'package:fletes_31_app/src/models/user_model.dart';
@@ -26,17 +23,6 @@ abstract class UsersAPI {
 
   @GET('current')
   Future<User> getCurrentUser();
-
-  @POST('authenticate')
-  Future<HttpResponse<ProfileDeviceData>> authenticateUserWithResponse(
-      @Header('Authorization') String authHeader,
-      @Body() DeviceRegister deviceRegister);
-
-  @POST('clients')
-  Future<String> createUser(@Body() User user);
-
-  @GET('verify-email')
-  Future<CheckEmail> checkEmailAvailable(@Query('email') String email);
 
   @GET('clients/{id}/travels')
   Future<PagedList<Travel>> getClientTravels(
