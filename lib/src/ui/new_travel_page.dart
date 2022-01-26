@@ -1,19 +1,20 @@
 import 'dart:math';
 import 'package:async/async.dart';
-import 'package:fletes_31_app/src/ui/components/datetime_picker.dart';
+import 'package:fletes_31_app/src/ui/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
+import 'package:fletes_31_app/src/ui/components/datetime_picker.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
-import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/utils/new_travel_args.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'components/location_autocomplete_selector.dart';
-import 'components/transport_type_info.dart';
-import 'components/transport_type_selector.dart';
+import 'package:fletes_31_app/src/ui/components/location_autocomplete_selector.dart';
+import 'package:fletes_31_app/src/ui/components/transport_type_info.dart';
+import 'package:fletes_31_app/src/ui/components/transport_type_selector.dart';
 
 class NewTravelPage extends StatefulWidget {
   static const routeName = '/cotizar';
@@ -126,7 +127,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
   _buildTitle() {
     return Center(
       child: Text(
-          "Cotizá tu envío con nosotros",
+          'Cotizá tu envío con nosotros',
           style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 25
@@ -140,7 +141,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
       child: Column(
         children: [
           Text(
-              "¿Qué vas a cargar?",
+              '¿Qué vas a cargar?',
               style: TextStyle(
                   fontWeight: FontWeight.w600
               )
@@ -158,7 +159,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                     vertical: 15.0,
                     horizontal: 10.0
                 ),
-                hintText: "Cinco macetas grandes",
+                hintText: 'Cinco macetas grandes',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -169,33 +170,33 @@ class _NewTravelPageState extends State<NewTravelPage> {
           ),
           SizedBox(height: 10),
           Text(
-              "Origen de carga",
+              'Origen de carga',
               style: TextStyle(
                   fontWeight: FontWeight.w600
               )
           ),
           SizedBox(height: 4),
           LocationAutocompleteSelector(
-            label: "Origen de carga",
+            label: 'Origen de carga',
             onLocationSelected: bloc.changeOriginPlacesDetails,
             initialValue: _initialOriginString,
           ),
           SizedBox(height: 10),
           Text(
-              "Destino de carga",
+              'Destino de carga',
               style: TextStyle(
                   fontWeight: FontWeight.w600
               )
           ),
           SizedBox(height: 4),
           LocationAutocompleteSelector(
-            label: "Destino de carga",
+            label: 'Destino de carga',
             onLocationSelected: bloc.changeDestinationPlacesDetails,
             initialValue: _initialDestinationString,
           ),
           SizedBox(height: 10),
           Text(
-              "¿Qué vehículo necesitás para transportar tu carga?",
+              '¿Qué vehículo necesitás para transportar tu carga?',
               style: TextStyle(
                   fontWeight: FontWeight.w600
               )
@@ -261,22 +262,6 @@ class _NewTravelPageState extends State<NewTravelPage> {
           Center(
             child: Row(
               children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        Navigation.navigationKey.currentContext,
-                        LandingPage.routeName,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                      child: Text("CANCELAR PEDIDO", style: TextStyle(color: Colors.black)),
-                    )
-                ),
-                SizedBox(width: 10),
                 DatetimePickerWidget(changeDateTime:  bloc.changeDepartureDateTime),
                 SizedBox(width: 10),
                 StreamBuilder(
@@ -285,24 +270,40 @@ class _NewTravelPageState extends State<NewTravelPage> {
                     return StreamBuilder<bool>(
                         stream: bloc.isSubmitting,
                         builder: (context, snap2) {
-                          return Container(
-                            child: Expanded(child: ElevatedButton(
-                              onPressed: snap1.hasData && snap1.data != null
-                                  && !(snap2.hasData && snap2.data != null && snap2.data)
-                                  ? bloc.confirmTravelRequest : null,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                                child: (snap2.hasData && snap2.data != null && snap2.data ?
-                                SizedBox(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
+                          return StreamBuilder<bool>(
+                              stream: authBloc.isSessionValid,
+                              builder: (context, snap3) {
+                                bool btnEnabled = snap1.hasData
+                                    && snap1.data != null
+                                    && !(snap2.hasData && snap2.data != null && snap2.data);
+
+                                bool loggedIn = snap3.hasData && snap3.data;
+
+                                void Function() onPressed;
+                                if (btnEnabled) {
+                                  if (loggedIn) {
+                                    onPressed = bloc.confirmTravelRequest;
+                                  } else {
+                                    onPressed = _showLoginDialog;
+                                  }
+                                }
+
+                                return Container(
+                                  child: Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: onPressed,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                                          child: (snap2.hasData && snap2.data != null && snap2.data ? SizedBox(
+                                            child: CircularProgressIndicator(strokeWidth: 2.0,),
+                                            height: 20.0,
+                                            width: 20.0,
+                                          ) : Text('REALIZAR PEDIDO')),
+                                        ),
+                                      )
                                   ),
-                                  height: 20.0,
-                                  width: 20.0,
-                                ) : Text("REALIZAR PEDIDO")),
-                              ),
-                            )),
-                          );
+                                );
+                              });
                         });
                   },
                 ),
@@ -388,7 +389,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                                   return Row(
                                                     children: [
                                                       Image.network(
-                                                          "https://localhost:44312" + selectedVehicleType.imageUrl,
+                                                          'https://movelo.com.ar' + selectedVehicleType.imageUrl,
                                                           height: 35,
                                                           fit: BoxFit.contain,
                                                           color: Colors.white
@@ -419,7 +420,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                             color: Color.fromARGB(255, 96,46,209),
                                           ),
                                           SizedBox(width: 10),
-                                          Text("Tiempo estimado: ${(travelEstimation.estimatedRoute.travelTimeInSeconds / 60.0).toStringAsFixed(0)} minutos")
+                                          Text('Tiempo estimado: ${(travelEstimation.estimatedRoute.travelTimeInSeconds / 60.0).toStringAsFixed(0)} minutos')
                                         ],
                                       ),
                                     ),
@@ -432,7 +433,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                             color: Color.fromARGB(255, 96,46,209),
                                           ),
                                           SizedBox(width: 10),
-                                          Text("Distancia a recorrer: ${(travelEstimation.estimatedRoute.distanceInMeters / 1000.0).toStringAsFixed(1)}km")
+                                          Text('Distancia a recorrer: ${(travelEstimation.estimatedRoute.distanceInMeters / 1000.0).toStringAsFixed(1)}km')
                                         ],
                                       ),
                                     ),
@@ -445,7 +446,7 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                       padding: EdgeInsets.all(5),
                                       child: Center(
                                         child: Text(
-                                          "Por favor, completá el formulario.",
+                                          'Por favor, completá el formulario.',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.white,
@@ -479,9 +480,9 @@ class _NewTravelPageState extends State<NewTravelPage> {
               snap.hasData ? snap.data : null,
               (value) => bloc.changeNumberOfHelpers(value),
               [
-                DropdownMenuItem(child: Text("0"), value: 0),
-                DropdownMenuItem(child: Text("1"), value: 1),
-                DropdownMenuItem(child: Text("2"), value: 2),
+                DropdownMenuItem(child: Text('0'), value: 0),
+                DropdownMenuItem(child: Text('1'), value: 1),
+                DropdownMenuItem(child: Text('2'), value: 2),
               ]
           );
         }
@@ -534,8 +535,8 @@ class _NewTravelPageState extends State<NewTravelPage> {
             snap.hasData && snap.data ? 2 : 1,
             (value) => bloc.changeFitsInElevator(value == 2),
             [
-              DropdownMenuItem(child: Text("No"), value: 1),
-              DropdownMenuItem(child: Text("Sí"), value: 2),
+              DropdownMenuItem(child: Text('No'), value: 1),
+              DropdownMenuItem(child: Text('Sí'), value: 2),
             ]
         );
       },
@@ -566,10 +567,10 @@ class _NewTravelPageState extends State<NewTravelPage> {
               }
             },
             [
-              DropdownMenuItem(child: Text("Carga"), value: 1),
-              DropdownMenuItem(child: Text("Descarga"), value: 2),
-              DropdownMenuItem(child: Text("Carga y descarga"), value: 3),
-              DropdownMenuItem(child: Text("NO carga NI descarga"), value: 4),
+              DropdownMenuItem(child: Text('Carga'), value: 1),
+              DropdownMenuItem(child: Text('Descarga'), value: 2),
+              DropdownMenuItem(child: Text('Carga y descarga'), value: 3),
+              DropdownMenuItem(child: Text('NO carga NI descarga'), value: 4),
             ]
         );
       },
@@ -596,6 +597,31 @@ class _NewTravelPageState extends State<NewTravelPage> {
       onTap: () => FocusManager.instance.primaryFocus.unfocus(),
       value: value,
       items: items,
+    );
+  }
+
+  void _showLoginDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('¡Iniciá sesión!'),
+          content: Text('Para realizar este pedido, debés iniciar sesión o registrarte.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Iniciar sesión'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushNamed(
+                  Navigation.navigationKey.currentContext,
+                  LoginPage.routeName,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

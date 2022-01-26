@@ -53,44 +53,7 @@ class _UsersAPI implements UsersAPI {
   }
 
   @override
-  Future<String> createUser(user) async {
-    ArgumentError.checkNotNull(user, 'user');
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(user?.toJson() ?? <String, dynamic>{});
-    final _result = await _dio.request<String>('clients',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'POST',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    final value = _result.data;
-    return value;
-  }
-
-  @override
-  Future<CheckEmail> checkEmailAvailable(email) async {
-    ArgumentError.checkNotNull(email, 'email');
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'email': email};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('verify-email',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'GET',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    final value = CheckEmail.fromJson(_result.data);
-    return value;
-  }
-
-  @override
-  Future<TravelList> getClientTravels(
+  Future<PagedList<Travel>> getClientTravels(
       id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
     ArgumentError.checkNotNull(orderByField, 'orderByField');
@@ -110,12 +73,15 @@ class _UsersAPI implements UsersAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    final value = TravelList.fromJson(_result.data);
+    final value = PagedList<Travel>.fromJson(
+      _result.data,
+      (json) => Travel.fromJson(json),
+    );
     return value;
   }
 
   @override
-  Future<TravelList> getDriverTravels(
+  Future<PagedList<Travel>> getDriverTravels(
       id, orderByField, orderByDirection) async {
     ArgumentError.checkNotNull(id, 'id');
     ArgumentError.checkNotNull(orderByField, 'orderByField');
@@ -135,7 +101,10 @@ class _UsersAPI implements UsersAPI {
             extra: _extra,
             baseUrl: baseUrl),
         data: _data);
-    final value = TravelList.fromJson(_result.data);
+    final value = PagedList<Travel>.fromJson(
+      _result.data,
+      (json) => Travel.fromJson(json),
+    );
     return value;
   }
 

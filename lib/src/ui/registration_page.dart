@@ -110,7 +110,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
         _entryField('Apellido', bloc.lastName, bloc.changeLastName, initialValue: _initialLastName),
         _entryField('Celular', bloc.phone, bloc.changePhone, keyboardType: TextInputType.phone),
         _entryField('Domicilio (opcional)', bloc.address, bloc.changeAddress),
-        _dropdownField('Género (opcional)', ['Femenino', 'Masculino', 'No binario'], bloc.gender, bloc.changeGender),
       ],
     );
   }

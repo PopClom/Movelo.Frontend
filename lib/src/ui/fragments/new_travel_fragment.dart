@@ -24,7 +24,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
     final Widget origin = Column(
       children: [
         Text(
-          "Origen de carga",
+          'Origen de carga',
           textAlign: TextAlign.left,
           style: TextStyle(
               color: Colors.white,
@@ -34,7 +34,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
         ),
         SizedBox(height: 7),
         LocationAutocompleteSelector(
-          label: "Origen de carga",
+          label: 'Origen de carga',
           prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
           onLocationSelected: bloc.changeOriginPlacesDetails,
         ),
@@ -44,7 +44,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
     final Widget destiny = Column(
       children: [
         Text(
-          "Destino de carga",
+          'Destino de carga',
           textAlign: TextAlign.left,
           style: TextStyle(
               color: Colors.white,
@@ -54,7 +54,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
         ),
         SizedBox(height: 7),
         LocationAutocompleteSelector(
-          label: "Destino de carga",
+          label: 'Destino de carga',
           prefixIcon: Icon(Icons.location_pin, color: Colors.black,),
           onLocationSelected: bloc.changeDestinationPlacesDetails,
         ),
@@ -87,7 +87,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
             child: Column(
               children: [
                 Text(
-                  "¿Qué vehículo necesitás para transportar tu carga?",
+                  '¿Qué vehículo necesitás para transportar tu carga?',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -116,7 +116,7 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 35),
-                      child: Text("COTIZÁ AHORA"),
+                      child: Text('COTIZÁ AHORA'),
                     ),
                     style: OutlinedButton.styleFrom(
                       primary: Colors.white,

@@ -69,16 +69,16 @@ class NewTravelBloc {
       GooglePlacesDetails origin, GooglePlacesDetails destination, bool mapLoaded) {
         if(origin == null || destination == null) {
           if(origin != null)
-            return [_placeToMarker(origin, "Origen")];
+            return [_placeToMarker(origin, 'Origen')];
           else if(destination != null)
-            return [_placeToMarker(destination, "Destino")];
+            return [_placeToMarker(destination, 'Destino')];
           else
             return [];
         }
 
         return [
-          _placeToMarker(origin, "Origen"),
-          _placeToMarker(destination, "Destino"),
+          _placeToMarker(origin, 'Origen'),
+          _placeToMarker(destination, 'Destino'),
         ];
       }
   );
@@ -128,44 +128,17 @@ class NewTravelBloc {
         numberOfFloors: _numberOfFloors.value,
         requiredAssistants: _numberOfHelpers.value,
       )
-    );
+    ).catchError((error, stackTrace) {
+      if (is4xxError(error)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo cotizar el pedido'
+        );
+      }
+    });
   }
 
   Future<void> confirmTravelRequest() async {
-    /*String message = "¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*."
-        .replaceFirst("VEHICLE_TYPE", _selectedVehicleType.value.name)
-        .replaceFirst("TRANSPORTED_OBJECT_DESCRIPTION", _transportedObjectsDetails.value)
-        .replaceFirst("ORIGIN_ADDRESS", _originPlacesDetails.value.formattedAddress)
-        .replaceFirst("DESTINATION_ADDRESS", _destinationPlacesDetails.value.formattedAddress);
-
-    if(_driverHandlesLoading.value || _driverHandlesUnloading.value) {
-      if(!_driverHandlesLoading.value) {
-        message += "\nRequiero que se encarguen de descargar los artículos transportados en destino.";
-      } else if (!_driverHandlesUnloading.value) {
-        message += "\nRequiero que se encarguen de cargar los artículos transportados en el origen.";
-      } else {
-        message += "\nRequiero que se encarguen tanto de la carga como de la descarga de los artículos transportados.";
-      }
-    } else {
-      message += "\nNo requiero que se hagan cargo ni de la carga ni de la descarga de los artículos transportados.";
-    }
-
-    if(_numberOfFloors.value == 1) {
-      message += "\nLa carga debe trasladarse *1 piso por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
-    } else if(_numberOfFloors.value > 1) {
-      message += "\nLa carga debe trasladarse *${_numberOfFloors.value} pisos por ${_fitsInElevator.value ? "ascensor" : "escalera"}*.";
-    }
-
-    if(_numberOfHelpers.value == 1) {
-      message += "\nPara esto solicito también la presencia de *1 ayudante* adicional.";
-    } else if(_numberOfHelpers.value > 1) {
-      message += "\nPara esto solicito también la presencia de *${_numberOfHelpers.value} ayudantes* adicionales.";
-    }
-
-    message += "\n¡Muchas gracias!";
-
-    return await sendWhatsAppMessage("5491158424244", message);*/
-
     try {
       changeIsSubmitting(true);
       Travel travel = await apiService.confirmTravelRequest(
@@ -189,10 +162,46 @@ class NewTravelBloc {
       changeIsSubmitting(false);
     }
   }
+  
+  Future<bool> confirmTravelRequestWhatsapp() async {
+    String message = '¡Hola! Quisiera pedir un/a *VEHICLE_TYPE* para transportar *TRANSPORTED_OBJECT_DESCRIPTION* desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*.'
+        .replaceFirst('VEHICLE_TYPE', _selectedVehicleType.value.name)
+        .replaceFirst('TRANSPORTED_OBJECT_DESCRIPTION', _transportedObjectsDetails.value)
+        .replaceFirst('ORIGIN_ADDRESS', _originPlacesDetails.value.formattedAddress)
+        .replaceFirst('DESTINATION_ADDRESS', _destinationPlacesDetails.value.formattedAddress);
+
+    if(_driverHandlesLoading.value || _driverHandlesUnloading.value) {
+      if(!_driverHandlesLoading.value) {
+        message += '\nRequiero que se encarguen de descargar los artículos transportados en destino.';
+      } else if (!_driverHandlesUnloading.value) {
+        message += '\nRequiero que se encarguen de cargar los artículos transportados en el origen.';
+      } else {
+        message += '\nRequiero que se encarguen tanto de la carga como de la descarga de los artículos transportados.';
+      }
+    } else {
+      message += '\nNo requiero que se hagan cargo ni de la carga ni de la descarga de los artículos transportados.';
+    }
+
+    if(_numberOfFloors.value == 1) {
+      message += '\nLa carga debe trasladarse *1 piso por ${_fitsInElevator.value ? 'ascensor' : 'escalera'}*.';
+    } else if(_numberOfFloors.value > 1) {
+      message += '\nLa carga debe trasladarse *${_numberOfFloors.value} pisos por ${_fitsInElevator.value ? 'ascensor' : 'escalera'}*.';
+    }
+
+    if(_numberOfHelpers.value == 1) {
+      message += '\nPara esto solicito también la presencia de *1 ayudante* adicional.';
+    } else if(_numberOfHelpers.value > 1) {
+      message += '\nPara esto solicito también la presencia de *${_numberOfHelpers.value} ayudantes* adicionales.';
+    }
+
+    message += '\n¡Muchas gracias!';
+
+    return await sendWhatsAppMessage('5491158424244', message);
+  }
 
   Marker _placeToMarker(dynamic place, String name) {
     return new Marker(
-      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      markerId: MarkerId('${name}_${DateTime.now().millisecondsSinceEpoch}'),
       position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
       infoWindow: InfoWindow(
         title: name,

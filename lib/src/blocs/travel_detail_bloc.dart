@@ -22,8 +22,8 @@ class TravelDetailBloc {
   Stream<List<Marker>> get markers =>
       Rx.combineLatest2(_travel, _driverPosition, (Travel t, Marker m) {
         List<Marker> originAndDestination = [
-          _locationToMarker(t.origin, "Origen"),
-          _locationToMarker(t.destination, "Destino"),
+          _locationToMarker(t.origin, 'Origen'),
+          _locationToMarker(t.destination, 'Destino'),
         ];
         return m != null ? [...originAndDestination, m] : originAndDestination;
       });
@@ -39,6 +39,13 @@ class TravelDetailBloc {
   Future<void> fetchTravel(int id) async {
     Travel travel = await apiService.getTravelById(id);
     _travel.sink.add(travel);
+    if (_shouldTrackTravel(travel.status) && travel.driverCurrentLocation != null) {
+      _driverPosition.sink.add(_driverMarker(
+          travel.driverCurrentLocation.lat,
+          travel.driverCurrentLocation.lng,
+          'Conductor'
+      ));
+    }
     _configureLocation();
   }
 
@@ -47,31 +54,31 @@ class TravelDetailBloc {
         ImageConfiguration(size: Size(60, 60)), 'assets/images/marker.png'
     );
 
-    if (_travel.hasValue && _travel.value.status == TravelStatus.InProgress && authBloc.isDriver()) {
+    if (_travel.hasValue && _shouldTrackTravel(_travel.value.status) && authBloc.isDriver()) {
       final LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 100,
       );
 
       Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-        _driverPosition.sink.add(_driverMarker(position.latitude, position.longitude, "Conductor"));
+        _driverPosition.sink.add(_driverMarker(position.latitude, position.longitude, 'Conductor'));
       }).onError((err) {
         // Ignore error
       });
     }
 
     timer = Timer.periodic(Duration(seconds: 15), (Timer t) {
-      if (_travel.hasValue && _travel.value.status == TravelStatus.InProgress) {
+      if (_travel.hasValue && _shouldTrackTravel(_travel.value.status)) {
         if (authBloc.isDriver()) {
-          if (_driverPosition.hasValue) {
+          if (_driverPosition.hasValue && _driverPosition.value != null) {
             apiService.updateDriverPosition(
               _travel.value.id,
-              _markerToLocation(_driverPosition.value, "Conductor"),
+              _markerToLocation(_driverPosition.value, 'Conductor'),
             );
           }
         } else {
           apiService.getDriverPosition(_travel.value.id).then((location) {
-            _driverPosition.sink.add(_driverMarker(location.lat, location.lng, "Conductor"));
+            _driverPosition.sink.add(_driverMarker(location.lat, location.lng, 'Conductor'));
           }).catchError((err) {
             // Ignore error
           });
@@ -109,6 +116,60 @@ class TravelDetailBloc {
         showErrorToast(
             Navigation.navigationKey.currentContext,
             'Ocurrió un error', 'No se pudo iniciar este envío.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> confirmArrivedAtOrigin(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.confirmArrivedAtOrigin(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo indicar la llegada al punto de partida.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> confirmDrivingTowardsDestination(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.confirmDrivingTowardsDestination(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo indicar el viaje al destino.'
+        );
+      }
+    } finally {
+      changeIsSubmitting(false);
+    }
+  }
+
+  Future<void> confirmArrivedAtDestination(int id) async {
+    try {
+      changeIsSubmitting(true);
+      Travel travel = await apiService.confirmArrivedAtDestination(id);
+      _travel.sink.add(travel);
+      changeIsSubmitting(false);
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo indicar la llegada al destino.'
         );
       }
     } finally {
@@ -154,11 +215,11 @@ class TravelDetailBloc {
 
   Marker _locationToMarker(Location location, String name) {
     return new Marker(
-      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      markerId: MarkerId('${name}_${DateTime.now().millisecondsSinceEpoch}'),
       position: LatLng(location.lat, location.lng),
       infoWindow: InfoWindow(
         title: name,
-        snippet: location.name.split(",")[0],
+        snippet: location.name.split(',')[0],
       ),
     );
   }
@@ -173,7 +234,7 @@ class TravelDetailBloc {
 
   Marker _driverMarker(double lat, double lng, String name) {
     return new Marker(
-      markerId: MarkerId("${name}_${DateTime.now().millisecondsSinceEpoch}"),
+      markerId: MarkerId('${name}_${DateTime.now().millisecondsSinceEpoch}'),
       position: LatLng(lat, lng),
       icon: _customIcon,
       infoWindow: InfoWindow(
@@ -181,6 +242,13 @@ class TravelDetailBloc {
         snippet: name,
       ),
     );
+  }
+
+  bool _shouldTrackTravel(TravelStatus status) {
+    return status == TravelStatus.DrivingTowardsOrigin
+        || status == TravelStatus.ArrivedAtOrigin
+        || status == TravelStatus.DrivingTowardsDestination
+        || status == TravelStatus.ArrivedAtDestination;
   }
 
   dispose() {

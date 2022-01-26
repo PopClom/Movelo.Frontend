@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -34,6 +36,9 @@ class _MapViewState extends State<MapView> {
 
     if (widget.markers != null) {
       return GoogleMap(
+        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+          new Factory<OneSequenceGestureRecognizer>(() => new EagerGestureRecognizer()),
+        ].toSet(),
         scrollGesturesEnabled: widget.scrollable,
         markers: markerList != null ? markerList.toSet() : {},
         onMapCreated: onMapCreated,
@@ -41,6 +46,9 @@ class _MapViewState extends State<MapView> {
       );
     } else {
       return GoogleMap(
+        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+          new Factory<OneSequenceGestureRecognizer>(() => new EagerGestureRecognizer()),
+        ].toSet(),
         scrollGesturesEnabled: widget.scrollable,
         markers: {},
         onMapCreated: onMapCreated,

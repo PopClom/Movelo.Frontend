@@ -1,5 +1,7 @@
 import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/route_model.dart';
+import 'package:fletes_31_app/src/models/user_model.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,19 +11,27 @@ enum TravelStatus {
   PendingClientConfirmation,
   PendingDriver,
   ConfirmedAndPendingStart,
-  InProgress,
+  DrivingTowardsOrigin,
+  ArrivedAtOrigin,
+  DrivingTowardsDestination,
+  ArrivedAtDestination,
+  Completed,
   CancelledByClient,
-  Completed
+  CancelledByTimeout
 }
 
 extension TravelStatusExt on TravelStatus {
   static const Map<TravelStatus, String> labels = {
-    TravelStatus.Completed: 'Entregado',
-    TravelStatus.ConfirmedAndPendingStart: 'Confirmado',
-    TravelStatus.PendingDriver: 'Buscando conductor',
-    TravelStatus.InProgress: 'En curso',
-    TravelStatus.CancelledByClient: 'Cancelado',
     TravelStatus.PendingClientConfirmation: 'Esperando confirmación',
+    TravelStatus.PendingDriver: 'Buscando conductor',
+    TravelStatus.ConfirmedAndPendingStart: 'Confirmado',
+    TravelStatus.DrivingTowardsOrigin: 'Yendo a buscar envío',
+    TravelStatus.ArrivedAtOrigin: 'Cargando envío',
+    TravelStatus.DrivingTowardsDestination: 'En curso',
+    TravelStatus.ArrivedAtDestination: 'Desargando envío',
+    TravelStatus.Completed: 'Entregado',
+    TravelStatus.CancelledByClient: 'Cancelado',
+    TravelStatus.CancelledByTimeout: 'Conductor no encontrado',
   };
 
   String get label => labels[this];
@@ -32,9 +42,12 @@ extension TravelStatusExt on TravelStatus {
 class Travel {
   int id;
   int requestingUserId;
+  User requestingUser;
   VehicleType requestedVehicleType;
   TravelStatus status;
   int driverId;
+  User driver;
+  Vehicle vehicle;
   bool driverHandlesLoading;
   bool driverHandlesUnloading;
   bool fitsInElevator;
@@ -45,16 +58,20 @@ class Travel {
 
   Location origin;
   Location destination;
+  Location driverCurrentLocation;
 
   double estimatedPrice;
   Route estimatedRoute;
 
   Travel({
     this.id,
+    this.requestingUser,
     this.requestingUserId,
     this.requestedVehicleType,
     this.status,
     this.driverId,
+    this.driver,
+    this.vehicle,
     this.driverHandlesLoading,
     this.driverHandlesUnloading,
     this.fitsInElevator,
@@ -64,6 +81,7 @@ class Travel {
     this.requestedDepatureTime,
     this.origin,
     this.destination,
+    this.driverCurrentLocation,
     this.estimatedPrice,
     this.estimatedRoute,
   });

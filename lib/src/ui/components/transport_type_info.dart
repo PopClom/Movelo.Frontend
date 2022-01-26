@@ -42,7 +42,7 @@ class TransportTypeInformation extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.network(
-                      "https://localhost:44312" + vehicleType.imageUrl,
+                      'https://movelo.com.ar' + vehicleType.imageUrl,
                       height: 75,
                       width: 75,
                       fit: BoxFit.contain,
@@ -82,15 +82,15 @@ class TransportTypeInformation extends StatelessWidget {
               Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Text(
-                      "Dimensiones: "
-                          "${vehicleType.widthInMeters}m (Ancho) x "
-                          "${vehicleType.heightInMeters}m (Alto) x "
-                          "${vehicleType.widthInMeters}m (Profundidad)"
+                      'Dimensiones: '
+                          '${vehicleType.widthInMeters}m (Ancho) x '
+                          '${vehicleType.heightInMeters}m (Alto) x '
+                          '${vehicleType.widthInMeters}m (Profundidad)'
                   )
               ),
               Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: Text("Capacidad: ${vehicleType.maxWeightInKilograms}kg")
+                  child: Text('Capacidad: ${vehicleType.maxWeightInKilograms}kg')
               ),
             ],
           ))

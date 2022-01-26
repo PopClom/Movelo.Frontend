@@ -19,7 +19,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
 
   String getText() {
     if (dateTime == null) {
-      return 'No programar';
+      return 'Programar envío';
     } else {
       return dateTimeToString(dateTime);
     }
@@ -93,7 +93,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
 
     if (newTime == null) return null;
 
-    if (newTime.hour > 21 || newTime.hour < 5) {
+    if (newTime.hour > 20 || newTime.hour < 5) {
       showErrorToast(
           Navigation.navigationKey.currentContext,
           'No pudimos programar tu envío',

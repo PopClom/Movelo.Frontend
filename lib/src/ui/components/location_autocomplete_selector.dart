@@ -40,7 +40,7 @@ class _LocationAutocompleteSelectorState extends State<LocationAutocompleteSelec
           //fontStyle: FontStyle.italic,
         ),
         decoration: InputDecoration(
-            hintText: "Escribí una dirección: calle y número",
+            hintText: 'Escribí una dirección: calle y número',
             isDense: true,
             contentPadding: EdgeInsets.symmetric(
                 vertical: 15.0,

@@ -1,10 +1,12 @@
 import 'dart:math';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fletes_31_app/src/utils/notification.dart';
 import 'package:fletes_31_app/src/ui/fragments/footer_fragment.dart';
 import 'package:fletes_31_app/src/ui/fragments/new_travel_fragment.dart';
 import 'package:fletes_31_app/src/ui/components/info_card.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LandingPage extends StatefulWidget {
   static const routeName = '/';

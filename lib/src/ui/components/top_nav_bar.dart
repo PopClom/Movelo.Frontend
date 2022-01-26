@@ -100,9 +100,9 @@ class _TopNavBarState extends State<TopNavBar> {
                     onPressed: () {
                       if (collapsableHeight == 0.0) {
                         setState(() {
-                          collapsableHeight = 200.0;
+                          collapsableHeight = 50.0 * items.length;
                         });
-                      } else if (collapsableHeight == 200.0) {
+                      } else if (collapsableHeight > 0.0) {
                         setState(() {
                           collapsableHeight = 0.0;
                         });

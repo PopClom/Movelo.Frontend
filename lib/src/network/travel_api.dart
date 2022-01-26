@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_create_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_request_dto.dart';
 import 'package:fletes_31_app/src/models/dtos/travel_pricing_result_dto.dart';
@@ -20,7 +20,7 @@ abstract class TravelAPI {
   }
 
   @GET('{id}')
-  Future<Travel> getTravelById(@Path("id") int id);
+  Future<Travel> getTravelById(@Path('id') int id);
 
   @GET('potential')
   Future<List<Travel>> getPotentialTravels();
@@ -32,29 +32,29 @@ abstract class TravelAPI {
   Future<Travel> confirmTravelRequest(@Body() TravelCreate travelCreate);
 
   @PUT('{id}/claim')
-  Future<Travel> claimTravel(@Path("id") int id, @Body() int vehicleId);
+  Future<Travel> claimTravel(@Path('id') int id, @Body() int vehicleId);
 
   @PUT('{id}/start')
-  Future<Travel> startTravel(@Path("id") int id);
+  Future<Travel> startTravel(@Path('id') int id);
 
   @PUT('{id}/confirm-arrived-origin')
-  Future<Travel> confirmArrivedAtOrigin(@Path("id") int id);
+  Future<Travel> confirmArrivedAtOrigin(@Path('id') int id);
 
   @PUT('{id}/confirm-driving-destination')
-  Future<Travel> confirmDrivingTowardsDestination(@Path("id") int id);
+  Future<Travel> confirmDrivingTowardsDestination(@Path('id') int id);
 
   @PUT('{id}/confirm-arrived-destination')
-  Future<Travel> confirmArrivedAtDestination(@Path("id") int id);
+  Future<Travel> confirmArrivedAtDestination(@Path('id') int id);
 
   @PUT('{id}/confirm-delivery')
-  Future<Travel> confirmDelivery(@Path("id") int id);
+  Future<Travel> confirmDelivery(@Path('id') int id);
 
   @PUT('{id}/cancel')
-  Future<Travel> cancelTravel(@Path("id") int id);
+  Future<Travel> cancelTravel(@Path('id') int id);
 
   @PUT('{id}/driver-position')
-  Future<void> updateDriverPosition(@Path("id") int id, @Body() Location location);
+  Future<void> updateDriverPosition(@Path('id') int id, @Body() Location location);
 
   @GET('{id}/driver-position')
-  Future<Location> getDriverPosition(@Path("id") int id);
+  Future<Location> getDriverPosition(@Path('id') int id);
 }

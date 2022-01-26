@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:fletes_31_app/src/network/vehicle_type_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:fletes_31_app/src/models/vehicle_type_model.dart';
+import 'package:fletes_31_app/src/network/vehicle_type_api.dart';
 
 class TransportTypeSelector extends StatefulWidget {
   final Function(VehicleType) onSelectionChanged;
@@ -46,12 +45,12 @@ class _TransportTypeSelectorState extends State<TransportTypeSelector> {
           ),
         ),
         Text(
-            "Dimensiones: "
-                "${selectedVehicleType.widthInMeters}m (Ancho) x "
-                "${selectedVehicleType.heightInMeters}m (Alto) x "
-                "${selectedVehicleType.widthInMeters}m (Profundidad)"
+            'Dimensiones: '
+                '${selectedVehicleType.widthInMeters}m (Ancho) x '
+                '${selectedVehicleType.heightInMeters}m (Alto) x '
+                '${selectedVehicleType.widthInMeters}m (Profundidad)'
         ),
-        Text("Peso máximo: ${selectedVehicleType.maxWeightInKilograms}kg"),
+        Text('Peso máximo: ${selectedVehicleType.maxWeightInKilograms}kg'),
         Divider(thickness: 1),
       ],
     );
@@ -127,7 +126,7 @@ class VehicleTypeBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.network(
-                  "https://localhost:44312" + vehicleType.imageUrl,
+                  'https://movelo.com.ar' + vehicleType.imageUrl,
                   height: 75,
                   width: 75,
                   fit: BoxFit.contain,
