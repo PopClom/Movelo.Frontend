@@ -9,7 +9,7 @@ part of 'vehicle_type_api.dart';
 class _VehicleTypeAPI implements VehicleTypeAPI {
   _VehicleTypeAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/';
+    baseUrl ??= 'https://movelo.com.ar/api/';
   }
 
   final Dio _dio;

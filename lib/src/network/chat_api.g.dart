@@ -9,7 +9,7 @@ part of 'chat_api.dart';
 class _ChatAPI implements ChatAPI {
   _ChatAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/chats/';
+    baseUrl ??= 'https://movelo.com.ar/api/chats/';
   }
 
   final Dio _dio;

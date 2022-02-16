@@ -9,7 +9,7 @@ part of 'auth_api.dart';
 class _AuthAPI implements AuthAPI {
   _AuthAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/profiles/';
+    baseUrl ??= 'https://movelo.com.ar/api/profiles/';
   }
 
   final Dio _dio;

@@ -27,12 +27,16 @@ class AuthBloc {
   ValueStream<bool> get isSessionValid => _isSessionValid.stream;
 
   Future<void> logIn(String email, String password) async {
-    return authApi.authenticate(Login(
-      schema: LoginSchema.Password,
-      usernameOrToken: email,
-      password: password,
-      deviceData: await _getDeviceData(),
-    )).then(_handleLogin);
+    try {
+      return authApi.authenticate(Login(
+        schema: LoginSchema.Password,
+        usernameOrToken: email,
+        password: password,
+        deviceData: await _getDeviceData(),
+      )).then(_handleLogin);
+    } catch (err) {
+      print(err);
+    }
   }
 
   Future<void> logInFacebook(String token) async {
@@ -52,10 +56,10 @@ class AuthBloc {
   }
 
   Future<DeviceRegister> _getDeviceData() async {
-    final firebaseMessaging = FCM();
-    String notificationToken = await firebaseMessaging.setNotifications();
+    //final firebaseMessaging = FCM();
+    //String notificationToken = await firebaseMessaging.setNotifications();
     return DeviceRegister(
-      notificationToken: notificationToken,
+      notificationToken: 'tokenloco123',
       platform: "Android",
       platformVersion: "11.0.1",
     );
