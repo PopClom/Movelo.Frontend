@@ -85,7 +85,7 @@ class TransportTypeInformation extends StatelessWidget {
                       'Dimensiones: '
                           '${vehicleType.widthInMeters}m (Ancho) x '
                           '${vehicleType.heightInMeters}m (Alto) x '
-                          '${vehicleType.widthInMeters}m (Profundidad)'
+                          '${vehicleType.depthInMeters}m (Profundidad)'
                   )
               ),
               Padding(

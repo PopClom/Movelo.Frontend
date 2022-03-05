@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:fletes_31_app/src/models/place_autocomplete_data.dart';
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 List<String> splitName(String fullName) {
   if (fullName == null)
@@ -71,4 +75,39 @@ String secondsToString(int seconds) {
 
 String metersToString(int meters) {
   return '${(meters / 1000).toStringAsFixed(1)}km';
+}
+
+void showMovingDialog(context, origin, destination) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('¿Te querés mudar?'),
+        content: Text('Ingresá acá y cotizá con nosotros al instante.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Ingresar'),
+            onPressed: () => _movingRequestWhatsapp(origin, destination),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+_movingRequestWhatsapp(GooglePlacesDetails origin, GooglePlacesDetails destination) async {
+  String message;
+
+  if (origin != null && destination != null) {
+    message = '¡Hola! Quisiera pedir un vehículo para mudanza desde *ORIGIN_ADDRESS* hasta *DESTINATION_ADDRESS*.'
+        .replaceFirst('ORIGIN_ADDRESS', origin.formattedAddress)
+        .replaceFirst('DESTINATION_ADDRESS', destination.formattedAddress);
+  } else {
+    message = '¡Hola! Quisiera pedir un vehículo para mudanza.';
+  }
+
+  message += '\n¡Muchas gracias!';
+
+  return await sendWhatsAppMessage('5491158424244', message);
 }

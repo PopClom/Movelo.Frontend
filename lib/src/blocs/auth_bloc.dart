@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fletes_31_app/src/models/dtos/generate_bearer_token_dto.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fletes_31_app/src/models/dtos/device_register_dto.dart';
@@ -87,6 +88,7 @@ class AuthBloc {
   }
 
   Future<void> restoreSession() async {
+    WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _bearerTokenString = prefs.get('bearerToken');
     _refreshTokenString = prefs.get('refreshToken');

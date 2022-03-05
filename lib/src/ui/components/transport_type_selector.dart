@@ -48,7 +48,7 @@ class _TransportTypeSelectorState extends State<TransportTypeSelector> {
             'Dimensiones: '
                 '${selectedVehicleType.widthInMeters}m (Ancho) x '
                 '${selectedVehicleType.heightInMeters}m (Alto) x '
-                '${selectedVehicleType.widthInMeters}m (Profundidad)'
+                '${selectedVehicleType.depthInMeters}m (Profundidad)'
         ),
         Text('Peso máximo: ${selectedVehicleType.maxWeightInKilograms}kg'),
         Divider(thickness: 1),

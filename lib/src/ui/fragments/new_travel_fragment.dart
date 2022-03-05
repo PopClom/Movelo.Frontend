@@ -1,3 +1,4 @@
+import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fletes_31_app/src/blocs/new_travel_fragment_bloc.dart';
@@ -108,11 +109,19 @@ class _NewTravelFragmentState extends State<NewTravelFragment> {
                 builder: (context, snap) {
                   return OutlinedButton(
                     onPressed: (!snap.hasData || snap.data == null) ? null : () {
-                      Navigator.pushNamed(
-                        Navigation.navigationKey.currentContext,
-                        NewTravelPage.routeName,
-                        arguments: snap.data,
-                      );
+                      if (snap.data.selectedVehicleType.sizeOrder == 4) {
+                        showMovingDialog(
+                          context,
+                          snap.data.originPlacesDetails,
+                          snap.data.destinationPlacesDetails,
+                        );
+                      } else {
+                        Navigator.pushNamed(
+                          Navigation.navigationKey.currentContext,
+                          NewTravelPage.routeName,
+                          arguments: snap.data,
+                        );
+                      }
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 35),

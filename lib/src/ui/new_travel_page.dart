@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:async/async.dart';
 import 'package:fletes_31_app/src/ui/login_page.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
@@ -215,7 +216,13 @@ class _NewTravelPageState extends State<NewTravelPage> {
                       alignment: Alignment.center,
                       child:
                       TransportTypeSelector(
-                          onSelectionChanged: (vehicleType) => bloc.changeSelectedVehicleType(vehicleType)
+                          onSelectionChanged: (vehicleType) {
+                            if (vehicleType.sizeOrder == 4) {
+                              showMovingDialog(context, null, null);
+                            } else {
+                              bloc.changeSelectedVehicleType(vehicleType);
+                            }
+                          }
                       )
                   );
                 }
