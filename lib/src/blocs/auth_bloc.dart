@@ -53,10 +53,10 @@ class AuthBloc {
   }
 
   Future<DeviceRegister> _getDeviceData() async {
-    final firebaseMessaging = FCM();
-    String notificationToken = await firebaseMessaging.setNotifications();
+    //final firebaseMessaging = FCM();
+    //String notificationToken = await firebaseMessaging.setNotifications();
     return DeviceRegister(
-      notificationToken: notificationToken,
+      notificationToken: 'tokenloco123',
       platform: "Android",
       platformVersion: "11.0.1",
     );

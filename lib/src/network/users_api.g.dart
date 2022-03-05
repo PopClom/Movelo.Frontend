@@ -9,7 +9,7 @@ part of 'users_api.dart';
 class _UsersAPI implements UsersAPI {
   _UsersAPI(this._dio, {this.baseUrl}) {
     ArgumentError.checkNotNull(_dio, '_dio');
-    baseUrl ??= 'https://localhost:44312/api/profiles/';
+    baseUrl ??= 'https://movelo.com.ar/api/profiles/';
   }
 
   final Dio _dio;
