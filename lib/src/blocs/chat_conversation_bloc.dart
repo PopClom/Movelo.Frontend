@@ -57,8 +57,6 @@ class ChatConversationBloc {
       } else {
         _messages.sink.add(conversationsPagedList.data);
       }
-
-      loading = false;
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(
@@ -66,6 +64,8 @@ class ChatConversationBloc {
             'Ocurrió un error', 'No se pudieron cargar los mensajes de esta conversacion.'
         );
       }
+    } finally {
+      loading = false;
     }
   }
 
@@ -100,7 +100,7 @@ class ChatConversationBloc {
   }
 
   Future<void> startMessagePolling(int conversationId) async {
-    messagePollingTimer = Timer.periodic(Duration(seconds: 5), (Timer t) async {
+    messagePollingTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
       fetchLatestMessages(conversationId);
     });
   }
@@ -141,7 +141,10 @@ class ChatConversationBloc {
 
     try {
       ChatMessage message = await chatApi.postMessageAsync(conversationId, dto);
-      fetchLatestMessages(conversationId);
+      List<ChatMessage> newList = [message];
+      if (_messages.hasValue)
+        newList.addAll(_messages.value);
+      _messages.sink.add(newList);
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(

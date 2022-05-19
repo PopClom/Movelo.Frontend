@@ -30,7 +30,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   @override
   void initState() {
     bloc.fetchTravel(widget.id);
-
     super.initState();
   }
 

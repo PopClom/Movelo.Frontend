@@ -37,6 +37,11 @@ class TravelDetailBloc {
   Timer timer;
 
   Future<void> fetchTravel(int id) async {
+    await _updateTravel(id);
+    _configureLocation();
+  }
+
+  Future<void> _updateTravel(int id) async {
     Travel travel = await apiService.getTravelById(id);
     _travel.sink.add(travel);
     if (_shouldTrackTravel(travel.status) && travel.driverCurrentLocation != null) {
@@ -46,7 +51,6 @@ class TravelDetailBloc {
           'Conductor'
       ));
     }
-    _configureLocation();
   }
 
   void _configureLocation() async {
@@ -55,35 +59,35 @@ class TravelDetailBloc {
     );
 
     if (_travel.hasValue && _shouldTrackTravel(_travel.value.status) && authBloc.isDriver()) {
-      final LocationSettings locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 100,
-      );
-
-      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-        _driverPosition.sink.add(_driverMarker(position.latitude, position.longitude, 'Conductor'));
-      }).onError((err) {
-        // Ignore error
-      });
+      _startTracking();
     }
 
     timer = Timer.periodic(Duration(seconds: 15), (Timer t) {
-      if (_travel.hasValue && _shouldTrackTravel(_travel.value.status)) {
+      if (_travel.hasValue) {
         if (authBloc.isDriver()) {
-          if (_driverPosition.hasValue && _driverPosition.value != null) {
+          if (_driverPosition.hasValue && _driverPosition.value != null && _shouldTrackTravel(_travel.value.status)) {
             apiService.updateDriverPosition(
               _travel.value.id,
               _markerToLocation(_driverPosition.value, 'Conductor'),
             );
           }
         } else {
-          apiService.getDriverPosition(_travel.value.id).then((location) {
-            _driverPosition.sink.add(_driverMarker(location.lat, location.lng, 'Conductor'));
-          }).catchError((err) {
-            // Ignore error
-          });
+          _updateTravel(_travel.value.id);
         }
       }
+    });
+  }
+
+  void _startTracking() {
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+      _driverPosition.sink.add(_driverMarker(position.latitude, position.longitude, 'Conductor'));
+    }).onError((err) {
+      // Ignore error
     });
   }
 
@@ -111,6 +115,7 @@ class TravelDetailBloc {
       Travel travel = await apiService.startTravel(id);
       _travel.sink.add(travel);
       changeIsSubmitting(false);
+      _startTracking();
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(
