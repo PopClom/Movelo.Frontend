@@ -17,7 +17,7 @@ class ChatConversationPage extends StatefulWidget {
   _ChatConversationPageState createState() => _ChatConversationPageState();
 }
 
-class _ChatConversationPageState extends State<ChatConversationPage> {
+class _ChatConversationPageState extends State<ChatConversationPage> with WidgetsBindingObserver {
   final ChatConversationBloc bloc = ChatConversationBloc();
   final TextEditingController controller = new TextEditingController();
 
@@ -31,7 +31,7 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
 
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

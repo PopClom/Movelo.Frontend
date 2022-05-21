@@ -42,7 +42,10 @@ class ChatConversationBloc {
     try {
       loading = true;
       PagedList<ChatMessage> conversationsPagedList = await chatApi.queryConversationMessagesWithIdLowerLimit(conversationId, messageIdLowerLimit);
-      messageIdLowerLimit = conversationsPagedList.data.length > 0 ? conversationsPagedList.data[0].id : 0;
+      if(conversationsPagedList.data.length > 0) {
+        messageIdLowerLimit = conversationsPagedList.data[0].id;
+      }
+
       if(!(conversationsPagedList.data.length > 0))
         return;
 
@@ -100,7 +103,7 @@ class ChatConversationBloc {
   }
 
   Future<void> startMessagePolling(int conversationId) async {
-    messagePollingTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
+    messagePollingTimer = Timer.periodic(Duration(seconds: 3), (Timer t) async {
       fetchLatestMessages(conversationId);
     });
   }
@@ -141,10 +144,11 @@ class ChatConversationBloc {
 
     try {
       ChatMessage message = await chatApi.postMessageAsync(conversationId, dto);
-      List<ChatMessage> newList = [message];
+      fetchLatestMessages(conversationId);
+      /*List<ChatMessage> newList = [message];
       if (_messages.hasValue)
         newList.addAll(_messages.value);
-      _messages.sink.add(newList);
+      _messages.sink.add(newList);*/
     } catch(err) {
       if (is4xxError(err)) {
         showErrorToast(
@@ -160,6 +164,7 @@ class ChatConversationBloc {
   dispose() async {
     _conversation.close();
     _messages.close();
+    _newMessageText.close();
 
     //connection.stop();
     messagePollingTimer.cancel();
