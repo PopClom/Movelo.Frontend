@@ -44,6 +44,10 @@ class ChatConversationBloc {
       PagedList<ChatMessage> conversationsPagedList = await chatApi.queryConversationMessagesWithIdLowerLimit(conversationId, messageIdLowerLimit);
       if(conversationsPagedList.data.length > 0) {
         messageIdLowerLimit = conversationsPagedList.data[0].id;
+      } else {
+        if(messageIdLowerLimit == 0) {
+          _messages.sink.add([]);
+        }
       }
 
       if(!(conversationsPagedList.data.length > 0))
