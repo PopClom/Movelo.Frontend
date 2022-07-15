@@ -21,7 +21,7 @@ class _VehicleTypeAPI implements VehicleTypeAPI {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<List<dynamic>>('vehicletypes',
+    final _result = await _dio.request<List<dynamic>>('vehicle-types',
         queryParameters: queryParameters,
         options: RequestOptions(
             method: 'GET',

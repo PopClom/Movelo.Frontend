@@ -15,9 +15,9 @@ TravelPricingRequest _$TravelPricingRequestFromJson(Map<String, dynamic> json) {
     destination: json['destination'] == null
         ? null
         : Location.fromJson(json['destination'] as Map<String, dynamic>),
-    departureTime: json['departureTime'] == null
+    departureDateTime: json['departureDateTime'] == null
         ? null
-        : DateTime.parse(json['departureTime'] as String),
+        : DateTime.parse(json['departureDateTime'] as String),
     driverHandlesLoading: json['driverHandlesLoading'] as bool,
     driverHandlesUnloading: json['driverHandlesUnloading'] as bool,
     fitsInElevator: json['fitsInElevator'] as bool,
@@ -32,7 +32,7 @@ Map<String, dynamic> _$TravelPricingRequestToJson(
       'vehicleTypeId': instance.vehicleTypeId,
       'origin': instance.origin,
       'destination': instance.destination,
-      'departureTime': instance.departureTime?.toIso8601String(),
+      'departureDateTime': instance.departureDateTime?.toIso8601String(),
       'driverHandlesLoading': instance.driverHandlesLoading,
       'driverHandlesUnloading': instance.driverHandlesUnloading,
       'fitsInElevator': instance.fitsInElevator,

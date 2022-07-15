@@ -9,6 +9,7 @@ part of 'vehicle_type_model.dart';
 VehicleType _$VehicleTypeFromJson(Map<String, dynamic> json) {
   return VehicleType(
     id: json['id'] as int,
+    sizeOrder: json['sizeOrder'] as int,
     name: json['name'] as String,
     imageUrl: json['imageUrl'] as String,
     maxWeightInKilograms: (json['maxWeightInKilograms'] as num)?.toDouble(),
@@ -21,6 +22,7 @@ VehicleType _$VehicleTypeFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$VehicleTypeToJson(VehicleType instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'sizeOrder': instance.sizeOrder,
       'name': instance.name,
       'imageUrl': instance.imageUrl,
       'maxWeightInKilograms': instance.maxWeightInKilograms,

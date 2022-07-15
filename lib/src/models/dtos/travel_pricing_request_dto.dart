@@ -9,7 +9,7 @@ class TravelPricingRequest {
   int vehicleTypeId;
   Location origin;
   Location destination;
-  DateTime departureTime;
+  DateTime departureDateTime;
   bool driverHandlesLoading;
   bool driverHandlesUnloading;
   bool fitsInElevator;
@@ -20,7 +20,7 @@ class TravelPricingRequest {
     this.vehicleTypeId,
     this.origin,
     this.destination,
-    this.departureTime,
+    this.departureDateTime,
     this.driverHandlesLoading,
     this.driverHandlesUnloading,
     this.fitsInElevator,

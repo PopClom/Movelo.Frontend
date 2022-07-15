@@ -110,7 +110,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
         _entryField('Apellido', bloc.lastName, bloc.changeLastName, initialValue: _initialLastName),
         _entryField('Celular', bloc.phone, bloc.changePhone, keyboardType: TextInputType.phone),
         _entryField('Domicilio (opcional)', bloc.address, bloc.changeAddress),
-        _dropdownField('Género (opcional)', ['Femenino', 'Masculino', 'No binario'], bloc.gender, bloc.changeGender),
       ],
     );
   }
@@ -122,8 +121,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
         return TextButton(
             onPressed: (!snap.hasData) ? null : bloc.submit,
             child: Container(
+              height: 50,
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(vertical: 15),
+              padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -137,44 +137,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   color: snap.hasData ? Colors.deepPurple : Colors.grey.shade300),
               child: Text(
                 'Continuar',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             )
         );
       },
-    );
-  }
-
-  Widget _divider() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: 20,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
-          ),
-          Text('Moto'),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                thickness: 1,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
     );
   }
 

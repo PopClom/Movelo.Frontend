@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:fletes_31_app/src/network/users_api.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:fletes_31_app/src/ui/landing_page.dart';
+import 'package:fletes_31_app/src/network/users_api.dart';
+import 'package:fletes_31_app/src/utils/flushbar.dart';
+import 'package:fletes_31_app/src/utils/helpers.dart';
+import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 
 class RegistrationBloc {
@@ -96,16 +101,37 @@ class RegistrationBloc {
 
   void submit() async {
     _loadingData.sink.add(true);
-
-    authBloc.signUp(
+    try {
+      await authBloc.signUp(
         _emailController.value,
         _passwordController.value,
         _firstNameController.value,
         _lastNameController.value,
         _phoneController.value,
-    ).catchError((obj) {
+      );
+      await authBloc.logIn(_emailController.value, _passwordController.value);
+      if (Navigator.canPop(Navigation.navigationKey.currentContext)) {
+        Navigator.pop(Navigation.navigationKey.currentContext);
+      } else {
+        Navigator.pushReplacementNamed(
+          Navigation.navigationKey.currentContext,
+          LandingPage.routeName,
+        );
+      }
+      showSuccessToast(
+          Navigation.navigationKey.currentContext,
+          '¡Excelente!', 'Completaste tu registro'
+      );
+    } catch(err) {
+      if (is4xxError(err)) {
+        showErrorToast(
+            Navigation.navigationKey.currentContext,
+            'Ocurrió un error', 'No se pudo completar tu registro'
+        );
+      }
+    } finally {
       _loadingData.sink.add(false);
-    });
+    }
   }
 
   void dispose() {

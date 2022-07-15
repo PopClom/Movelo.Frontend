@@ -11,14 +11,38 @@
         <!-- Main Favicon -->
         <link rel="icon" type="image/pg" href="favicon/png"/>
 
-        <meta name="google-signin-client_id" content="4842293248-70d9gguou1l8sak5v77022q8q52akq57.apps.googleusercontent.com">
+        <meta name="google-signin-client_id" content="1087559493788-n7mktptgbbqif69re48rj7g5hlshr4k4.apps.googleusercontent.com">
         <script async
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHwZdNQeCf2lZWSyMkALVcmGGahBkxPhs&libraries=places&v=beta">
         </script>
     </head>
     <body>
+        <script>
+          if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+              navigator.serviceWorker.register("/firebase-messaging-sw.js");
+            });
+          }
+         </script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+
+        <script>
+            const firebaseConfig = {
+              apiKey: "AIzaSyDsWnT1HypUtmu3V5pazE1bU3NtDNNdwW8",
+              authDomain: "movelo-27642.firebaseapp.com",
+              projectId: "movelo-27642",
+              storageBucket: "movelo-27642.appspot.com",
+              messagingSenderId: "1087559493788",
+              appId: "1:1087559493788:web:2819b7390ac37b2b11a559"
+            };
+            firebase.initializeApp(firebaseConfig);
+        </script>
+
         <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
         <script src="interop_js/google_maps_helpers.js" defer></script>
         <script src="main.dart.js"></script>
+
     </body>
 </html>

@@ -1,16 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 import 'package:fletes_31_app/src/ui/about_us_page.dart';
+import 'package:fletes_31_app/src/ui/chat_conversation_page.dart';
+import 'package:fletes_31_app/src/ui/chat_conversations_list_page.dart';
 import 'package:fletes_31_app/src/ui/contact_us_page.dart';
 import 'package:fletes_31_app/src/ui/landing_page.dart';
 import 'package:fletes_31_app/src/ui/travel_detail_page.dart';
-import 'package:flutter/material.dart';
 import 'package:fletes_31_app/src/ui/new_travel_page.dart';
 import 'package:fletes_31_app/src/utils/navigation.dart';
 import 'package:fletes_31_app/src/ui/login_page.dart';
 import 'package:fletes_31_app/src/ui/registration_page.dart';
 import 'package:fletes_31_app/src/ui/travels_page.dart';
 import 'package:fletes_31_app/src/ui/components/top_nav_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 ThemeData theme = ThemeData(
   primarySwatch: Colors.deepPurple,
@@ -49,6 +51,7 @@ class MyApp extends StatelessWidget {
         RegistrationPage.routeName: (context) => _withScaffold(RegistrationPage()),
         AboutUsPage.routeName: (context) => _withScaffold(AboutUsPage()),
         NewTravelPage.routeName: (context) => _withScaffold(NewTravelPage()),
+        ChatConversationsListPage.routeName: (context) => _withScaffold(ChatConversationsListPage()),
       },
       onGenerateRoute: (routeSettings) {
         RegExp travelRegExp = RegExp(r'^\/travels\/([0-9]+)\/?$');
@@ -59,6 +62,16 @@ class MyApp extends StatelessWidget {
             builder: (context) => _withScaffold(TravelDetailPage(travelId)),
           );
         }
+
+        RegExp chatRegExp = RegExp(r'^\/chats\/([0-9]+)\/?$');
+        if (routeSettings.name != null && chatRegExp.hasMatch(routeSettings.name)) {
+          final int chatId = int.parse(chatRegExp.firstMatch(routeSettings.name).group(1));
+          return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (context) => _withScaffold(ChatConversationPage(chatId)),
+          );
+        }
+
         return null;
       },
       theme: theme,
@@ -68,7 +81,8 @@ class MyApp extends StatelessWidget {
   }
 
   _withScaffold(Widget page) {
-    return Column(
+    return SafeArea(
+        child: Column(
       verticalDirection: VerticalDirection.up,
       children: [
         Expanded(
@@ -81,10 +95,17 @@ class MyApp extends StatelessWidget {
             stream: authBloc.isSessionValid,
             builder: (context, snap) {
               if (snap.hasData && snap.data) {
-                return TopNavBar(
-                    key: UniqueKey(),
-                    navBarItems: navBarItemsLogged
-                );
+                if (authBloc.isClient()) {
+                  return TopNavBar(
+                      key: UniqueKey(),
+                      navBarItems: navBarItemsClientLogged
+                  );
+                } else {
+                  return TopNavBar(
+                      key: UniqueKey(),
+                      navBarItems: navBarItemsDriverLogged
+                  );
+                }
               } else {
                 return TopNavBar(
                     key: UniqueKey(),
@@ -94,11 +115,11 @@ class MyApp extends StatelessWidget {
             }
         ),
       ],
-    );
+    ));
   }
 }
 
-List<NavBarItem> navBarItemsLogged = [
+List<NavBarItem> navBarItemsClientLogged = [
   NavBarItem(
     text: 'COTIZÁ',
     onTap: () {
@@ -123,6 +144,54 @@ List<NavBarItem> navBarItemsLogged = [
       Navigator.pushNamed(
         Navigation.navigationKey.currentContext,
         TravelsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CHAT',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        ChatConversationsListPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CERRAR SESIÓN',
+    onTap: () {
+      authBloc.closeSession();
+      Navigator.pushNamedAndRemoveUntil(
+          Navigation.navigationKey.currentContext,'/',(_) => false
+      );
+    },
+  ),
+];
+
+List<NavBarItem> navBarItemsDriverLogged = [
+  NavBarItem(
+    text: 'QUIENES SOMOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        AboutUsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'MIS ENVÍOS',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        TravelsPage.routeName,
+      );
+    },
+  ),
+  NavBarItem(
+    text: 'CHAT',
+    onTap: () {
+      Navigator.pushNamed(
+        Navigation.navigationKey.currentContext,
+        ChatConversationsListPage.routeName,
       );
     },
   ),

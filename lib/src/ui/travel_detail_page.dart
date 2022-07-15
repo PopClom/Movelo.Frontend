@@ -1,9 +1,14 @@
+import 'package:rxdart/rxdart.dart';
+import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:fletes_31_app/src/blocs/user_bloc.dart';
+import 'package:fletes_31_app/src/models/vehicle_model.dart';
+import 'package:fletes_31_app/src/utils/whatsapp.dart';
 import 'package:fletes_31_app/src/blocs/travel_detail_bloc.dart';
 import 'package:fletes_31_app/src/models/travel_model.dart';
 import 'package:fletes_31_app/src/ui/components/map_view.dart';
 import 'package:fletes_31_app/src/utils/helpers.dart';
-import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:fletes_31_app/src/blocs/auth_bloc.dart';
 
 class TravelDetailPage extends StatefulWidget {
   static const routeName = '/travels/:id/';
@@ -19,11 +24,12 @@ class TravelDetailPage extends StatefulWidget {
 class _TravelDetailPageState extends State<TravelDetailPage> {
   final TravelDetailBloc bloc = TravelDetailBloc();
   bool scrollMap = true;
+  int _selectedVehicle;
+  BehaviorSubject<bool> _isYesButtonEnabled = BehaviorSubject<bool>.seeded(true);
 
   @override
   void initState() {
     bloc.fetchTravel(widget.id);
-
     super.initState();
   }
 
@@ -51,7 +57,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       },
       body: MapView(
         scrollable: scrollMap,
-        markers: bloc.originAndDestinationMarkers,
+        markers: bloc.markers,
       ),
       borderRadius: radius,
     );
@@ -113,6 +119,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         ),
                       ],
                     ),
+                    _buildProfileDetails(travel),
                     _buildDescription('Origen', travel.origin.name),
                     _buildDescription('Destino', travel.destination.name),
                     _buildDescription('Estado del envío', travel.status.label),
@@ -123,10 +130,18 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                             'El fletero descarga: ${booleanToWord(travel.driverHandlesUnloading)}\n'
                             'Asistentes: ${travel.requiredAssistants}\n'
                             'Entra en el ascensor: ${booleanToWord(travel.fitsInElevator)}\n'
-                            'Cantidad de pisos: ${travel.numberOfFloors}'
+                            'Cantidad de pisos: ${travel.numberOfFloors}\n'
+                            'Programado para: ${travel.requestedDepatureTime != null ?
+                        'El ' + dateTimeToString(travel.requestedDepatureTime) : 'Ahora'}\n'
+                            'Duración estimada: ${secondsToString(travel.estimatedRoute.travelTimeInSeconds)} '
+                            '(${metersToString(travel.estimatedRoute.distanceInMeters)})'
                     ),
                     _buildDescription('Detalle de la carga', travel.transportedObjectDescription),
                     _buildDescription('Medio de pago', 'En efectivo'),
+                    SizedBox(height: 20.0),
+                    _buildActionButton(travel),
+                    SizedBox(height: 18.0),
+                    authBloc.isClient() ? _getContactUsButton() : Container(),
                     SizedBox(
                       height: 24,
                     ),
@@ -189,5 +204,278 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildProfileDetails(Travel travel) {
+    if (authBloc.isDriver()) {
+      return _buildDescription(
+          'Cliente',
+          '${travel.requestingUser.firstName} ${travel.requestingUser.lastName}'
+      );
+    } else if (travel.driverId != null) {
+      return _buildDescription(
+          'Conductor', '${travel.driver.firstName} ${travel.driver.lastName}\n'
+          '${travel.vehicle.brand} ${travel.vehicle.model} - ${travel.vehicle.licensePlate}'
+      );
+    }
+    return Container();
+  }
+
+  Widget _buildActionButton(Travel travel) {
+    if ((authBloc.isDriver() && travel.status != TravelStatus.Completed) ||
+        (authBloc.isClient() && travel.status == TravelStatus.PendingDriver)) {
+      return StreamBuilder<bool>(
+          stream: bloc.isSubmitting,
+          builder: (context, snap) {
+            bool isSubmitting = (snap.hasData && snap.data != null && snap.data);
+            return TextButton(
+              onPressed: _getOnPressedForTravel(travel),
+              child: Container(
+                height: 40,
+                width: 240,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Colors.grey.shade200,
+                          offset: Offset(2, 4),
+                          blurRadius: 5,
+                          spreadRadius: 2)
+                    ],
+                    color: isSubmitting ? Colors.grey.shade300 : (
+                        authBloc.isDriver() ? Colors.deepPurple : Colors.pink
+                    )
+                ),
+                child: !isSubmitting ? Text(
+                  _getButtonWordingForTravel(travel),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ) : SizedBox(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                  ),
+                  height: 20.0,
+                  width: 20.0,
+                ),
+              ),
+            );
+          }
+      );
+    }
+
+    return Container();
+  }
+
+  void Function() _getOnPressed(String title, Widget body, void Function() actionYes) {
+    return () async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(
+              child: body,
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              StreamBuilder<bool>(
+                  stream: _isYesButtonEnabled,
+                  builder: (context, snap) {
+                    void Function() _onPressed = snap.hasData && snap.data ? () {
+                      actionYes();
+                      Navigator.of(context).pop();
+                    } : null;
+                    return TextButton(
+                      child: const Text('Sí'),
+                      onPressed: _onPressed,
+                    );
+                  }),
+            ],
+          );
+        },
+      );
+    };
+  }
+
+  void Function() _getOnPressedForTravel(Travel travel) {
+    _isYesButtonEnabled.sink.add(true);
+    if (authBloc.isDriver()) {
+      if (travel.status == TravelStatus.PendingDriver) {
+        _isYesButtonEnabled.sink.add(false);
+        return _getOnPressed(
+          'Confirmá tu selección',
+          ListBody(children: [
+            Text('¿Estás seguro de que querés aceptar este envío?'),
+            _dropdownSelectVehicle('Elegí un vehículo', travel),
+          ]), () => bloc.claimTravel(travel.id, _selectedVehicle),
+        );
+      } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés iniciar este envío?'),
+          () => bloc.startTravel(travel.id),
+        );
+      } else if (travel.status == TravelStatus.DrivingTowardsOrigin) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que llegaste al punto de partida?'),
+          () => bloc.confirmArrivedAtOrigin(travel.id),
+        );
+      } else if (travel.status == TravelStatus.ArrivedAtOrigin) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que estás viajando al destino?'),
+          () => bloc.confirmDrivingTowardsDestination(travel.id),
+        );
+      } else if (travel.status == TravelStatus.DrivingTowardsDestination) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés indicar que llegaste al destino?'),
+          () => bloc.confirmArrivedAtDestination(travel.id),
+        );
+      } else if (travel.status == TravelStatus.ArrivedAtDestination) {
+        return _getOnPressed(
+          'Confirmá tu selección',
+          Text('¿Estás seguro de que querés finalizar este envío?'),
+          () => bloc.endTravel(travel.id),
+        );
+      }
+    }
+    return _getOnPressed(
+      'Confirmá tu selección',
+      Text('¿Estás seguro de que querés cancelar este envío?'),
+      () => bloc.cancelTravel(travel.id),
+    );
+  }
+
+  String _getButtonWordingForTravel(Travel travel) {
+    if (authBloc.isDriver()) {
+      if (travel.status == TravelStatus.PendingDriver) {
+        return 'Aceptar envío';
+      } else if (travel.status == TravelStatus.ConfirmedAndPendingStart) {
+        return 'Iniciar envío';
+      } else if (travel.status == TravelStatus.DrivingTowardsOrigin) {
+        return 'Llegué al punto de partida';
+      } else if (travel.status == TravelStatus.ArrivedAtOrigin) {
+        return 'Estoy yendo al destino';
+      } else if (travel.status == TravelStatus.DrivingTowardsDestination) {
+        return 'Llegué al destino';
+      } else if (travel.status == TravelStatus.ArrivedAtDestination) {
+        return 'Finalizar envío';
+      }
+    }
+    return 'Cancelar envío';
+  }
+
+  Widget _dropdownSelectVehicle(String title, Travel travel) {
+    return StreamBuilder<List<Vehicle>>(
+        stream: userBloc.vehicles,
+        builder: (context, snap) {
+          return Container(
+            height: 48,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: DropdownButtonFormField<int>(
+              isExpanded: true,
+              hint: Text(title),
+              decoration: InputDecoration(
+                isDense: true,
+                fillColor: Color(0xfff3f3f4),
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(width: 1.5, color: Colors.deepPurpleAccent),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
+              ),
+              value: _selectedVehicle,
+              onChanged: (value) {
+                _isYesButtonEnabled.sink.add(true);
+                _selectedVehicle = value;
+              },
+              items: snap.hasData && snap.data != null ? snap.data
+                .where((vehicle) => vehicle.type.id == travel.requestedVehicleType.id || vehicle.type.sizeOrder >= travel.requestedVehicleType.sizeOrder)
+                .map<DropdownMenuItem<int>>((Vehicle vehicle) {
+                  return DropdownMenuItem<int>(
+                    value: vehicle.id,
+                    child: Text('${vehicle.type.name} - ${vehicle.licensePlate}'),
+                  );
+              }).toList() : [],
+            ),
+          );
+        });
+  }
+
+
+  Widget _getContactUsButton() {
+    return Column(
+        children: [
+          Text(
+            '¿Tenés un problema? ¡Contactanos!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          SizedBox(height: 6),
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/contactus/whatsapp-logo.png',
+                            height: 30.0,
+                          ),
+                          SizedBox(width: 10), Text(
+                            '11 5842-4244',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        sendWhatsAppMessage('5491158424244', '');
+                      },
+                    )
+                ),
+              ],
+            ),
+          ),
+        ]
+    );
+  }
+
+  @override
+  void dispose() {
+    _isYesButtonEnabled.close();
+    bloc.dispose();
+    super.dispose();
   }
 }
