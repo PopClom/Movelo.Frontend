@@ -284,15 +284,11 @@ class _NewTravelPageState extends State<NewTravelPage> {
                                     && snap1.data != null
                                     && !(snap2.hasData && snap2.data != null && snap2.data);
 
-                                bool loggedIn = snap3.hasData && snap3.data;
-
                                 void Function() onPressed;
                                 if (btnEnabled) {
-                                  if (loggedIn) {
-                                    onPressed = bloc.confirmTravelRequest;
-                                  } else {
-                                    onPressed = _showLoginDialog;
-                                  }
+                                  onPressed = bloc.confirmTravelRequest;
+                                } else {
+                                  onPressed = null;
                                 }
 
                                 return Container(
