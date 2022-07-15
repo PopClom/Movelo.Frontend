@@ -110,10 +110,14 @@ class RegistrationBloc {
         _phoneController.value,
       );
       await authBloc.logIn(_emailController.value, _passwordController.value);
-      Navigator.pushReplacementNamed(
-        Navigation.navigationKey.currentContext,
-        LandingPage.routeName,
-      );
+      if (Navigator.canPop(Navigation.navigationKey.currentContext)) {
+        Navigator.pop(Navigation.navigationKey.currentContext);
+      } else {
+        Navigator.pushReplacementNamed(
+          Navigation.navigationKey.currentContext,
+          LandingPage.routeName,
+        );
+      }
       showSuccessToast(
           Navigation.navigationKey.currentContext,
           '¡Excelente!', 'Completaste tu registro'
