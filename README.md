@@ -8,4 +8,4 @@ Plataforma de cotización y reserva de vehículos para transporte de carga.
 
 Movelo es una iniciativa conjunta entre el Gobierno de la Ciudad Autónoma de Buenos Aires y fleteros residentes en el Barrio Padre Mugica, que apunta a organizar a los transportistas individuales bajo una sola entidad para propiciar el desarrollo de su actividad mediante la centralización y optimización de los procesos administrativos.
 
-[Movelo](https://flutter.dev/docs/get-started/codelab)
+[Movelo](https://movelo.com.ar)
