@@ -1,16 +1,11 @@
-# fletes_31_app
+# Movelo
 
-Fletes 31
+Plataforma de cotización y reserva de vehículos para transporte de carga.
 
-## Getting Started
+![logo-movelo-small](https://user-images.githubusercontent.com/25797234/179429968-ed4e1bae-598b-461f-b596-15964913e83c.png)
 
-This project is a starting point for a Flutter application.
+## Acerca de
 
-A few resources to get you started if this is your first Flutter project:
+Movelo es una iniciativa conjunta entre el Gobierno de la Ciudad Autónoma de Buenos Aires y fleteros residentes en el Barrio Padre Mugica, que apunta a organizar a los transportistas individuales bajo una sola entidad para propiciar el desarrollo de su actividad mediante la centralización y optimización de los procesos administrativos.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[Movelo](https://flutter.dev/docs/get-started/codelab)
